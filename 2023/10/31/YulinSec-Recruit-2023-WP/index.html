@@ -296,7 +296,8 @@
 <p>在我做非预期解的时候，没有对base的过滤，因此，在经过几下本地传参测试后发现，过滤器在读取<code>$shaopi</code>时会控制字符的数量，后来经查证，貌似必须输入3的倍数。于是我们可以利用base64编码后可以随便加减等号的特性进行绕过。payload为：<code>?filter=convert.base64-decode|&amp;shaopi=PChzaGFvcGkpPg</code></p>
 <h4 id="【Baby】RseaE-季末大酬宾"><a href="#【Baby】RseaE-季末大酬宾" class="headerlink" title="【Baby】RseaE(季末大酬宾)"></a>【Baby】RseaE(季末大酬宾)</h4><p>第一次做内网题，瘫~~~</p>
 <p>首先给linux配置上ssh的socks5代理具体方法详见此博客<code>http://t.csdnimg.cn/fYTE4</code>，之后便可直接在虚拟机上进行操作，无需将文件传输到服务器上。</p>
-<p><img src="/YulinSec-Recruit-2023-WP.assets/uTools_1697629853662.png" alt="uTools_1697629853662"></p>
+<img src="/2023/10/31/YulinSec-Recruit-2023-WP/uTools_1697629853662.png" alt="uTools_1695790148925" style="zoom:50%;">
+
 <p>直接利用fscan扫描内网存活主机，得：</p>
 <img src="/2023/10/31/YulinSec-Recruit-2023-WP/uTools_1695790148925.png" alt="uTools_1695790148925" style="zoom:50%;">
 
