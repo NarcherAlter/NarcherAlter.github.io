@@ -3,7 +3,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8" />
-    <title>Hexo</title>
+    <title> | Hexo</title>
     <meta name="author" content="John Doe" />
     <meta name="description" content="" />
     <meta name="keywords" content="" />
@@ -36,7 +36,9 @@
 
 
 
-<script src="/js/lib/home.js"></script>
+
+
+
 
 <link rel="stylesheet" href="/css/main.css" />
 
@@ -146,32 +148,11 @@
 </transition>
 
         <div id="main" :class="loading ? 'into-enter-from': 'into-enter-active'">
-            <div id="home-head">
-    <div id="home-background" ref="homeBackground" data-images="/images/background.jpg"></div>
-    <div id="home-info" @click="homeClick">
-        <span class="loop"></span>
-        <span class="loop"></span>
-        <span class="loop"></span>
-        <span class="loop"></span>
-        <span class="info">
-            <div class="wrap">
-                <h1>Hexo</h1>
-                <h3></h3>
-                <h5></h5>
-            </div>
-        </span>
+            <div class="article">
+    <div>
+        <h1></h1>
     </div>
-</div>
-<div id="home-posts-wrap" true ref="homePostsWrap">
-    <div id="home-posts">
-        
-
-<div class="post">
-    <a href="/2023/10/31/YulinSec%20Recruit%202023%20WP/">
-        <h2 class="post-title"></h2>
-    </a>
-    <div class="category-and-date">
-        
+    <div class="info">
         <span class="date">
             <span class="icon">
                 <i class="fa-solid fa-calendar fa-fw"></i>
@@ -181,10 +162,9 @@
         
         
     </div>
-    <div class="description">
-        <div class="content" v-pre>
-            
-            <h1 id="YulinSec-Recruit-2023-WP"><a href="#YulinSec-Recruit-2023-WP" class="headerlink" title="YulinSec Recruit 2023 WP"></a>YulinSec Recruit 2023 WP</h1><p><em>作者：Narcher</em>	<em>时间：2023&#x2F;10&#x2F;18</em>	<em>分类：writeup</em></p>
+    
+    <div class="content" v-pre>
+        <h1 id="YulinSec-Recruit-2023-WP"><a href="#YulinSec-Recruit-2023-WP" class="headerlink" title="YulinSec Recruit 2023 WP"></a>YulinSec Recruit 2023 WP</h1><p><em>作者：Narcher</em>	<em>时间：2023&#x2F;10&#x2F;18</em>	<em>分类：writeup</em></p>
 <h4 id="Baby-†签到†"><a href="#Baby-†签到†" class="headerlink" title="[Baby]†签到†"></a>[Baby]†签到†</h4><p>密文：<img src="YulinSec Recruit 2023 WP.assets/wps1.jpg" alt="img" style="zoom: 50%;" /></p>
 <p>密码本：<img src="YulinSec Recruit 2023 WP.assets/wps2.png" alt="img" style="zoom:50%;" /></p>
 <p>解码之后：<img src="YulinSec Recruit 2023 WP.assets/wps3.jpg" alt="img" style="zoom:50%;" />，之后再将解码后的表按先一三后二四的顺序解读，即得明文：WELCOME TO THE CTF GAME！</p>
@@ -425,54 +405,13 @@
 <p>180°翻转后再镜像翻转即为flag后半部分。</p>
 <p>完整flag为：<code>YulinSec&#123;M2tH_1z_s0_iNtlsTInG&#125;</code></p>
 
-            
-        </div>
-    </div>
-    <div class="post-tags">
-        
-        
-        
-    </div>
-    <a href="/2023/10/31/YulinSec%20Recruit%202023%20WP/" class="go-post">阅读全文</a>
-</div>
-
-
-        <div class="page-current">
-    
-    <span class="current">1</span>
-    
-    
-    
-    
-</div>
-
     </div>
     
-    <div id="home-card">
-        <div id="card-style">
-    <div id="card-div">
-        <div class="avatar">
-            <img src="/images/avatar.jpg" alt="avatar" />
-        </div>
-        <div class="name">John Doe</div>
-        <div class="description">
-            <p>Description<br>…</p>
-
-        </div>
-        
-        
-        <div class="friend-links">
-            
-            <div class="friend-link">
-                <a target="_blank" rel="noopener" href="https://argvchs.github.io">Argvchs</a>
-            </div>
-            
-        </div>
-        
-    </div>
-</div>
-
-    </div>
+    
+    
+    
+    
+    
     
 </div>
 
@@ -504,6 +443,12 @@
         
     </div>
     <script src="/js/main.js"></script>
+    
+    
+
+
+
+
     
 </body>
 </html>
