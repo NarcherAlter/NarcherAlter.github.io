@@ -1,11 +1,292 @@
-doctype
-html(lang=config.language)
-  include ./partial/header-base.pug
-  body
-    include ./partial/header.pug
-    main
-      section.main-content !{ body }
-    include ./partial/footer.pug
-    script(src=url_for('scripts/dark.js'))
-    if is_post()
-      script(src=url_for('scripts/post.js'))
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <title> | Narcherの小窝</title>
+    <meta name="author" content="Narcher Alter" />
+    <meta name="description" content="" />
+    <meta name="keywords" content="" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" />
+    <link rel="icon" href="/images/narcher.jpg" />
+    <link rel="preconnect" href="https://cdn.staticfile.org" />
+<script src="https://cdn.staticfile.org/vue/3.3.7/vue.global.prod.min.js"></script>
+<link rel="stylesheet" href="https://cdn.staticfile.org/font-awesome/6.4.2/css/all.min.css" />
+<link rel="preconnect" href="https://fonts.loli.net" />
+<link rel="preconnect" href="https://gstatic.loli.net" crossorigin />
+<link rel="stylesheet" href="https://fonts.loli.net/css2?family=Fira+Code:wght@400;500;600;700&family=Lexend:wght@400;500;600;700;800;900&family=Noto+Sans+SC:wght@400;500;600;700;800;900&display=swap" />
+<script> const mixins = {}; </script>
+
+<script src="https://polyfill.io/v3/polyfill.min.js?features=default"></script>
+
+
+<script src="https://cdn.staticfile.org/highlight.js/11.9.0/highlight.min.js"></script>
+<script src="https://cdn.staticfile.org/highlightjs-line-numbers.js/2.8.0/highlightjs-line-numbers.min.js"></script>
+<link
+    rel="stylesheet"
+    href="https://cdn.staticfile.org/highlight.js/11.9.0/styles/github.min.css"
+/>
+<script src="/js/lib/highlight.js"></script>
+
+
+
+<script src="/js/lib/preview.js"></script>
+
+
+
+
+
+
+
+
+
+<link rel="stylesheet" href="/css/main.css" />
+
+<meta name="generator" content="Hexo 6.3.0"></head>
+<body>
+    <div id="layout">
+        <transition name="fade">
+            <div id="loading" v-show="loading">
+                <div id="loading-circle">
+                    <h2>LOADING</h2>
+                    <p>加载过慢请开启缓存 浏览器默认开启</p>
+                    <img src="/images/loading.gif" />
+                </div>
+            </div>
+        </transition>
+        <div id="menu" :class="{ hidden: hiddenMenu, 'menu-color': menuColor}">
+    <nav id="desktop-menu">
+        <a class="title" href="/">
+            <span>NARCHERの小窝</span>
+        </a>
+        
+        <a href="/">
+            <i class="fa-solid fa-house fa-fw"></i>
+            <span>&ensp;Home</span>
+        </a>
+        
+        <a href="/archives">
+            <i class="fa-solid fa-box-archive fa-fw"></i>
+            <span>&ensp;Archives</span>
+        </a>
+        
+    </nav>
+    <nav id="mobile-menu">
+        <div class="title" @click="showMenuItems = !showMenuItems">
+            <i class="fa-solid fa-bars fa-fw"></i>
+            <span>&emsp;NARCHERの小窝</span>
+        </div>
+        <transition name="slide">
+            <div class="items" v-show="showMenuItems">
+                
+                <a href="/">
+                    <div class="item">
+                        <div style="min-width: 20px; max-width: 50px; width: 10%">
+                            <i class="fa-solid fa-house fa-fw"></i>
+                        </div>
+                        <div style="min-width: 100px; max-width: 150%; width: 20%">Home</div>
+                    </div>
+                </a>
+                
+                <a href="/archives">
+                    <div class="item">
+                        <div style="min-width: 20px; max-width: 50px; width: 10%">
+                            <i class="fa-solid fa-box-archive fa-fw"></i>
+                        </div>
+                        <div style="min-width: 100px; max-width: 150%; width: 20%">Archives</div>
+                    </div>
+                </a>
+                
+            </div>
+        </transition>
+    </nav>
+</div>
+<transition name="fade">
+    <div id="menu-curtain" @click="showMenuItems = !showMenuItems" v-show="showMenuItems"></div>
+</transition>
+
+        <div id="main" :class="loading ? 'into-enter-from': 'into-enter-active'">
+            <div class="article">
+    <div>
+        <h1></h1>
+    </div>
+    <div class="info">
+        <span class="date">
+            <span class="icon">
+                <i class="fa-solid fa-calendar fa-fw"></i>
+            </span>
+            2023/12/3
+        </span>
+        
+        
+    </div>
+    
+    <div class="content" v-pre>
+        <h1 id="Burpsuite靶场–Authentication"><a href="#Burpsuite靶场–Authentication" class="headerlink" title="Burpsuite靶场–Authentication"></a>Burpsuite靶场–Authentication</h1><p><em>作者：Narcher</em>	<em>时间：2023&#x2F;10&#x2F;18</em>	<em>分类：writeup</em></p>
+<span id="more"></span>
+
+<h4 id="Broken-brute-force-protection-IP-block"><a href="#Broken-brute-force-protection-IP-block" class="headerlink" title="Broken brute-force protection, IP block"></a>Broken brute-force protection, IP block</h4><p>打开靶场，进入login界面，随便输入账号密码然后burp抓包，之后发送到Intruder模块，模式选择Pitchfork。</p>
+<img src="/2023/12/03/Burpsuite%E9%9D%B6%E5%9C%BA--Authentication/uTools_1701181255706.png" alt="uTools_1701181255706" style="zoom: 33%;">
+
+<p>由于每错次个就会封ip，所以我们需要在需要爆破的用户名和密码中交替插入正确的用户名和密码，并保证一一对应。</p>
+<p>利用notepad++的替换功能，制作字典。</p>
+<img src="/2023/12/03/Burpsuite%E9%9D%B6%E5%9C%BA--Authentication/uTools_1701181560052.png" alt="uTools_1701181560052" style="zoom: 33%;">
+
+<p>密码字典同理。</p>
+<p>之后分别在payload1和payload2导入字典，设置线程数为1，即可开始爆破。</p>
+<p>设置筛选carlos</p>
+<img src="/2023/12/03/Burpsuite%E9%9D%B6%E5%9C%BA--Authentication/uTools_1701181734660.png" alt="uTools_1701181734660" style="zoom: 33%;">
+
+<p>找到长度异常的请求，使用其payload1和payload2登录成功</p>
+<img src="/2023/12/03/Burpsuite%E9%9D%B6%E5%9C%BA--Authentication/uTools_1701181796408.png" alt="uTools_1701181796408" style="zoom: 33%;">
+
+
+
+<h4 id="Username-enumeration-via-account-lock"><a href="#Username-enumeration-via-account-lock" class="headerlink" title="Username enumeration via account lock"></a>Username enumeration via account lock</h4><p>本题重复登录5次就会锁定账号，所以把所有账号进行5次枚举，使用Intruder中的Cluster bomb</p>
+<img src="/2023/12/03/Burpsuite%E9%9D%B6%E5%9C%BA--Authentication/uTools_1701182516461.png" alt="uTools_1701182516461" style="zoom: 33%;">
+
+<p>发现异常数据，猜测auth为用户名，故爆破其密码（虽然有锁定，但我们可以观察报错信息），选用Sniper</p>
+<img src="/2023/12/03/Burpsuite%E9%9D%B6%E5%9C%BA--Authentication/uTools_1701182677446.png" alt="uTools_1701182677446" style="zoom: 33%;">
+
+<p>发现123456789为密码时报错信息长度异常，使用auth:123456789登录，成功</p>
+<h4 id="2FA-broken-logic"><a href="#2FA-broken-logic" class="headerlink" title="2FA broken logic"></a>2FA broken logic</h4><p>先登录wiener:peter，在burp的target-map下找到此网站的login2</p>
+<img src="/2023/12/03/Burpsuite%E9%9D%B6%E5%9C%BA--Authentication/uTools_1701183202786.png" alt="uTools_1701183202786" style="zoom: 33%;">
+
+<p>尝试将verify修改为我们要攻击的账号，故退出登录，重新登录wiener:peter，只是这次拦截login2，先放过第一个包，再拦截第二个包和第三个包并修改verify为carlos，完成之后发现还要输入验证码，根据登录wiener:peter的经验可知验证码是4位纯数字组合，因此我们直接爆破即可</p>
+<img src="/2023/12/03/Burpsuite%E9%9D%B6%E5%9C%BA--Authentication/uTools_1701183999488.png" alt="uTools_1701183999488" style="zoom: 33%;">
+
+<p>得验证码为1657，之后输入验证码同时拦截包，将verify改为carlos，即可成功</p>
+<h4 id="Brute-forcing-a-stay-logged-in-cookie"><a href="#Brute-forcing-a-stay-logged-in-cookie" class="headerlink" title="Brute-forcing a stay-logged-in cookie"></a>Brute-forcing a stay-logged-in cookie</h4><p>首先根据现有凭据登录，并勾选<code>stay logged in</code></p>
+<img src="/2023/12/03/Burpsuite%E9%9D%B6%E5%9C%BA--Authentication/uTools_1701268022303.png" alt="uTools_1701268022303" style="zoom:33%;">
+
+<p>登录之后发现存在stay-logged-in</p>
+<img src="/2023/12/03/Burpsuite%E9%9D%B6%E5%9C%BA--Authentication/uTools_1701268088527.png" alt="uTools_1701268088527" style="zoom:33%;">
+
+<p>base64解密得:<code>wiener:51dc30ddc473d43a6011e9ebba6ca770</code></p>
+<p>后面的部分用MD5解密得到peter</p>
+<img src="/2023/12/03/Burpsuite%E9%9D%B6%E5%9C%BA--Authentication/uTools_1701268309820.png" alt="uTools_1701268309820" style="zoom:33%;">
+
+<p>于是我们先退出登录，之后对stay-logged-in进行爆破</p>
+<p>需要设置好payload的处理方式，先对密码进行MD5加密，之后添加前缀carlos:，最后进行baes64加密，之后开始爆破</p>
+<img src="/2023/12/03/Burpsuite%E9%9D%B6%E5%9C%BA--Authentication/uTools_1701268715325.png" alt="uTools_1701268715325" style="zoom:33%;">
+
+<p>根据长度排序</p>
+<img src="/2023/12/03/Burpsuite%E9%9D%B6%E5%9C%BA--Authentication/uTools_1701268781046.png" alt="uTools_1701268781046" style="zoom:33%;">
+
+<p>Y2FybG9zOjlkZjNiMDFjNjBkZjIwZDEzODQzODQxZmYwZDQ0ODJj</p>
+<p>base64解密：carlos:9df3b01c60df20d13843841ff0d4482c</p>
+<p>MD5解密：access</p>
+<p>成功</p>
+<h4 id="Offline-password-cracking"><a href="#Offline-password-cracking" class="headerlink" title="Offline password cracking"></a>Offline password cracking</h4><p>首先利用现有凭据wiener:peter登录，之后去首页随便找一篇博客评论</p>
+<img src="/2023/12/03/Burpsuite%E9%9D%B6%E5%9C%BA--Authentication/uTools_1701269449657.png" alt="uTools_1701269449657" style="zoom:33%;">
+
+<p>之后去access log里找到stay-logged-in：Y2FybG9zOjI2MzIzYzE2ZDVmNGRhYmZmM2JiMTM2ZjI0NjBhOTQz</p>
+<img src="/2023/12/03/Burpsuite%E9%9D%B6%E5%9C%BA--Authentication/uTools_1701269466473.png" alt="uTools_1701269466473" style="zoom:33%;">
+
+<p>base64解密：carlos:26323c16d5f4dabff3bb136f2460a943</p>
+<p>MD5解密：onceuponatime</p>
+<p>之后删除carlos的账户即可成功</p>
+<h4 id="Password-reset-poisoning-via-middleware"><a href="#Password-reset-poisoning-via-middleware" class="headerlink" title="Password reset poisoning via middleware"></a>Password reset poisoning via middleware</h4><p>首先，点击忘记密码，输入carlos的用户名，点击submit后用burp拦截，在header位置添加X-Forwarded-Host并指向自己的服务器</p>
+<img src="/2023/12/03/Burpsuite%E9%9D%B6%E5%9C%BA--Authentication/uTools_1701435726142.png" alt="uTools_1701435726142" style="zoom:33%;">
+
+<p>之后去服务器的日志中查看发现获取到了carlos的token：<code>3ek1baacsobkwf15q6sqjetimcb6atm8</code></p>
+<img src="/2023/12/03/Burpsuite%E9%9D%B6%E5%9C%BA--Authentication/uTools_1701436059591.png" alt="uTools_1701436059591" style="zoom:33%;">
+
+<p>之后登录wiener的账号并去获取wiener的邮箱账号，并填写在忘记密码页面的信息栏中</p>
+<img src="/2023/12/03/Burpsuite%E9%9D%B6%E5%9C%BA--Authentication/uTools_1701436254175.png" alt="uTools_1701436254175" style="zoom:33%;">
+
+<p>前往邮箱获取到重置密码的url，将token改为carlos的token并访问</p>
+<p>修改好密码后在点击提交时拦截，将token改为carlos的token并发送</p>
+<img src="/2023/12/03/Burpsuite%E9%9D%B6%E5%9C%BA--Authentication/uTools_1701436441826.png" alt="uTools_1701436441826" style="zoom:33%;">
+
+<p>之后用修改后的密码登录carlos即可成功</p>
+<h4 id="Password-brute-force-via-password-change"><a href="#Password-brute-force-via-password-change" class="headerlink" title="Password brute-force via password change"></a>Password brute-force via password change</h4><p>首先登录wiener:peter，之后通过修改密码查看返回信息</p>
+<p>当原密码正确，新密码不一致时，提示<code>New passwords do not match</code></p>
+<img src="/2023/12/03/Burpsuite%E9%9D%B6%E5%9C%BA--Authentication/uTools_1701436984585.png" alt="uTools_1701436984585" style="zoom:33%;">
+
+<p>当原密码错误，新密码不一致时，提示<code>Current password is incorrect</code></p>
+<img src="/2023/12/03/Burpsuite%E9%9D%B6%E5%9C%BA--Authentication/uTools_1701437024221.png" alt="uTools_1701437024221" style="zoom:33%;">
+
+<p>因此我们可以使用新密码不一致来爆破原密码</p>
+<img src="/2023/12/03/Burpsuite%E9%9D%B6%E5%9C%BA--Authentication/uTools_1701437156753.png" alt="uTools_1701437156753" style="zoom:50%;">
+
+<p>载入字典，并设置好匹配关键字</p>
+<img src="/2023/12/03/Burpsuite%E9%9D%B6%E5%9C%BA--Authentication/uTools_1701437250400.png" alt="uTools_1701437250400" style="zoom:33%;">
+
+<p>爆破成功</p>
+<img src="/2023/12/03/Burpsuite%E9%9D%B6%E5%9C%BA--Authentication/uTools_1701437321016.png" alt="uTools_1701437321016" style="zoom:33%;">
+
+<p>之后使用carlos:654321登录即可完成</p>
+<h4 id="Broken-brute-force-protection-multiple-credentials-per-request"><a href="#Broken-brute-force-protection-multiple-credentials-per-request" class="headerlink" title="Broken brute-force protection, multiple credentials per request"></a>Broken brute-force protection, multiple credentials per request</h4><p>登录拦截，发现以json格式发送登录凭据</p>
+<p>故将字典修改格式</p>
+<img src="/2023/12/03/Burpsuite%E9%9D%B6%E5%9C%BA--Authentication/uTools_1701437988795.png" alt="uTools_1701437988795" style="zoom:33%;">
+
+<img src="/2023/12/03/Burpsuite%E9%9D%B6%E5%9C%BA--Authentication/uTools_1701438262273.png" alt="uTools_1701438262273" style="zoom:33%;">
+
+<p>之后以[数据块]的格式发送密码即可成功</p>
+<img src="/2023/12/03/Burpsuite%E9%9D%B6%E5%9C%BA--Authentication/uTools_1701438227866.png" alt="uTools_1701438227866" style="zoom:33%;">
+
+
+
+<h4 id="2FA-bypass-using-a-brute-force-attack"><a href="#2FA-bypass-using-a-brute-force-attack" class="headerlink" title="2FA bypass using a brute-force attack"></a>2FA bypass using a brute-force attack</h4><p>先利用carlos:montoya进入验证码界面，随便输入验证码测试，发现输入两次错误验证码后会自动终止会话，但是，该用户并未被锁定，意味着我可以无限制地尝试。</p>
+<p>如果每次尝试2FA会不断变化，我们没有办法爆破，但如果2FA在使用之前都一直有效，那么我们便可对其进行暴力破解。</p>
+<p>登录过程涉及多个需要按顺序执行的请求，因此，我们可以使用宏，并尝试将这些请求合并到一个宏中。</p>
+<p>操作步骤如下：</p>
+<p>&lt;1&gt;登录carlos:montoya</p>
+<p>&lt;2&gt;随便输入一个验证码，点击提交，报错</p>
+<p>&lt;3&gt;进入burp，Project options的sessions，在Macro中选择如下的三个包，并Test macro正常</p>
+<img src="/2023/12/03/Burpsuite%E9%9D%B6%E5%9C%BA--Authentication/uTools_1701612171637.png" alt="uTools_1701612171637" style="zoom:33%;">
+
+<p>&lt;4&gt;进入session handling rules，点击Add，在 Scope的URL Scope中, 选择选项 Include all URLs；在Details中点击Add选择Run a marco，并将&lt;3&gt;中的marco加进去</p>
+<img src="/2023/12/03/Burpsuite%E9%9D%B6%E5%9C%BA--Authentication/uTools_1701612388033.png" alt="uTools_1701612388033" style="zoom:33%;">
+
+<p>&lt;5&gt;将POST &#x2F;login2发送给Intruder，将字典设置为0000-9999，线程数设为1，爆破验证码即可</p>
+<p>(爆破速度超级慢，不建议尝试，等之后有时间再做吧)</p>
+
+    </div>
+    
+    
+    
+    
+    
+    
+    
+</div>
+
+            <footer id="footer">
+    <div id="footer-wrap">
+        <div>
+            &copy;
+            2022 - 2024 Narcherの小窝
+            <span id="footer-icon">
+                <i class="fa-solid fa-font-awesome fa-fw"></i>
+            </span>
+            &commat;Narcher Alter
+        </div>
+        <div>
+            Based on the <a target="_blank" rel="noopener" href="https://hexo.io">Hexo Engine</a> &amp;
+            <a target="_blank" rel="noopener" href="https://github.com/theme-particlex/hexo-theme-particlex">ParticleX Theme</a>
+        </div>
+        
+    </div>
+</footer>
+
+        </div>
+        
+        <transition name="fade">
+            <div id="preview" ref="preview" v-show="previewShow">
+                <img id="preview-content" ref="previewContent" />
+            </div>
+        </transition>
+        
+    </div>
+    <script src="/js/main.js"></script>
+    
+    
+
+
+
+
+    
+</body>
+</html>

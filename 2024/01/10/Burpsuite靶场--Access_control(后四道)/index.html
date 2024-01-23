@@ -1,11 +1,205 @@
-doctype
-html(lang=config.language)
-  include ./partial/header-base.pug
-  body
-    include ./partial/header.pug
-    main
-      section.main-content !{ body }
-    include ./partial/footer.pug
-    script(src=url_for('scripts/dark.js'))
-    if is_post()
-      script(src=url_for('scripts/post.js'))
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <title> | Narcherの小窝</title>
+    <meta name="author" content="Narcher Alter" />
+    <meta name="description" content="" />
+    <meta name="keywords" content="" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" />
+    <link rel="icon" href="/images/narcher.jpg" />
+    <link rel="preconnect" href="https://cdn.staticfile.org" />
+<script src="https://cdn.staticfile.org/vue/3.3.7/vue.global.prod.min.js"></script>
+<link rel="stylesheet" href="https://cdn.staticfile.org/font-awesome/6.4.2/css/all.min.css" />
+<link rel="preconnect" href="https://fonts.loli.net" />
+<link rel="preconnect" href="https://gstatic.loli.net" crossorigin />
+<link rel="stylesheet" href="https://fonts.loli.net/css2?family=Fira+Code:wght@400;500;600;700&family=Lexend:wght@400;500;600;700;800;900&family=Noto+Sans+SC:wght@400;500;600;700;800;900&display=swap" />
+<script> const mixins = {}; </script>
+
+<script src="https://polyfill.io/v3/polyfill.min.js?features=default"></script>
+
+
+<script src="https://cdn.staticfile.org/highlight.js/11.9.0/highlight.min.js"></script>
+<script src="https://cdn.staticfile.org/highlightjs-line-numbers.js/2.8.0/highlightjs-line-numbers.min.js"></script>
+<link
+    rel="stylesheet"
+    href="https://cdn.staticfile.org/highlight.js/11.9.0/styles/github.min.css"
+/>
+<script src="/js/lib/highlight.js"></script>
+
+
+
+<script src="/js/lib/preview.js"></script>
+
+
+
+
+
+
+
+
+
+<link rel="stylesheet" href="/css/main.css" />
+
+<meta name="generator" content="Hexo 6.3.0"></head>
+<body>
+    <div id="layout">
+        <transition name="fade">
+            <div id="loading" v-show="loading">
+                <div id="loading-circle">
+                    <h2>LOADING</h2>
+                    <p>加载过慢请开启缓存 浏览器默认开启</p>
+                    <img src="/images/loading.gif" />
+                </div>
+            </div>
+        </transition>
+        <div id="menu" :class="{ hidden: hiddenMenu, 'menu-color': menuColor}">
+    <nav id="desktop-menu">
+        <a class="title" href="/">
+            <span>NARCHERの小窝</span>
+        </a>
+        
+        <a href="/">
+            <i class="fa-solid fa-house fa-fw"></i>
+            <span>&ensp;Home</span>
+        </a>
+        
+        <a href="/archives">
+            <i class="fa-solid fa-box-archive fa-fw"></i>
+            <span>&ensp;Archives</span>
+        </a>
+        
+    </nav>
+    <nav id="mobile-menu">
+        <div class="title" @click="showMenuItems = !showMenuItems">
+            <i class="fa-solid fa-bars fa-fw"></i>
+            <span>&emsp;NARCHERの小窝</span>
+        </div>
+        <transition name="slide">
+            <div class="items" v-show="showMenuItems">
+                
+                <a href="/">
+                    <div class="item">
+                        <div style="min-width: 20px; max-width: 50px; width: 10%">
+                            <i class="fa-solid fa-house fa-fw"></i>
+                        </div>
+                        <div style="min-width: 100px; max-width: 150%; width: 20%">Home</div>
+                    </div>
+                </a>
+                
+                <a href="/archives">
+                    <div class="item">
+                        <div style="min-width: 20px; max-width: 50px; width: 10%">
+                            <i class="fa-solid fa-box-archive fa-fw"></i>
+                        </div>
+                        <div style="min-width: 100px; max-width: 150%; width: 20%">Archives</div>
+                    </div>
+                </a>
+                
+            </div>
+        </transition>
+    </nav>
+</div>
+<transition name="fade">
+    <div id="menu-curtain" @click="showMenuItems = !showMenuItems" v-show="showMenuItems"></div>
+</transition>
+
+        <div id="main" :class="loading ? 'into-enter-from': 'into-enter-active'">
+            <div class="article">
+    <div>
+        <h1></h1>
+    </div>
+    <div class="info">
+        <span class="date">
+            <span class="icon">
+                <i class="fa-solid fa-calendar fa-fw"></i>
+            </span>
+            2024/1/10
+        </span>
+        
+        
+    </div>
+    
+    <div class="content" v-pre>
+        <h1 id="Burpsuite靶场–Access-control-后四道"><a href="#Burpsuite靶场–Access-control-后四道" class="headerlink" title="Burpsuite靶场–Access_control(后四道)"></a>Burpsuite靶场–Access_control(后四道)</h1><p><em>作者：Narcher</em>	<em>时间：2023&#x2F;10&#x2F;18</em>	<em>分类：writeup</em></p>
+<span id="more"></span>
+
+<h4 id="URL-based-access-control-can-be-circumvented"><a href="#URL-based-access-control-can-be-circumvented" class="headerlink" title="URL-based access control can be circumvented"></a>URL-based access control can be circumvented</h4><p>此网站在&#x2F;admin处有一个未经身份验证的管理面板，但前端不可访问，后端支持X-Original-Url，因此我们可以点击admin后抓包，将GET访问的&#x2F;admin改成&#x2F;，添加<code>X-Original-Url:/admin</code>，发现成功。</p>
+<p>再根据返回的前端提示修改为<code>/admin/delete</code>，并GET传参?usernmae&#x3D;carlos，即可成功。</p>
+<img src="/2024/01/10/Burpsuite%E9%9D%B6%E5%9C%BA--Access_control(%E5%90%8E%E5%9B%9B%E9%81%93)/uTools_1704869035862.png" alt="uTools_1704869035862" style="zoom: 50%;">
+
+
+
+<h4 id="Method-based-access-control-can-be-circumvented"><a href="#Method-based-access-control-can-be-circumvented" class="headerlink" title="Method-based access control can be circumvented"></a>Method-based access control can be circumvented</h4><p>登录<code>administrator</code>，进入<code>Admin panel</code>，选择carlos，点击Upgrade user，并抓包，send to Repeater。</p>
+<p>再登录wiener，随便点击任意页面，抓包获取cookie。</p>
+<p>将更改权限数据包中的cookie改成wiener的cookie。</p>
+<p>请求方式改成POSTX，返回缺少参数，之后再更改请求方法为GET，修改username为wiener，发送（此时一定要处于wiener登录的状态），即可成功。</p>
+<img src="/2024/01/10/Burpsuite%E9%9D%B6%E5%9C%BA--Access_control(%E5%90%8E%E5%9B%9B%E9%81%93)/uTools_1704873096311.png" alt="uTools_1704873096311" style="zoom:50%;">
+
+
+
+<h4 id="Multi-step-process-with-no-access-control-on-one-step"><a href="#Multi-step-process-with-no-access-control-on-one-step" class="headerlink" title="Multi-step process with no access control on one step"></a>Multi-step process with no access control on one step</h4><p>登录<code>administrator</code>，进入<code>Admin panel</code>，选择carlos，点击Upgrade user，并抓包，send to Repeater。之后还有一个页面询问Are you sure？，点击yes，同时抓包发送到repeater。</p>
+<p>之后登录wiener，随便抓一个包获取cookie，进入repeater，将两个包依次修改为wiener的cookie和姓名并发包，即可成功。</p>
+<img src="/2024/01/10/Burpsuite%E9%9D%B6%E5%9C%BA--Access_control(%E5%90%8E%E5%9B%9B%E9%81%93)/uTools_1704874027653.png" alt="uTools_1704874027653" style="zoom:50%;">
+
+
+
+<h4 id="Referer-based-access-control"><a href="#Referer-based-access-control" class="headerlink" title="Referer-based access control"></a>Referer-based access control</h4><p>登录<code>administrator</code>，进入<code>Admin panel</code>，选择carlos，点击Upgrade user，并抓包，send to Repeater。</p>
+<p>之后登录wiener，随便抓一个包获取cookie，进入repeater，修改为wiener的cookie和姓名并发包，即可成功。</p>
+<p>后两题考点：</p>
+<img src="/2024/01/10/Burpsuite%E9%9D%B6%E5%9C%BA--Access_control(%E5%90%8E%E5%9B%9B%E9%81%93)/qq_pic_merged_1704874578401.jpg" alt="qq_pic_merged_1704874578401" style="zoom:33%;">
+
+<img src="/2024/01/10/Burpsuite%E9%9D%B6%E5%9C%BA--Access_control(%E5%90%8E%E5%9B%9B%E9%81%93)/qq_pic_merged_1704874594162.jpg" alt="qq_pic_merged_1704874594162" style="zoom:33%;">
+
+<img src="/2024/01/10/Burpsuite%E9%9D%B6%E5%9C%BA--Access_control(%E5%90%8E%E5%9B%9B%E9%81%93)/qq_pic_merged_1704874612222.jpg" alt="qq_pic_merged_1704874612222" style="zoom:33%;">
+
+<p>​																		  （图源：<code>http://t.csdnimg.cn/zrhTX</code>，侵删）</p>
+
+    </div>
+    
+    
+    
+    
+    
+    
+    
+</div>
+
+            <footer id="footer">
+    <div id="footer-wrap">
+        <div>
+            &copy;
+            2022 - 2024 Narcherの小窝
+            <span id="footer-icon">
+                <i class="fa-solid fa-font-awesome fa-fw"></i>
+            </span>
+            &commat;Narcher Alter
+        </div>
+        <div>
+            Based on the <a target="_blank" rel="noopener" href="https://hexo.io">Hexo Engine</a> &amp;
+            <a target="_blank" rel="noopener" href="https://github.com/theme-particlex/hexo-theme-particlex">ParticleX Theme</a>
+        </div>
+        
+    </div>
+</footer>
+
+        </div>
+        
+        <transition name="fade">
+            <div id="preview" ref="preview" v-show="previewShow">
+                <img id="preview-content" ref="previewContent" />
+            </div>
+        </transition>
+        
+    </div>
+    <script src="/js/main.js"></script>
+    
+    
+
+
+
+
+    
+</body>
+</html>
