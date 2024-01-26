@@ -20,12 +20,12 @@
     var CONFIG = {"hostname":"example.com","root":"/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
   </script>
 
-  <meta name="description" content="title: Burpsuite靶场–Access_control(后四道) 作者：Narcher	时间：2023&#x2F;10&#x2F;18	分类：writeup">
+  <meta name="description" content="作者：Narcher	时间：2023&#x2F;10&#x2F;18	分类：writeup">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Narcherの小窝">
+<meta property="og:title" content="Burpsuite靶场--Access_control(后四道)">
 <meta property="og:url" content="http://example.com/2024/01/10/Burpsuite%E9%9D%B6%E5%9C%BA--Access_control(%E5%90%8E%E5%9B%9B%E9%81%93)/index.html">
 <meta property="og:site_name" content="Narcherの小窝">
-<meta property="og:description" content="title: Burpsuite靶场–Access_control(后四道) 作者：Narcher	时间：2023&#x2F;10&#x2F;18	分类：writeup">
+<meta property="og:description" content="作者：Narcher	时间：2023&#x2F;10&#x2F;18	分类：writeup">
 <meta property="og:locale" content="en_US">
 <meta property="og:image" content="http://example.com/2024/01/10/Burpsuite%E9%9D%B6%E5%9C%BA--Access_control(%E5%90%8E%E5%9B%9B%E9%81%93)/uTools_1704869035862.png">
 <meta property="og:image" content="http://example.com/2024/01/10/Burpsuite%E9%9D%B6%E5%9C%BA--Access_control(%E5%90%8E%E5%9B%9B%E9%81%93)/uTools_1704873096311.png">
@@ -34,7 +34,7 @@
 <meta property="og:image" content="http://example.com/2024/01/10/Burpsuite%E9%9D%B6%E5%9C%BA--Access_control(%E5%90%8E%E5%9B%9B%E9%81%93)/qq_pic_merged_1704874594162.jpg">
 <meta property="og:image" content="http://example.com/2024/01/10/Burpsuite%E9%9D%B6%E5%9C%BA--Access_control(%E5%90%8E%E5%9B%9B%E9%81%93)/qq_pic_merged_1704874612222.jpg">
 <meta property="article:published_time" content="2024-01-10T08:19:59.663Z">
-<meta property="article:modified_time" content="2024-01-26T02:47:16.935Z">
+<meta property="article:modified_time" content="2024-01-26T02:53:33.396Z">
 <meta property="article:author" content="Narcher Alter">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:image" content="http://example.com/2024/01/10/Burpsuite%E9%9D%B6%E5%9C%BA--Access_control(%E5%90%8E%E5%9B%9B%E9%81%93)/uTools_1704869035862.png">
@@ -52,7 +52,7 @@
   };
 </script>
 
-  <title> | Narcherの小窝</title>
+  <title>Burpsuite靶场--Access_control(后四道) | Narcherの小窝</title>
   
 
 
@@ -170,7 +170,7 @@
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
-          
+          Burpsuite靶场--Access_control(后四道)
         </h1>
 
         <div class="post-meta">
@@ -187,7 +187,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2024-01-26 10:47:16" itemprop="dateModified" datetime="2024-01-26T10:47:16+08:00">2024-01-26</time>
+                <time title="Modified: 2024-01-26 10:53:33" itemprop="dateModified" datetime="2024-01-26T10:53:33+08:00">2024-01-26</time>
               </span>
 
           
@@ -201,8 +201,7 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <p>title: Burpsuite靶场–Access_control(后四道)</p>
-<p><em>作者：Narcher</em>	<em>时间：2023&#x2F;10&#x2F;18</em>	<em>分类：writeup</em></p>
+        <p><em>作者：Narcher</em>	<em>时间：2023&#x2F;10&#x2F;18</em>	<em>分类：writeup</em></p>
 <span id="more"></span>
 
 <h4 id="URL-based-access-control-can-be-circumvented"><a href="#URL-based-access-control-can-be-circumvented" class="headerlink" title="URL-based access control can be circumvented"></a>URL-based access control can be circumvented</h4><p>此网站在&#x2F;admin处有一个未经身份验证的管理面板，但前端不可访问，后端支持X-Original-Url，因此我们可以点击admin后抓包，将GET访问的&#x2F;admin改成&#x2F;，添加<code>X-Original-Url:/admin</code>，发现成功。</p>
