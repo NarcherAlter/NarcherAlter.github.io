@@ -20,19 +20,25 @@
     var CONFIG = {"hostname":"example.com","root":"/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
   </script>
 
-  <meta name="description" content="作者：Narcher	时间：2024&#x2F;1&#x2F;10	分类：writeup">
+  <meta name="description" content="作者：Narcher	时间：2024&#x2F;2&#x2F;5	分类：diary">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Burpsuite靶场--Path_Traversal">
-<meta property="og:url" content="http://example.com/2024/01/10/Burpsuite%E9%9D%B6%E5%9C%BA--Path_Traversal/index.html">
+<meta property="og:title" content="记一次简单的公益SRC挖掘">
+<meta property="og:url" content="http://example.com/2024/02/05/%E8%AE%B0%E4%B8%80%E6%AC%A1%E7%AE%80%E5%8D%95%E7%9A%84%E5%85%AC%E7%9B%8ASRC%E6%8C%96%E6%8E%98/index.html">
 <meta property="og:site_name" content="Narcherの小窝">
-<meta property="og:description" content="作者：Narcher	时间：2024&#x2F;1&#x2F;10	分类：writeup">
+<meta property="og:description" content="作者：Narcher	时间：2024&#x2F;2&#x2F;5	分类：diary">
 <meta property="og:locale" content="en_US">
-<meta property="article:published_time" content="2024-01-10T04:04:03.310Z">
-<meta property="article:modified_time" content="2024-01-26T02:56:30.426Z">
+<meta property="og:image" content="http://example.com/2024/02/05/%E8%AE%B0%E4%B8%80%E6%AC%A1%E7%AE%80%E5%8D%95%E7%9A%84%E5%85%AC%E7%9B%8ASRC%E6%8C%96%E6%8E%98/Users/Narcher/Downloads/1707134579114.png">
+<meta property="og:image" content="http://example.com/2024/02/05/%E8%AE%B0%E4%B8%80%E6%AC%A1%E7%AE%80%E5%8D%95%E7%9A%84%E5%85%AC%E7%9B%8ASRC%E6%8C%96%E6%8E%98/1707135859359.png">
+<meta property="og:image" content="http://example.com/2024/02/05/%E8%AE%B0%E4%B8%80%E6%AC%A1%E7%AE%80%E5%8D%95%E7%9A%84%E5%85%AC%E7%9B%8ASRC%E6%8C%96%E6%8E%98/1707136232789.png">
+<meta property="og:image" content="http://example.com/2024/02/05/%E8%AE%B0%E4%B8%80%E6%AC%A1%E7%AE%80%E5%8D%95%E7%9A%84%E5%85%AC%E7%9B%8ASRC%E6%8C%96%E6%8E%98/1707136806453.png">
+<meta property="og:image" content="http://example.com/2024/02/05/%E8%AE%B0%E4%B8%80%E6%AC%A1%E7%AE%80%E5%8D%95%E7%9A%84%E5%85%AC%E7%9B%8ASRC%E6%8C%96%E6%8E%98/1707123148083.png">
+<meta property="article:published_time" content="2024-02-05T12:51:02.491Z">
+<meta property="article:modified_time" content="2024-02-05T12:49:55.738Z">
 <meta property="article:author" content="Narcher Alter">
 <meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/2024/02/05/%E8%AE%B0%E4%B8%80%E6%AC%A1%E7%AE%80%E5%8D%95%E7%9A%84%E5%85%AC%E7%9B%8ASRC%E6%8C%96%E6%8E%98/Users/Narcher/Downloads/1707134579114.png">
 
-<link rel="canonical" href="http://example.com/2024/01/10/Burpsuite%E9%9D%B6%E5%9C%BA--Path_Traversal/">
+<link rel="canonical" href="http://example.com/2024/02/05/%E8%AE%B0%E4%B8%80%E6%AC%A1%E7%AE%80%E5%8D%95%E7%9A%84%E5%85%AC%E7%9B%8ASRC%E6%8C%96%E6%8E%98/">
 
 
 <script id="page-configurations">
@@ -45,7 +51,7 @@
   };
 </script>
 
-  <title>Burpsuite靶场--Path_Traversal | Narcherの小窝</title>
+  <title>记一次简单的公益SRC挖掘 | Narcherの小窝</title>
   
 
 
@@ -150,7 +156,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2024/01/10/Burpsuite%E9%9D%B6%E5%9C%BA--Path_Traversal/">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2024/02/05/%E8%AE%B0%E4%B8%80%E6%AC%A1%E7%AE%80%E5%8D%95%E7%9A%84%E5%85%AC%E7%9B%8ASRC%E6%8C%96%E6%8E%98/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.gif">
@@ -163,7 +169,7 @@
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
-          Burpsuite靶场--Path_Traversal
+          记一次简单的公益SRC挖掘
         </h1>
 
         <div class="post-meta">
@@ -172,16 +178,10 @@
                 <i class="far fa-calendar"></i>
               </span>
               <span class="post-meta-item-text">Posted on</span>
+              
 
-              <time title="Created: 2024-01-10 12:04:03" itemprop="dateCreated datePublished" datetime="2024-01-10T12:04:03+08:00">2024-01-10</time>
+              <time title="Created: 2024-02-05 20:51:02 / Modified: 20:49:55" itemprop="dateCreated datePublished" datetime="2024-02-05T20:51:02+08:00">2024-02-05</time>
             </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2024-01-26 10:56:30" itemprop="dateModified" datetime="2024-01-26T10:56:30+08:00">2024-01-26</time>
-              </span>
 
           
 
@@ -194,24 +194,39 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <p><em>作者：Narcher</em>	<em>时间：2024&#x2F;1&#x2F;10</em>	<em>分类：writeup</em></p>
+        <p><em>作者：Narcher</em>	<em>时间：2024&#x2F;2&#x2F;5</em>	<em>分类：diary</em></p>
 <span id="more"></span>
 
-<h4 id="File-path-traversal-simple-case"><a href="#File-path-traversal-simple-case" class="headerlink" title="File path traversal, simple case"></a>File path traversal, simple case</h4><p>随便打开一个博客，抓包，将?filename&#x3D;后的数据改成<code>../../../../../etc/passwd</code>即可。</p>
-<h4 id="File-path-traversal-traversal-sequences-blocked-with-absolute-path-bypass"><a href="#File-path-traversal-traversal-sequences-blocked-with-absolute-path-bypass" class="headerlink" title="File path traversal, traversal sequences blocked with absolute path bypass"></a>File path traversal, traversal sequences blocked with absolute path bypass</h4><p>在这道题目中，<code>..</code>被禁用。因此我们无法使用相对路径<code>../</code>解题，仅能使用绝对路径<code>/</code>解题。</p>
-<p>（在Linux系统中，文件路径是非常重要的。&#x2F;etc&#x2F;passwd和etc&#x2F;passwd看起来很相似，但实际上它们指向的是完全不同的位置。</p>
-<ul>
-<li><code>/etc/passwd</code>：这是一个绝对路径，它从文件系统的根目录<code>/</code>开始，指向etc目录下的passwd文件。这个文件存储了系统中所有用户的基本信息。</li>
-<li><code>etc/passwd</code>：这是一个相对路径，它从当前工作目录开始，指向当前目录下的etc子目录中的passwd文件。如果当前工作目录下没有etc子目录或者etc子目录中没有passwd文件，那么这个路径就无法正确地找到文件。）</li>
-</ul>
-<p>因此，将?filename&#x3D;后的数据改成<code>/etc/passwd</code>即可。</p>
-<h4 id="File-path-traversal-traversal-sequences-stripped-non-recursively"><a href="#File-path-traversal-traversal-sequences-stripped-non-recursively" class="headerlink" title="File path traversal, traversal sequences stripped non-recursively"></a>File path traversal, traversal sequences stripped non-recursively</h4><p>非递归地剥离遍历序列时，使用<code>....//</code>或<code>....\/</code>将其恢复成正常遍历序列。</p>
-<p>将?filename&#x3D;后的数据改成<code>....//....//....//etc/passwd</code>即可。</p>
-<h4 id="File-path-traversal-traversal-sequences-stripped-with-superfluous-URL-decode"><a href="#File-path-traversal-traversal-sequences-stripped-with-superfluous-URL-decode" class="headerlink" title="File path traversal, traversal sequences stripped with superfluous URL-decode"></a>File path traversal, traversal sequences stripped with superfluous URL-decode</h4><p>根据题目描述，本题需要通过url编码来绕过过滤，因此对..&#x2F;进行两次url编码。</p>
-<p>将?filename&#x3D;后的数据改成<code>%25%32%65%25%32%65%25%32%66%25%32%65%25%32%65%25%32%66%25%32%65%25%32%65%25%32%66%25%32%65%25%32%65%25%32%66etc/passwd</code>即可。</p>
-<h4 id="File-path-traversal-validation-of-start-of-path"><a href="#File-path-traversal-validation-of-start-of-path" class="headerlink" title="File path traversal, validation of start of path"></a>File path traversal, validation of start of path</h4><p>本题的目录遍历必须以预期的基文件开头即<code>/var/www/images/</code>，因此将?filename&#x3D;后的数据改成<code>/var/www/images/../../../../etc/passwd</code>即可。</p>
-<h4 id="File-path-traversal-validation-of-file-extension-with-null-byte-bypass"><a href="#File-path-traversal-validation-of-file-extension-with-null-byte-bypass" class="headerlink" title="File path traversal, validation of file extension with null byte bypass"></a>File path traversal, validation of file extension with null byte bypass</h4><p>本题的目录遍历对文件名后缀的验证，因此我们可以使用%00截断。</p>
-<p>将?filename&#x3D;后的数据改成<code>../../../../../etc/passwd%00.jpg</code>即可。</p>
+<h3 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h3><p>​	开头吐槽一下，本来想批量挖thinkphp框架漏洞的，但试了一试发现行不通（挖不出来），甚至我在查资产的时候查到了黄色网站！！！于是在郁闷之际随便搞，看见一个网站就搞一个，准备碰碰运气，结果还真让我碰到一个弱口令漏洞，下面讲一讲具体过程。</p>
+<p>​	这事还要从半个月前说起…</p>
+<p>​	Smgg之前接了个活，让我们写一下ZoomEye的实战心得。实战心得嘛，肯定得挖出来点东西。作为一个没挖过洞的runoob，只能到时候现学现卖了，本来打算过两天去学的。但我忙着打BeginCTF去了，于是就忘了。</p>
+<p>​	直到昨天，BeginCTF打的差不多了，WP也写完了，刚想起这么个事，于是便赶鸭子上架，学了一下大佬们的相关思路，开始实战！！！</p>
+<h3 id="昨日收获"><a href="#昨日收获" class="headerlink" title="昨日收获"></a>昨日收获</h3><p>​	昨日，我复现了一篇大佬写的挖掘《用友U8-OA》的SQL注入漏洞的具体流程来作为练习。（特附上大佬的文章：<a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/500893343">Fofa搜索语法批量挖掘sql注入漏洞 - 知乎 (zhihu.com)</a>）</p>
+<p>​	既然已经确定了想要挖掘的漏洞，首先利用ZoomEye进行信息搜集。</p>
+<p>​	<img src="/2024/02/05/%E8%AE%B0%E4%B8%80%E6%AC%A1%E7%AE%80%E5%8D%95%E7%9A%84%E5%85%AC%E7%9B%8ASRC%E6%8C%96%E6%8E%98/Users/Narcher/Downloads/1707134579114.png" alt="1707134579114" style="zoom: 33%;"></p>
+<p>（保险起见，给关键信息打码处理）</p>
+<p>之后点击右侧的下载导出所有的信息。</p>
+<p>为了进行简单的对比，我还在Fofa上搜集了相同的信息并导出。</p>
+<p>之后便是批量处理，写个脚本即可，直接拿大佬的过来用也行。</p>
+<p>最终收获了8个有漏洞的网站，但有几个能交上完全是未知数。。。。。。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">PS:同时，作为昨日使用ZoomEye的心得，在此总结一下：</span><br><span class="line"></span><br><span class="line">1.ZoomEye确实挺好用的，和Fofa比起来也算是各有千秋，搜集信息的时候最好使用二者都搜一下，互相补足</span><br><span class="line"></span><br><span class="line">2.ZoomEye搜索子域名是一把好手</span><br></pre></td></tr></table></figure>
+
+<h3 id="今日收获"><a href="#今日收获" class="headerlink" title="今日收获"></a>今日收获</h3><p>​	今天本来想和昨天类似，整一个thinkphp的批量挖掘来练练手，结果就碰上了“前言”里写的那些poshi，但总之也是有收获的嘛。下面具体讲一下思路。</p>
+<p>​	还是一如既往的搜集信息：</p>
+<img src="/2024/02/05/%E8%AE%B0%E4%B8%80%E6%AC%A1%E7%AE%80%E5%8D%95%E7%9A%84%E5%85%AC%E7%9B%8ASRC%E6%8C%96%E6%8E%98/1707135859359.png" alt="1707135859359" style="zoom: 33%;">
+
+<p>​	本来是打算批量刷的，然而就在此时，我脑回路一抽，突然想着手打。可打着打着发现菜的一个也打不通，于是便玉玉地打弱口令，刚试了第一个，就成了。那么好运？？？</p>
+<p>​	结果进去一看，是个空的，啥也没有，那弱口令自然也就没用了。后面仔细看了一下，感觉这个好像不是什么企业的，顶多是个人拿来玩的个IP。</p>
+<img src="/2024/02/05/%E8%AE%B0%E4%B8%80%E6%AC%A1%E7%AE%80%E5%8D%95%E7%9A%84%E5%85%AC%E7%9B%8ASRC%E6%8C%96%E6%8E%98/1707136232789.png" alt="1707136232789" style="zoom:33%;">
+
+<p>​	不过也算是个开门红，之后本着试一试的心态接着尝试了七八次。欸嘿，还真来了。</p>
+<p>​	<img src="/2024/02/05/%E8%AE%B0%E4%B8%80%E6%AC%A1%E7%AE%80%E5%8D%95%E7%9A%84%E5%85%AC%E7%9B%8ASRC%E6%8C%96%E6%8E%98/1707136806453.png" alt="1707136806453" style="zoom:33%;"></p>
+<p>直接admin:123456登进去，发现还真是管理员权限，里边还有敏感信息。</p>
+<img src="/2024/02/05/%E8%AE%B0%E4%B8%80%E6%AC%A1%E7%AE%80%E5%8D%95%E7%9A%84%E5%85%AC%E7%9B%8ASRC%E6%8C%96%E6%8E%98/1707123148083.png" alt="1707123148083" style="zoom:33%;">
+
+<p>算个中高危，交了，嘿嘿。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">PS:今日份总结：狗运当头~~~</span><br></pre></td></tr></table></figure>
+
 
     </div>
 
@@ -227,13 +242,10 @@
         
     <div class="post-nav">
       <div class="post-nav-item">
-    <a href="/2023/12/03/Burpsuite%E9%9D%B6%E5%9C%BA--Authentication/" rel="prev" title="Burpsuite靶场--Authentication">
-      <i class="fa fa-chevron-left"></i> Burpsuite靶场--Authentication
+    <a href="/2024/01/10/Burpsuite%E9%9D%B6%E5%9C%BA--Access_control(%E5%90%8E%E5%9B%9B%E9%81%93)/" rel="prev" title="Burpsuite靶场--Access_control(后四道)">
+      <i class="fa fa-chevron-left"></i> Burpsuite靶场--Access_control(后四道)
     </a></div>
-      <div class="post-nav-item">
-    <a href="/2024/01/10/Burpsuite%E9%9D%B6%E5%9C%BA--Access_control(%E5%90%8E%E5%9B%9B%E9%81%93)/" rel="next" title="Burpsuite靶场--Access_control(后四道)">
-      Burpsuite靶场--Access_control(后四道) <i class="fa fa-chevron-right"></i>
-    </a></div>
+      <div class="post-nav-item"></div>
     </div>
       </footer>
     
@@ -292,7 +304,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#File-path-traversal-simple-case"><span class="nav-number">1.</span> <span class="nav-text">File path traversal, simple case</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#File-path-traversal-traversal-sequences-blocked-with-absolute-path-bypass"><span class="nav-number">2.</span> <span class="nav-text">File path traversal, traversal sequences blocked with absolute path bypass</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#File-path-traversal-traversal-sequences-stripped-non-recursively"><span class="nav-number">3.</span> <span class="nav-text">File path traversal, traversal sequences stripped non-recursively</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#File-path-traversal-traversal-sequences-stripped-with-superfluous-URL-decode"><span class="nav-number">4.</span> <span class="nav-text">File path traversal, traversal sequences stripped with superfluous URL-decode</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#File-path-traversal-validation-of-start-of-path"><span class="nav-number">5.</span> <span class="nav-text">File path traversal, validation of start of path</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#File-path-traversal-validation-of-file-extension-with-null-byte-bypass"><span class="nav-number">6.</span> <span class="nav-text">File path traversal, validation of file extension with null byte bypass</span></a></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%89%8D%E8%A8%80"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%98%A8%E6%97%A5%E6%94%B6%E8%8E%B7"><span class="nav-number">2.</span> <span class="nav-text">昨日收获</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BB%8A%E6%97%A5%E6%94%B6%E8%8E%B7"><span class="nav-number">3.</span> <span class="nav-text">今日收获</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 
