@@ -1,0 +1,529 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 6.3.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"example.com","root":"/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="作者：Narcher	时间：2023&#x2F;10&#x2F;18	分类：writeup">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Burpsuite靶场--Authentication">
+<meta property="og:url" content="http://example.com/2024/12/22/Burpsuite%E9%9D%B6%E5%9C%BA--Authentication/index.html">
+<meta property="og:site_name" content="Narcherの小窝">
+<meta property="og:description" content="作者：Narcher	时间：2023&#x2F;10&#x2F;18	分类：writeup">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="http://example.com/2024/12/22/Burpsuite%E9%9D%B6%E5%9C%BA--Authentication/uTools_1701181255706.png">
+<meta property="og:image" content="http://example.com/2024/12/22/Burpsuite%E9%9D%B6%E5%9C%BA--Authentication/uTools_1701181560052.png">
+<meta property="og:image" content="http://example.com/2024/12/22/Burpsuite%E9%9D%B6%E5%9C%BA--Authentication/uTools_1701181734660.png">
+<meta property="og:image" content="http://example.com/2024/12/22/Burpsuite%E9%9D%B6%E5%9C%BA--Authentication/uTools_1701181796408.png">
+<meta property="og:image" content="http://example.com/2024/12/22/Burpsuite%E9%9D%B6%E5%9C%BA--Authentication/uTools_1701182516461.png">
+<meta property="og:image" content="http://example.com/2024/12/22/Burpsuite%E9%9D%B6%E5%9C%BA--Authentication/uTools_1701182677446.png">
+<meta property="og:image" content="http://example.com/2024/12/22/Burpsuite%E9%9D%B6%E5%9C%BA--Authentication/uTools_1701183202786.png">
+<meta property="og:image" content="http://example.com/2024/12/22/Burpsuite%E9%9D%B6%E5%9C%BA--Authentication/uTools_1701183999488.png">
+<meta property="og:image" content="http://example.com/2024/12/22/Burpsuite%E9%9D%B6%E5%9C%BA--Authentication/uTools_1701268022303.png">
+<meta property="og:image" content="http://example.com/2024/12/22/Burpsuite%E9%9D%B6%E5%9C%BA--Authentication/uTools_1701268088527.png">
+<meta property="og:image" content="http://example.com/2024/12/22/Burpsuite%E9%9D%B6%E5%9C%BA--Authentication/uTools_1701268309820.png">
+<meta property="og:image" content="http://example.com/2024/12/22/Burpsuite%E9%9D%B6%E5%9C%BA--Authentication/uTools_1701268715325.png">
+<meta property="og:image" content="http://example.com/2024/12/22/Burpsuite%E9%9D%B6%E5%9C%BA--Authentication/uTools_1701268781046.png">
+<meta property="og:image" content="http://example.com/2024/12/22/Burpsuite%E9%9D%B6%E5%9C%BA--Authentication/uTools_1701269449657.png">
+<meta property="og:image" content="http://example.com/2024/12/22/Burpsuite%E9%9D%B6%E5%9C%BA--Authentication/uTools_1701269466473.png">
+<meta property="og:image" content="http://example.com/2024/12/22/Burpsuite%E9%9D%B6%E5%9C%BA--Authentication/uTools_1701435726142.png">
+<meta property="og:image" content="http://example.com/2024/12/22/Burpsuite%E9%9D%B6%E5%9C%BA--Authentication/uTools_1701436059591.png">
+<meta property="og:image" content="http://example.com/2024/12/22/Burpsuite%E9%9D%B6%E5%9C%BA--Authentication/uTools_1701436254175.png">
+<meta property="og:image" content="http://example.com/2024/12/22/Burpsuite%E9%9D%B6%E5%9C%BA--Authentication/uTools_1701436441826.png">
+<meta property="og:image" content="http://example.com/2024/12/22/Burpsuite%E9%9D%B6%E5%9C%BA--Authentication/uTools_1701436984585.png">
+<meta property="og:image" content="http://example.com/2024/12/22/Burpsuite%E9%9D%B6%E5%9C%BA--Authentication/uTools_1701437024221.png">
+<meta property="og:image" content="http://example.com/2024/12/22/Burpsuite%E9%9D%B6%E5%9C%BA--Authentication/uTools_1701437156753.png">
+<meta property="og:image" content="http://example.com/2024/12/22/Burpsuite%E9%9D%B6%E5%9C%BA--Authentication/uTools_1701437250400.png">
+<meta property="og:image" content="http://example.com/2024/12/22/Burpsuite%E9%9D%B6%E5%9C%BA--Authentication/uTools_1701437321016.png">
+<meta property="og:image" content="http://example.com/2024/12/22/Burpsuite%E9%9D%B6%E5%9C%BA--Authentication/uTools_1701437988795.png">
+<meta property="og:image" content="http://example.com/2024/12/22/Burpsuite%E9%9D%B6%E5%9C%BA--Authentication/uTools_1701438262273.png">
+<meta property="og:image" content="http://example.com/2024/12/22/Burpsuite%E9%9D%B6%E5%9C%BA--Authentication/uTools_1701438227866.png">
+<meta property="og:image" content="http://example.com/2024/12/22/Burpsuite%E9%9D%B6%E5%9C%BA--Authentication/uTools_1701612171637.png">
+<meta property="og:image" content="http://example.com/2024/12/22/Burpsuite%E9%9D%B6%E5%9C%BA--Authentication/uTools_1701612388033.png">
+<meta property="article:published_time" content="2024-12-22T08:24:16.765Z">
+<meta property="article:modified_time" content="2024-01-26T02:55:59.870Z">
+<meta property="article:author" content="Narcher Alter">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/2024/12/22/Burpsuite%E9%9D%B6%E5%9C%BA--Authentication/uTools_1701181255706.png">
+
+<link rel="canonical" href="http://example.com/2024/12/22/Burpsuite%E9%9D%B6%E5%9C%BA--Authentication/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'en'
+  };
+</script>
+
+  <title>Burpsuite靶场--Authentication | Narcherの小窝</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Narcherの小窝</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2024/12/22/Burpsuite%E9%9D%B6%E5%9C%BA--Authentication/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Narcher Alter">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Narcherの小窝">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Burpsuite靶场--Authentication
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2024-12-22 16:24:16" itemprop="dateCreated datePublished" datetime="2024-12-22T16:24:16+08:00">2024-12-22</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2024-01-26 10:55:59" itemprop="dateModified" datetime="2024-01-26T10:55:59+08:00">2024-01-26</time>
+              </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p><em>作者：Narcher</em>	<em>时间：2023&#x2F;10&#x2F;18</em>	<em>分类：writeup</em></p>
+<span id="more"></span>
+
+<h4 id="Broken-brute-force-protection-IP-block"><a href="#Broken-brute-force-protection-IP-block" class="headerlink" title="Broken brute-force protection, IP block"></a>Broken brute-force protection, IP block</h4><p>打开靶场，进入login界面，随便输入账号密码然后burp抓包，之后发送到Intruder模块，模式选择Pitchfork。</p>
+<img src="/2024/12/22/Burpsuite%E9%9D%B6%E5%9C%BA--Authentication/uTools_1701181255706.png" alt="uTools_1701181255706" style="zoom: 33%;">
+
+<p>由于每错次个就会封ip，所以我们需要在需要爆破的用户名和密码中交替插入正确的用户名和密码，并保证一一对应。</p>
+<p>利用notepad++的替换功能，制作字典。</p>
+<img src="/2024/12/22/Burpsuite%E9%9D%B6%E5%9C%BA--Authentication/uTools_1701181560052.png" alt="uTools_1701181560052" style="zoom: 33%;">
+
+<p>密码字典同理。</p>
+<p>之后分别在payload1和payload2导入字典，设置线程数为1，即可开始爆破。</p>
+<p>设置筛选carlos</p>
+<img src="/2024/12/22/Burpsuite%E9%9D%B6%E5%9C%BA--Authentication/uTools_1701181734660.png" alt="uTools_1701181734660" style="zoom: 33%;">
+
+<p>找到长度异常的请求，使用其payload1和payload2登录成功</p>
+<img src="/2024/12/22/Burpsuite%E9%9D%B6%E5%9C%BA--Authentication/uTools_1701181796408.png" alt="uTools_1701181796408" style="zoom: 33%;">
+
+
+
+<h4 id="Username-enumeration-via-account-lock"><a href="#Username-enumeration-via-account-lock" class="headerlink" title="Username enumeration via account lock"></a>Username enumeration via account lock</h4><p>本题重复登录5次就会锁定账号，所以把所有账号进行5次枚举，使用Intruder中的Cluster bomb</p>
+<img src="/2024/12/22/Burpsuite%E9%9D%B6%E5%9C%BA--Authentication/uTools_1701182516461.png" alt="uTools_1701182516461" style="zoom: 33%;">
+
+<p>发现异常数据，猜测auth为用户名，故爆破其密码（虽然有锁定，但我们可以观察报错信息），选用Sniper</p>
+<img src="/2024/12/22/Burpsuite%E9%9D%B6%E5%9C%BA--Authentication/uTools_1701182677446.png" alt="uTools_1701182677446" style="zoom: 33%;">
+
+<p>发现123456789为密码时报错信息长度异常，使用auth:123456789登录，成功</p>
+<h4 id="2FA-broken-logic"><a href="#2FA-broken-logic" class="headerlink" title="2FA broken logic"></a>2FA broken logic</h4><p>先登录wiener:peter，在burp的target-map下找到此网站的login2</p>
+<img src="/2024/12/22/Burpsuite%E9%9D%B6%E5%9C%BA--Authentication/uTools_1701183202786.png" alt="uTools_1701183202786" style="zoom: 33%;">
+
+<p>尝试将verify修改为我们要攻击的账号，故退出登录，重新登录wiener:peter，只是这次拦截login2，先放过第一个包，再拦截第二个包和第三个包并修改verify为carlos，完成之后发现还要输入验证码，根据登录wiener:peter的经验可知验证码是4位纯数字组合，因此我们直接爆破即可</p>
+<img src="/2024/12/22/Burpsuite%E9%9D%B6%E5%9C%BA--Authentication/uTools_1701183999488.png" alt="uTools_1701183999488" style="zoom: 33%;">
+
+<p>得验证码为1657，之后输入验证码同时拦截包，将verify改为carlos，即可成功</p>
+<h4 id="Brute-forcing-a-stay-logged-in-cookie"><a href="#Brute-forcing-a-stay-logged-in-cookie" class="headerlink" title="Brute-forcing a stay-logged-in cookie"></a>Brute-forcing a stay-logged-in cookie</h4><p>首先根据现有凭据登录，并勾选<code>stay logged in</code></p>
+<img src="/2024/12/22/Burpsuite%E9%9D%B6%E5%9C%BA--Authentication/uTools_1701268022303.png" alt="uTools_1701268022303" style="zoom:33%;">
+
+<p>登录之后发现存在stay-logged-in</p>
+<img src="/2024/12/22/Burpsuite%E9%9D%B6%E5%9C%BA--Authentication/uTools_1701268088527.png" alt="uTools_1701268088527" style="zoom:33%;">
+
+<p>base64解密得:<code>wiener:51dc30ddc473d43a6011e9ebba6ca770</code></p>
+<p>后面的部分用MD5解密得到peter</p>
+<img src="/2024/12/22/Burpsuite%E9%9D%B6%E5%9C%BA--Authentication/uTools_1701268309820.png" alt="uTools_1701268309820" style="zoom:33%;">
+
+<p>于是我们先退出登录，之后对stay-logged-in进行爆破</p>
+<p>需要设置好payload的处理方式，先对密码进行MD5加密，之后添加前缀carlos:，最后进行baes64加密，之后开始爆破</p>
+<img src="/2024/12/22/Burpsuite%E9%9D%B6%E5%9C%BA--Authentication/uTools_1701268715325.png" alt="uTools_1701268715325" style="zoom:33%;">
+
+<p>根据长度排序</p>
+<img src="/2024/12/22/Burpsuite%E9%9D%B6%E5%9C%BA--Authentication/uTools_1701268781046.png" alt="uTools_1701268781046" style="zoom:33%;">
+
+<p>Y2FybG9zOjlkZjNiMDFjNjBkZjIwZDEzODQzODQxZmYwZDQ0ODJj</p>
+<p>base64解密：carlos:9df3b01c60df20d13843841ff0d4482c</p>
+<p>MD5解密：access</p>
+<p>成功</p>
+<h4 id="Offline-password-cracking"><a href="#Offline-password-cracking" class="headerlink" title="Offline password cracking"></a>Offline password cracking</h4><p>首先利用现有凭据wiener:peter登录，之后去首页随便找一篇博客评论</p>
+<img src="/2024/12/22/Burpsuite%E9%9D%B6%E5%9C%BA--Authentication/uTools_1701269449657.png" alt="uTools_1701269449657" style="zoom:33%;">
+
+<p>之后去access log里找到stay-logged-in：Y2FybG9zOjI2MzIzYzE2ZDVmNGRhYmZmM2JiMTM2ZjI0NjBhOTQz</p>
+<img src="/2024/12/22/Burpsuite%E9%9D%B6%E5%9C%BA--Authentication/uTools_1701269466473.png" alt="uTools_1701269466473" style="zoom:33%;">
+
+<p>base64解密：carlos:26323c16d5f4dabff3bb136f2460a943</p>
+<p>MD5解密：onceuponatime</p>
+<p>之后删除carlos的账户即可成功</p>
+<h4 id="Password-reset-poisoning-via-middleware"><a href="#Password-reset-poisoning-via-middleware" class="headerlink" title="Password reset poisoning via middleware"></a>Password reset poisoning via middleware</h4><p>首先，点击忘记密码，输入carlos的用户名，点击submit后用burp拦截，在header位置添加X-Forwarded-Host并指向自己的服务器</p>
+<img src="/2024/12/22/Burpsuite%E9%9D%B6%E5%9C%BA--Authentication/uTools_1701435726142.png" alt="uTools_1701435726142" style="zoom:33%;">
+
+<p>之后去服务器的日志中查看发现获取到了carlos的token：<code>3ek1baacsobkwf15q6sqjetimcb6atm8</code></p>
+<img src="/2024/12/22/Burpsuite%E9%9D%B6%E5%9C%BA--Authentication/uTools_1701436059591.png" alt="uTools_1701436059591" style="zoom:33%;">
+
+<p>之后登录wiener的账号并去获取wiener的邮箱账号，并填写在忘记密码页面的信息栏中</p>
+<img src="/2024/12/22/Burpsuite%E9%9D%B6%E5%9C%BA--Authentication/uTools_1701436254175.png" alt="uTools_1701436254175" style="zoom:33%;">
+
+<p>前往邮箱获取到重置密码的url，将token改为carlos的token并访问</p>
+<p>修改好密码后在点击提交时拦截，将token改为carlos的token并发送</p>
+<img src="/2024/12/22/Burpsuite%E9%9D%B6%E5%9C%BA--Authentication/uTools_1701436441826.png" alt="uTools_1701436441826" style="zoom:33%;">
+
+<p>之后用修改后的密码登录carlos即可成功</p>
+<h4 id="Password-brute-force-via-password-change"><a href="#Password-brute-force-via-password-change" class="headerlink" title="Password brute-force via password change"></a>Password brute-force via password change</h4><p>首先登录wiener:peter，之后通过修改密码查看返回信息</p>
+<p>当原密码正确，新密码不一致时，提示<code>New passwords do not match</code></p>
+<img src="/2024/12/22/Burpsuite%E9%9D%B6%E5%9C%BA--Authentication/uTools_1701436984585.png" alt="uTools_1701436984585" style="zoom:33%;">
+
+<p>当原密码错误，新密码不一致时，提示<code>Current password is incorrect</code></p>
+<img src="/2024/12/22/Burpsuite%E9%9D%B6%E5%9C%BA--Authentication/uTools_1701437024221.png" alt="uTools_1701437024221" style="zoom:33%;">
+
+<p>因此我们可以使用新密码不一致来爆破原密码</p>
+<img src="/2024/12/22/Burpsuite%E9%9D%B6%E5%9C%BA--Authentication/uTools_1701437156753.png" alt="uTools_1701437156753" style="zoom:50%;">
+
+<p>载入字典，并设置好匹配关键字</p>
+<img src="/2024/12/22/Burpsuite%E9%9D%B6%E5%9C%BA--Authentication/uTools_1701437250400.png" alt="uTools_1701437250400" style="zoom:33%;">
+
+<p>爆破成功</p>
+<img src="/2024/12/22/Burpsuite%E9%9D%B6%E5%9C%BA--Authentication/uTools_1701437321016.png" alt="uTools_1701437321016" style="zoom:33%;">
+
+<p>之后使用carlos:654321登录即可完成</p>
+<h4 id="Broken-brute-force-protection-multiple-credentials-per-request"><a href="#Broken-brute-force-protection-multiple-credentials-per-request" class="headerlink" title="Broken brute-force protection, multiple credentials per request"></a>Broken brute-force protection, multiple credentials per request</h4><p>登录拦截，发现以json格式发送登录凭据</p>
+<p>故将字典修改格式</p>
+<img src="/2024/12/22/Burpsuite%E9%9D%B6%E5%9C%BA--Authentication/uTools_1701437988795.png" alt="uTools_1701437988795" style="zoom:33%;">
+
+<img src="/2024/12/22/Burpsuite%E9%9D%B6%E5%9C%BA--Authentication/uTools_1701438262273.png" alt="uTools_1701438262273" style="zoom:33%;">
+
+<p>之后以[数据块]的格式发送密码即可成功</p>
+<img src="/2024/12/22/Burpsuite%E9%9D%B6%E5%9C%BA--Authentication/uTools_1701438227866.png" alt="uTools_1701438227866" style="zoom:33%;">
+
+
+
+<h4 id="2FA-bypass-using-a-brute-force-attack"><a href="#2FA-bypass-using-a-brute-force-attack" class="headerlink" title="2FA bypass using a brute-force attack"></a>2FA bypass using a brute-force attack</h4><p>先利用carlos:montoya进入验证码界面，随便输入验证码测试，发现输入两次错误验证码后会自动终止会话，但是，该用户并未被锁定，意味着我可以无限制地尝试。</p>
+<p>如果每次尝试2FA会不断变化，我们没有办法爆破，但如果2FA在使用之前都一直有效，那么我们便可对其进行暴力破解。</p>
+<p>登录过程涉及多个需要按顺序执行的请求，因此，我们可以使用宏，并尝试将这些请求合并到一个宏中。</p>
+<p>操作步骤如下：</p>
+<p>&lt;1&gt;登录carlos:montoya</p>
+<p>&lt;2&gt;随便输入一个验证码，点击提交，报错</p>
+<p>&lt;3&gt;进入burp，Project options的sessions，在Macro中选择如下的三个包，并Test macro正常</p>
+<img src="/2024/12/22/Burpsuite%E9%9D%B6%E5%9C%BA--Authentication/uTools_1701612171637.png" alt="uTools_1701612171637" style="zoom:33%;">
+
+<p>&lt;4&gt;进入session handling rules，点击Add，在 Scope的URL Scope中, 选择选项 Include all URLs；在Details中点击Add选择Run a marco，并将&lt;3&gt;中的marco加进去</p>
+<img src="/2024/12/22/Burpsuite%E9%9D%B6%E5%9C%BA--Authentication/uTools_1701612388033.png" alt="uTools_1701612388033" style="zoom:33%;">
+
+<p>&lt;5&gt;将POST &#x2F;login2发送给Intruder，将字典设置为0000-9999，线程数设为1，爆破验证码即可</p>
+<p>(爆破速度超级慢，不建议尝试，等之后有时间再做吧)</p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2024/12/22/Burpsuite%E9%9D%B6%E5%9C%BA--Access_control(%E5%90%8E%E5%9B%9B%E9%81%93)/" rel="prev" title="Burpsuite靶场--Access_control(后四道)">
+      <i class="fa fa-chevron-left"></i> Burpsuite靶场--Access_control(后四道)
+    </a></div>
+      <div class="post-nav-item"></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#Broken-brute-force-protection-IP-block"><span class="nav-number">1.</span> <span class="nav-text">Broken brute-force protection, IP block</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Username-enumeration-via-account-lock"><span class="nav-number">2.</span> <span class="nav-text">Username enumeration via account lock</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2FA-broken-logic"><span class="nav-number">3.</span> <span class="nav-text">2FA broken logic</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Brute-forcing-a-stay-logged-in-cookie"><span class="nav-number">4.</span> <span class="nav-text">Brute-forcing a stay-logged-in cookie</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Offline-password-cracking"><span class="nav-number">5.</span> <span class="nav-text">Offline password cracking</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Password-reset-poisoning-via-middleware"><span class="nav-number">6.</span> <span class="nav-text">Password reset poisoning via middleware</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Password-brute-force-via-password-change"><span class="nav-number">7.</span> <span class="nav-text">Password brute-force via password change</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Broken-brute-force-protection-multiple-credentials-per-request"><span class="nav-number">8.</span> <span class="nav-text">Broken brute-force protection, multiple credentials per request</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2FA-bypass-using-a-brute-force-attack"><span class="nav-number">9.</span> <span class="nav-text">2FA bypass using a brute-force attack</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Narcher Alter</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">3</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2024</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Narcher Alter</span>
+</div>
+<!--
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://muse.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a>
+  </div>
+-->
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>
