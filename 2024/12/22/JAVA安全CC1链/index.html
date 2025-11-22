@@ -39,7 +39,7 @@
 <meta property="og:image" content="http://example.com/2024/12/22/JAVA%E5%AE%89%E5%85%A8CC1%E9%93%BE/1708676697477.png">
 <meta property="og:image" content="http://example.com/2024/12/22/JAVA%E5%AE%89%E5%85%A8CC1%E9%93%BE/1708679064221.png">
 <meta property="article:published_time" content="2024-12-22T08:28:36.330Z">
-<meta property="article:modified_time" content="2024-10-17T10:26:34.430Z">
+<meta property="article:modified_time" content="2025-11-22T06:11:01.222Z">
 <meta property="article:author" content="Narcher Alter">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:image" content="http://example.com/2024/12/22/JAVA%E5%AE%89%E5%85%A8CC1%E9%93%BE/1708589373352.png">
@@ -192,7 +192,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2024-10-17 18:26:34" itemprop="dateModified" datetime="2024-10-17T18:26:34+08:00">2024-10-17</time>
+                <time title="Modified: 2025-11-22 14:11:01" itemprop="dateModified" datetime="2025-11-22T14:11:01+08:00">2025-11-22</time>
               </span>
 
           
@@ -258,7 +258,6 @@
 <p>该类中调用setValue方法的代码如下：</p>
 <img src="/2024/12/22/JAVA%E5%AE%89%E5%85%A8CC1%E9%93%BE/1708593715301.png" alt="1708593715301" style="zoom:50%;">
 
-<p>两个if语句，第一个if判断注解中是否有成员变量，第二个if判断是否能够强转。</p>
 <p>可见此类中利用的setValue方法恰好写在readObject方法中，只要我们能够控制里边的参数，便可大功告成。</p>
 <p>于是我们去找该类的构造器：</p>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">AnnotationInvocationHandler(Class&lt;? <span class="keyword">extends</span> <span class="title class_">Annotation</span>&gt; type, Map&lt;String, Object&gt; memberValues) &#123;</span><br><span class="line">    <span class="comment">//需要传入两个参数，第一个参数是一个类对象，表示注解的类型；第二个参数需要传入Map，因此传入TransformedMap即可</span></span><br><span class="line">    Class&lt;?&gt;[] superInterfaces = type.getInterfaces();</span><br><span class="line">    <span class="keyword">if</span> (!type.isAnnotation() ||</span><br><span class="line">        superInterfaces.length != <span class="number">1</span> ||</span><br><span class="line">        superInterfaces[<span class="number">0</span>] != java.lang.annotation.Annotation.class)</span><br><span class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> <span class="title class_">AnnotationFormatError</span>(<span class="string">&quot;Attempt to create proxy for a non-annotation type.&quot;</span>);</span><br><span class="line">    <span class="built_in">this</span>.type = type;</span><br><span class="line">    <span class="built_in">this</span>.memberValues = memberValues;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
